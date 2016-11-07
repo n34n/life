@@ -28,6 +28,7 @@ return [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
+                //print_r($response->data);exit;
 
 /*                if ($response->data !== null) {
                     if(Yii::$app->response->statusCode != 200){
@@ -104,6 +105,19 @@ return [
                         'POST get-token' => 'get-token',
                     ],
                 ],
+                //项目控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'v1/project',
+                    'pluralize' => false,
+                ],
+                //项目控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'v1/projects',
+                    'pluralize' => false,
+                ],
+
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['v1/goods']

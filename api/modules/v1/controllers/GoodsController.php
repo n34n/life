@@ -48,9 +48,7 @@ class GoodsController extends ActiveController
     {
         //echo "code::".Yii::$app->request->get('suppress_response_code');
         $data['code'] = 200;
-        $data['data'] = new ActiveDataProvider([
-            'query' => Post::find(),
-        ]);
+        $data['data'] = '';
         return $data;
     }
 }
