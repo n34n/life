@@ -3,6 +3,7 @@ $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
     require(__DIR__ . '/params.php'),
+    require(__DIR__ . '/statuscode.php'),
     require(__DIR__ . '/key.php'),
     require(__DIR__ . '/params-local.php')
 );
@@ -28,32 +29,18 @@ return [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                //print_r($response->data);exit;
-
-/*                if ($response->data !== null) {
-                    if(Yii::$app->response->statusCode != 200){
-                        $response->data = [
-                            'success' => $response->isSuccessful,
-                            'code' => Yii::$app->response->statusCode,
-                            'message' => Yii::$app->params['codes'][Yii::$app->response->statusCode],
-                            'data' => '',
-                        ];
-                    }else{
-                        $response->data = [
-                            'success' => $response->isSuccessful,
-                            'code' => $response->data['code'],
-                            'message' => Yii::$app->params['codes'][$response->data['code']],
-                            'data' => $response->data['data'],
-                        ];
-                    }
-                }*/
-
                 if($response->data !== null){
+                    $code = Yii::$app->response->statusCode;
+
+                    if(isset($response->data['code'])){
+                        $response->data['message'] = Yii::$app->params['codes'][$response->data['code']];
+                    }
+
                     $response->data = [
                         'success' => $response->isSuccessful,
-                        'code' => $response->data['code'],
-                        'message' => Yii::$app->params['codes'][$response->data['code']],
-                        'data' => $response->data['data'],
+                        'status' => $code,//$response->data['code'],
+                        'text' => Yii::$app->params['codes'][$code],
+                        'data' => $response->data,//['data'],
                     ];
                 }
             },
@@ -109,12 +96,6 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/project',
-                    'pluralize' => false,
-                ],
-                //项目控制
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'v1/projects',
                     'pluralize' => false,
                 ],
 

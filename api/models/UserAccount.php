@@ -1,5 +1,6 @@
 <?php
 namespace api\models;
+use api\modules\v1\models\Project;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -109,17 +110,15 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         //$type       = $_POST['type'];
 
         //判断是否接收到用户登录类型
-        if(isset($_POST['type']) && !empty($_POST['type']))
+        if(isset($_POST['user_id'],$_POST['account'],$_POST['device'],$_POST['type']))
         {
-            //$model  = new UserAccount();
             $user   = self::find()->where($_POST)->one();
 
             //判断是否查到用户
             if(empty($user))
             {
                 //用户不存在,返回登录界面
-                $data['code']  = '600';
-                $data['data']['isLogin']  = 'N';
+                $data['code']     = 40000;
             }else{
                 //判断用户登录状态
                 if($user->status == 10)
@@ -129,20 +128,23 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
                     $user->save();
 
                     //状态为10,进入主界面
-                    $data['code']  = '200';
-                    $data['data']['isLogin']  = 'Y';
-                    $data['data']['access_token']=$user->access_token;
+                    //Yii::$app->response->statusCode  = 200;
+                    $data['code']           = 10000;
+                    $data['access_token']   = $user->access_token;
+
+                    $proj = new Project();
+                    $_proj= $proj->getDefault($user->user_id);
+                    $data['project'] = $_proj['data'];
 
                 }else{
                     //状态为0,返回登录界面
-                    $data['code']  = '600';
-                    $data['data']['isLogin']  = 'N';
+                    $data['code']     = 40001;
                 }
             }
         }else{
-            //无登录类型,返回登录界面
-            $data['code']  = '600';
-            $data['data']  = '';
+            //未提交必要参数,返回登录界面
+            $data['code']     = 20000;
+            //$data['message']  = Yii::$app->params['codes'][$data['code']];
         }
 
         return $data;
@@ -169,24 +171,20 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         //$account    = $_POST['account'];
         //$device     = $_POST['device'];
         //$type       = $_POST['type'];
-        if(isset($_POST['account']) && isset($_POST['device']) && isset($_POST['type'])
-            && isset($_POST['timestamp']) && isset($_POST['sign']))
+        if(isset($_POST['account'],$_POST['created_by'],$_POST['device'],$_POST['type'],$_POST['timestamp'],$_POST['sign']))
         {
             $sign = self::checkSign();
             if($sign == 1)
             {
-                $data['code']  = 200;
-                $data['data']  = '';
+                $data['code']  = 10000;
                 return $data;
             }else{
-                $data['code']  = 501;
-                $data['data']  = '';
+                $data['code']  = 30000;
                 return $data;
             }
 
         }else{
-            $data['code']  = 401;
-            $data['data']  = '';
+            $data['code']  = 20000;
             return $data;
         }
     }
@@ -202,7 +200,8 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         foreach ($_POST as $value){
             $str .= $value;
         }
-
+//        print_r($_POST);
+//        echo $_sign = md5($str.$secret);
         $_sign = md5($str.$secret);
         if($sign == $_sign){
             return 1;

@@ -4,6 +4,7 @@ namespace api\modules\v1\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use api\modules\v1\models\RelUserProject;
 //use yii\web\Link;
 //use yii\web\Linkable;
 //use yii\helpers\Url;
@@ -51,10 +52,82 @@ class Project extends ActiveRecord
             'project_id',
             'name',
             'type',
-/*            'created_by' => function ($model) {
-                return $model->id . ' ' . $model->name;
-            },*/
+            'created_at',
+            'created_by',
+            'extra',
         ];
+    }
+
+    public function getList($user_id)
+    {
+        $query = $this->find()->from(['p'=>'project'])
+            ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
+            ->where(['r.user_id'=>$user_id])
+            ->all();
+        if(empty($query)){
+            $data['code'] = 50000;
+        }else{
+            $data['code'] = 10000;
+            $data['list'] = $query;
+        }
+        return $data;
+    }
+
+    public function create($user_id,$is_default='')
+    {
+        if(isset($user_id,$_POST['name'],$_POST['type'],$_POST['created_by']))
+        {
+            $this->name = $_POST['name'];
+            $this->type = $_POST['type'];
+            $this->created_at = time();
+            $this->created_by = $_POST['created_by'];
+            if($this->save()){
+                $rel = new RelUserProject();
+                $rel->user_id = $user_id;
+                $rel->project_id = $this->getPrimaryKey();
+                $rel->is_manager = 1;
+                $rel->is_default = ($is_default!='')?$is_default:0;
+                if($rel->save()){
+                    $data['code'] = 10000;
+                    $data['data'] = $rel;
+                }else{
+                    $data['code'] = 10002;
+                }
+            }else{
+                $data['code'] = 10001;
+            }
+        }else{
+            $data['code'] = 20000;
+        }
+        return $data;
+    }
+
+    public function createDefault()
+    {
+        $_POST['name'] = Yii::$app->params['defaultProject'];
+        return $this->create(1);
+    }
+    
+    public function getDefault($user_id)
+    {
+        if(isset($user_id)){
+           // $modelClass = $this->modelClass;
+            $query = $this->find()->from(['p'=>'project'])
+                ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
+                ->where(['r.user_id'=>$user_id,'r.is_default'=>1])
+                ->one();
+            if(empty($query)){
+                //无数据
+                $data['code'] = 50000;
+                $data['data'] = '';
+            }else{
+                $data['code'] = 10000;
+                $data['data'] = $query;
+            }
+        }else{
+            $data['code'] = 20000;
+        }
+        return $data;
     }
 
 //    public function getLinks()
@@ -72,8 +145,8 @@ class Project extends ActiveRecord
     {
         return $this->hasMany(Box::className(), ['project_id' => 'project_id']);
     }*/
-    public function getRelUserProject()
+    public function getExtra()
     {
-        return $this->hasMany(RelUserProject::className(), ['project_id' => 'project_id']);
+        return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id'])->select('is_default,is_manager');
     }
 }

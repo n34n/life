@@ -6,6 +6,7 @@ use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\User;
 use api\models\UserAccount;
+use api\modules\v1\models\Project;
 
 class TokenController extends ActiveController
 {
@@ -39,20 +40,21 @@ class TokenController extends ActiveController
         $modelClass = $this->modelClass;
 
         $data = $modelClass::checkUserData();
-        if($data['code'] == 200){
+        if($data['code'] == 10000){
             $user = $modelClass::findUser();
+            $proj = new Project();
             if($user != null){
-                $data['code'] = 200;
-                $data['data'] = $user;
+                $data['code'] = 10000;
+                $data['user'] = $user;
+                $_proj = $proj->getDefault($user->user_id);
+                $data['project'] = $_proj['data'];
                 return $data;
             }else{
                 //创建用户
                 $user    = new User();
                 $user_id = $user->savedata();
-                $user->save();
 
-                unset($_POST['timestamp']);
-                $_POST['user_id'] = $user_id;
+                //用户账户表
                 $_user = new UserAccount();
                 $_user->user_id = $user_id;
                 $_user->access_token  = $modelClass::setToken();
@@ -61,8 +63,14 @@ class TokenController extends ActiveController
                 $_user->type    = $_POST['type'];
                 $_user->save();
 
-                $data['code'] = 200;
-                $data['data'] = $_user;
+                //项目
+                $_POST['user_id'] = $user_id;
+                $_POST['type'] = 1;
+                $_proj = $proj->createDefault();
+
+                $data['code']    = 10000;
+                $data['user']    = $_user;
+                $data['project'] = $_proj['data'];
                 return $data;
             }
 

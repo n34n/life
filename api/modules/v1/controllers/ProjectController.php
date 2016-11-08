@@ -2,32 +2,40 @@
 
 namespace api\modules\v1\controllers;
 
+use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use yii\filters\auth\QueryParamAuth;
 use yii\data\ActiveDataProvider;
+use api\modules\v1\models\Project;
+use api\models\User;
 
 class ProjectController extends ActiveController
 {
     public $modelClass = 'api\modules\v1\models\Project';
+
+    public $userinfo;
 
     public function behaviors()
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
+        $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
         return $behaviors;
     }
 
-/*    public function actionIndex()
+    protected function verbs()
     {
-        //echo "code::".Yii::$app->request->get('suppress_response_code');
-        //$modelClass = $this->modelClass;
-        //$query = $modelClass::find();
-        $data['code'] = 200;
-        $data['data'] = '';
-        return $data;
-    }*/
+        return [
+            'index' => ['GET', 'HEAD'],
+            'view' => ['GET', 'HEAD'],
+            'create' => ['POST'],
+            'update' => ['PUT', 'PATCH'],
+            'delete' => ['DELETE'],
+        ];
+    }
+
     public function actions()
     {
         $actions = parent::actions();
@@ -36,21 +44,19 @@ class ProjectController extends ActiveController
         return $actions;
     }
 
+
+    //项目列表
     public function actionIndex()
     {
-        if(isset($_GET['user_id']) && $_GET['user_id']!=''){
-            $modelClass = $this->modelClass;
-            $query = $modelClass::find()->from(['p'=>'project'])
-                ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
-                ->where(['r.user_id'=>$_GET['user_id']])
-                ->all();
-            $data['code'] = 200;
-            $data['data'] = $query;
-        }else{
-            $data['code'] = 401;
-            $data['data'] = '';
-        }
+        $model = new Project();
+        $data  = $model->getList($this->userinfo->user_id);
+        return $data;
+    }
 
+    public function actionCreate()
+    {
+        $model = new Project();
+        $data  = $model->create($this->userinfo->user_id);
         return $data;
     }
 
