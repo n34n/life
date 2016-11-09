@@ -24,6 +24,18 @@ class RelUserProject extends ActiveRecord
         return 'rel_user_project';
     }
 
+
+    public function fields()
+    {
+        return [
+            'user_id',
+            'project_id',
+            'is_default',
+            'is_manager',
+            //'extra',
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -44,8 +56,8 @@ class RelUserProject extends ActiveRecord
         return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
-    public function getProject()
+    public function getExtra()
     {
-        return $this->hasMany(Project::className(), ['project_id' => 'project_id']);
+        return $this->hasOne(Project::className(), ['project_id' => 'project_id']);
     }
 }

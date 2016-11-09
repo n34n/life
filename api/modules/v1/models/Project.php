@@ -5,6 +5,10 @@ namespace api\modules\v1\models;
 use Yii;
 use yii\db\ActiveRecord;
 use api\modules\v1\models\RelUserProject;
+
+use yii\web\Link;
+use yii\web\Linkable;
+use yii\helpers\Url;
 //use yii\web\Link;
 //use yii\web\Linkable;
 //use yii\helpers\Url;
@@ -23,7 +27,7 @@ use api\modules\v1\models\RelUserProject;
  *
  * @property Box[] $boxes
  */
-class Project extends ActiveRecord
+class Project extends ActiveRecord implements Linkable
 {
     /**
      * @inheritdoc
@@ -58,21 +62,17 @@ class Project extends ActiveRecord
         ];
     }
 
-    public function getList($user_id)
+    //获取项目列表
+    public static function getList($user_id)
     {
-        $query = $this->find()->from(['p'=>'project'])
+        $condition = isset($user_id)?array('r.user_id'=>$user_id):'';
+        $query = self::find()->from(['p'=>'project'])
             ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
-            ->where(['r.user_id'=>$user_id])
-            ->all();
-        if(empty($query)){
-            $data['code'] = 50000;
-        }else{
-            $data['code'] = 10000;
-            $data['list'] = $query;
-        }
-        return $data;
+            ->where($condition);
+        return $query;
     }
 
+    //创建项目
     public function create($user_id,$is_default='')
     {
         if(isset($user_id,$_POST['name'],$_POST['type'],$_POST['created_by']))
@@ -102,12 +102,61 @@ class Project extends ActiveRecord
         return $data;
     }
 
+    //新建用户时,创建默认项目
     public function createDefault()
     {
         $_POST['name'] = Yii::$app->params['defaultProject'];
         return $this->create(1);
     }
-    
+
+    //编辑项目
+    public function updated($user_id)
+    {
+        if(isset($user_id,$_POST['project_id'],$_POST['name'],$_POST['type'],$_POST['created_by']))
+        {
+            $this->name = $_POST['name'];
+            $this->type = $_POST['type'];
+            $this->updated_at = time();
+            $this->updated_by = $_POST['created_by'];
+            if($this->save()){
+                $rel = new RelUserProject();
+                $rel->user_id = $user_id;
+                $rel->project_id = $this->getPrimaryKey();
+                $rel->is_manager = 1;
+                $rel->is_default = ($is_default!='')?$is_default:0;
+                if($rel->save()){
+                    $data['code'] = 10000;
+                    $data['data'] = $rel;
+                }else{
+                    $data['code'] = 10002;
+                }
+            }else{
+                $data['code'] = 10001;
+            }
+        }else{
+            $data['code'] = 20000;
+        }
+        return $data;
+    }
+
+    //设置默认项目
+    public function setDefault($user_id,$project_id)
+    {
+        $rel = RelUserProject::findOne(['user_id'=>$user_id,'project_id'=>$project_id]);
+        if(!empty($rel)){
+            $rel->is_default = 1;
+            $rel->save();
+            RelUserProject::updateAll(['is_default'=>0],
+                'user_id=:user_id And project_id<>:project_id',
+                [':user_id'=>$user_id,':project_id'=>$project_id]);
+            $data['code'] = 10000;
+        }else{
+            $data['code'] = 10110;
+        }
+        return $data;
+    }
+
+    //获取默认项目
     public function getDefault($user_id)
     {
         if(isset($user_id)){
@@ -130,23 +179,17 @@ class Project extends ActiveRecord
         return $data;
     }
 
-//    public function getLinks()
-//    {
-//        return [
-//            Link::REL_SELF => Url::to(['project/view', 'project_id' => $this->project_id], true),
-//        ];
-//    }
-
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-/*    public function getBoxes()
+    //生成链接
+    public function getLinks()
     {
-        return $this->hasMany(Box::className(), ['project_id' => 'project_id']);
-    }*/
+        return [
+            Link::REL_SELF => Url::to(['/v1/project/view', 'project_id' => $this->project_id], true),
+        ];
+    }
+
+    //扩展字段
     public function getExtra()
     {
-        return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id'])->select('is_default,is_manager');
+        return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id']);
     }
 }
