@@ -33,7 +33,7 @@ class ProjectController extends ActiveController
             'index' => ['GET', 'HEAD'],
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
-            'update' => ['PUT', 'PATCH'],
+            'update' => ['POST','PUT', 'PATCH'],
             'delete' => ['DELETE'],
         ];
     }
@@ -70,8 +70,9 @@ class ProjectController extends ActiveController
     //修改项目
     public function actionUpdate()
     {
+        //$data['code'] = 201;
         $model = new Project();
-        $data  = $model->update($this->userinfo->user_id);
+        $data  = $model->updated($this->userinfo->user_id);
         return $data;
     }
 

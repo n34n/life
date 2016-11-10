@@ -200,8 +200,8 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         foreach ($_POST as $value){
             $str .= $value;
         }
-//        print_r($_POST);
-//        echo $_sign = md5($str.$secret);
+        print_r($_POST);
+        echo $_sign = md5($str.$secret);
         $_sign = md5($str.$secret);
         if($sign == $_sign){
             return 1;

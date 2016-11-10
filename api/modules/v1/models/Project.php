@@ -86,7 +86,7 @@ class Project extends ActiveRecord implements Linkable
                 $rel->user_id = $user_id;
                 $rel->project_id = $this->getPrimaryKey();
                 $rel->is_manager = 1;
-                $rel->is_default = ($is_default!='')?$is_default:0;
+                $rel->is_default = ($is_default==1)?1:0;
                 if($rel->save()){
                     $data['code'] = 10000;
                     $data['data'] = $rel;
@@ -103,40 +103,44 @@ class Project extends ActiveRecord implements Linkable
     }
 
     //新建用户时,创建默认项目
-    public function createDefault()
+    public function createDefault($user_id)
     {
         $_POST['name'] = Yii::$app->params['defaultProject'];
-        return $this->create(1);
+        return $this->create($user_id,1);
     }
 
     //编辑项目
     public function updated($user_id)
     {
-        if(isset($user_id,$_POST['project_id'],$_POST['name'],$_POST['type'],$_POST['created_by']))
-        {
-            $this->name = $_POST['name'];
-            $this->type = $_POST['type'];
-            $this->updated_at = time();
-            $this->updated_by = $_POST['created_by'];
-            if($this->save()){
-                $rel = new RelUserProject();
-                $rel->user_id = $user_id;
-                $rel->project_id = $this->getPrimaryKey();
-                $rel->is_manager = 1;
-                $rel->is_default = ($is_default!='')?$is_default:0;
-                if($rel->save()){
-                    $data['code'] = 10000;
-                    $data['data'] = $rel;
-                }else{
-                    $data['code'] = 10002;
-                }
-            }else{
-                $data['code'] = 10001;
-            }
-        }else{
-            $data['code'] = 20000;
-        }
-        return $data;
+        //print_r(Yii::$app->request->isPut);
+        print_r(Yii::$app->request->isPut);
+         $a =Yii::$app->request->bodyParams;
+        //$b = Yii::$app->request->parsers($a);
+        print_r($a);
+        //print_r($b);
+
+        //print_r($project_id);
+        //if(isset($user_id,$_PUT['project_id'],$_PUT['name'],$_PUT['type'],$_PUT['updated_by']))
+//        if(isset($user_id,$_POST['project_id'],$_POST['name'],$_POST['type'],$_POST['updated_by']))
+//        {
+//            $data['code'] = 200;
+//            //$model = $this->findOne(['user_id'=>$user_id,'project_id'=>$_POST['project_id']]);
+////            $rel = RelUserProject::findOne(['user_id'=>$user_id,'project_id'=>$_POST['project_id']]);
+////            if(!empty($rel)) {
+////                $model = $this->findOne($_POST['project_id']);
+////                $model->name = $_POST['name'];
+////                $model->type = $_POST['type'];
+////                $model->updated_at = time();
+////                $model->updated_by = $_POST['updated_by'];
+////                $model->save();
+////                $data['code'] = 10000;
+////            }else{
+////                $data['code'] = 10110;
+////            }
+//        }else{
+//            $data['code'] = 20000;
+//        }
+       // return $data;
     }
 
     //设置默认项目
