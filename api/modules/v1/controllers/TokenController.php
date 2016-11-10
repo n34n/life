@@ -64,7 +64,7 @@ class TokenController extends ActiveController
                 $_user->save();
 
                 //项目
-                $_POST['user_id'] = $user_id;
+                //$_POST['user_id'] = $user_id;
                 $_POST['type'] = 1;
                 $_proj = $proj->createDefault($user_id);
 

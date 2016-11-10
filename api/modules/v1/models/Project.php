@@ -73,7 +73,7 @@ class Project extends ActiveRecord implements Linkable
     }
 
     //创建项目
-    public function create($user_id,$is_default='')
+    public function create($user_id,$is_default=0)
     {
         if(isset($user_id,$_POST['name'],$_POST['type'],$_POST['created_by']))
         {
