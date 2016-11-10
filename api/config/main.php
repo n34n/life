@@ -112,7 +112,7 @@ return [
                     'controller' => 'v1/project',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        //'GET get-token'     => 'get-token',
+                        //'POST update'     => 'update',
                         'POST set-default' => 'set-default',
                     ],
                 ],

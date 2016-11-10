@@ -6,6 +6,7 @@ use Yii;
 use yii\db\ActiveRecord;
 use api\modules\v1\models\RelUserProject;
 
+use yii\web\BadRequestHttpException;
 use yii\web\Link;
 use yii\web\Linkable;
 use yii\helpers\Url;
@@ -75,6 +76,7 @@ class Project extends ActiveRecord implements Linkable
     //创建项目
     public function create($user_id,$is_default=0)
     {
+
         if(isset($user_id,$_POST['name'],$_POST['type'],$_POST['created_by']))
         {
             $this->name = $_POST['name'];
@@ -112,16 +114,27 @@ class Project extends ActiveRecord implements Linkable
     //编辑项目
     public function updated($user_id)
     {
-        //print_r(Yii::$app->request->isPut);
-        print_r(Yii::$app->request->isPut);
-         $a =Yii::$app->request->bodyParams;
-        //$b = Yii::$app->request->parsers($a);
-        print_r($a);
-        //print_r($b);
-
-        //print_r($project_id);
-        //if(isset($user_id,$_PUT['project_id'],$_PUT['name'],$_PUT['type'],$_PUT['updated_by']))
-//        if(isset($user_id,$_POST['project_id'],$_POST['name'],$_POST['type'],$_POST['updated_by']))
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }
+ //       print_r($_POST);
+//        $content = Yii::$app->request->bodyParams;
+//        print_r($content);
+//        //echo $content;
+        $content = file_get_contents('php://input');
+        $db = json_decode($content);
+        print_r($db);
+//
+//        //if(isset($user_id,$_PUT['project_id'],$_PUT['name'],$_PUT['type'],$_PUT['updated_by']))
+        if(isset($user_id))
+        {
+            $data['code'] = 10000;
+        }else{
+            $data['code'] = 20000;
+        }
+        return $data;
 //        {
 //            $data['code'] = 200;
 //            //$model = $this->findOne(['user_id'=>$user_id,'project_id'=>$_POST['project_id']]);

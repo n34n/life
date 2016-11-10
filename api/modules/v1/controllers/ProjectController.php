@@ -10,7 +10,7 @@ use yii\filters\auth\QueryParamAuth;
 use yii\data\ActiveDataProvider;
 use api\modules\v1\models\Project;
 use api\models\User;
-use api\components\Pages;
+//use api\components\Pages;
 
 class ProjectController extends ActiveController
 {
@@ -33,8 +33,8 @@ class ProjectController extends ActiveController
             'index' => ['GET', 'HEAD'],
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
-            'update' => ['POST','PUT', 'PATCH'],
-            'delete' => ['DELETE'],
+            'update' => ['PUT'],
+            'delete' => ['POST'],
         ];
     }
 
@@ -42,7 +42,7 @@ class ProjectController extends ActiveController
     {
         $actions = parent::actions();
         // 注销系统自带的实现方法
-        unset($actions['index'], $actions['create'], $actions['update'], $actions['delete']);
+        unset($actions['index'], $actions['create'], $actions['delete']);
         return $actions;
     }
 
@@ -67,14 +67,28 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-    //修改项目
-    public function actionUpdate()
-    {
-        //$data['code'] = 201;
-        $model = new Project();
-        $data  = $model->updated($this->userinfo->user_id);
-        return $data;
-    }
+//    public function actionUpdate($id)
+//    {
+////        $rest = \Yii\rest\yii\rest\UpdateAction::className();
+////
+//        $model = new yii\rest\UpdateAction;
+//        //$m = $model->findModel($id);
+//        $s = $this->updateScenario;
+//        //$data  = $m->run();
+//        $modelClass = $this->modelClass;
+//        //$data = $modelClass->run();
+//        //$data = $modelClass->run();
+//
+//        return $data;
+////        return $rest;
+//
+////        return [
+////            'class' => 'yii\rest\UpdateAction',
+////            'modelClass' => $this->modelClass,
+////            'checkAccess' => [$this, 'checkAccess'],
+////            'scenario' => $this->updateScenario,
+////        ];
+//    }
 
     //设置默认项目
     public function actionSetDefault()
