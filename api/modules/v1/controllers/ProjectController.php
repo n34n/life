@@ -42,7 +42,7 @@ class ProjectController extends ActiveController
     {
         $actions = parent::actions();
         // 注销系统自带的实现方法
-        unset($actions['index'], $actions['create'], $actions['delete']);
+        unset($actions['index'], $actions['create'], $actions['update'], $actions['delete']);
         return $actions;
     }
 
@@ -64,6 +64,14 @@ class ProjectController extends ActiveController
     {
         $model = new Project();
         $data  = $model->create($this->userinfo->user_id);
+        return $data;
+    }
+
+    //编辑项目
+    public function actionUpdate($id)
+    {
+        $model = new Project();
+        $data  = $model->updateInfo($this->userinfo->user_id,$id);
         return $data;
     }
 

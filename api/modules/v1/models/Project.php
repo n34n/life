@@ -51,6 +51,7 @@ class Project extends ActiveRecord implements Linkable
         ];
     }
 
+
     public function fields()
     {
         return [
@@ -63,6 +64,7 @@ class Project extends ActiveRecord implements Linkable
         ];
     }
 
+
     //获取项目列表
     public static function getList($user_id)
     {
@@ -72,6 +74,7 @@ class Project extends ActiveRecord implements Linkable
             ->where($condition);
         return $query;
     }
+
 
     //创建项目
     public function create($user_id,$is_default=0)
@@ -104,6 +107,7 @@ class Project extends ActiveRecord implements Linkable
         return $data;
     }
 
+
     //新建用户时,创建默认项目
     public function createDefault($user_id)
     {
@@ -111,50 +115,40 @@ class Project extends ActiveRecord implements Linkable
         return $this->create($user_id,1);
     }
 
-    //编辑项目
-    public function updated($user_id)
+
+    //更新项目
+    public function updateInfo($user_id,$id)
     {
+        //验证方法
         if(!Yii::$app->request->isPut)
         {
             $data['code'] = 400;
             return $data;
         }
- //       print_r($_POST);
-//        $content = Yii::$app->request->bodyParams;
-//        print_r($content);
-//        //echo $content;
-        $content = file_get_contents('php://input');
-        $db = json_decode($content);
-        print_r($db);
-//
-//        //if(isset($user_id,$_PUT['project_id'],$_PUT['name'],$_PUT['type'],$_PUT['updated_by']))
-        if(isset($user_id))
-        {
-            $data['code'] = 10000;
-        }else{
-            $data['code'] = 20000;
+
+        //验证令牌
+        if(!isset($user_id,$id)){
+            $data['code'] = 401;
+            return $data;
         }
+
+        //验证资源是否存在
+        $model = $this->findOne($id);
+        if(!$model){
+            $data['code'] = 50000;
+            return $data;
+        }
+
+        //保存数据
+        $d = Yii::$app->request->bodyParams;
+        foreach ($d as $key=>$val){
+            if($model->hasProperty($key)){$model->$key = $val;}
+        }
+
+        $data['code'] = $model->save()?10000:10001;
         return $data;
-//        {
-//            $data['code'] = 200;
-//            //$model = $this->findOne(['user_id'=>$user_id,'project_id'=>$_POST['project_id']]);
-////            $rel = RelUserProject::findOne(['user_id'=>$user_id,'project_id'=>$_POST['project_id']]);
-////            if(!empty($rel)) {
-////                $model = $this->findOne($_POST['project_id']);
-////                $model->name = $_POST['name'];
-////                $model->type = $_POST['type'];
-////                $model->updated_at = time();
-////                $model->updated_by = $_POST['updated_by'];
-////                $model->save();
-////                $data['code'] = 10000;
-////            }else{
-////                $data['code'] = 10110;
-////            }
-//        }else{
-//            $data['code'] = 20000;
-//        }
-       // return $data;
     }
+
 
     //设置默认项目
     public function setDefault($user_id,$project_id)
@@ -173,6 +167,7 @@ class Project extends ActiveRecord implements Linkable
         return $data;
     }
 
+    
     //获取默认项目
     public function getDefault($user_id)
     {
