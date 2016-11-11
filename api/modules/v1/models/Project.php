@@ -145,6 +145,12 @@ class Project extends ActiveRecord implements Linkable
             if($model->hasProperty($key)){$model->$key = $val;}
         }
 
+        /*
+         * 项目类型变化时需做如下处理
+         * 单人转多人无需处理
+         * 多人转单人则需要将成员踢出项目
+         */
+
         $data['code'] = $model->save()?10000:10001;
         return $data;
     }
@@ -167,7 +173,7 @@ class Project extends ActiveRecord implements Linkable
         return $data;
     }
 
-    
+
     //获取默认项目
     public function getDefault($user_id)
     {

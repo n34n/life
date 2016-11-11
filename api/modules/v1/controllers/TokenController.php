@@ -38,13 +38,13 @@ class TokenController extends ActiveController
     public function actionGetToken()
     {
         $modelClass = $this->modelClass;
-
         $data = $modelClass::checkUserData();
         if($data['code'] == 10000){
             $user = $modelClass::findUser();
             $proj = new Project();
             if($user != null){
                 $data['code'] = 10000;
+                $data['is_new'] = 'N';
                 $data['user'] = $user;
                 $_proj = $proj->getDefault($user->user_id);
                 $data['project'] = $_proj['data'];
@@ -69,6 +69,7 @@ class TokenController extends ActiveController
                 $_proj = $proj->createDefault($user_id);
 
                 $data['code']    = 10000;
+                $data['is_new'] = 'Y';
                 $data['user']    = $_user;
                 $data['project'] = $_proj['data'];
                 return $data;
