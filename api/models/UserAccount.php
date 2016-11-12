@@ -28,16 +28,53 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         return static::findOne(['user_id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
-    public static function findUser()
+    //检查用户是否存在
+    public static function checkUserExsit()
     {
-        $account    = $_POST['account'];
-        $device     = $_POST['device'];
-        $type       = $_POST['type'];
-        return static::findOne([
-            'account' => $account,
-            'device' => $device,
-            'type' => $type,
-        ]);
+        if(!isset($_POST['account'],$_POST['type'])){
+            return $data['code'] = 20000;
+        }
+
+        $model      = static::findOne(['account'=>$_POST['account'], 'type' =>$_POST['type']]);
+        if(!$model){
+            $data['code'] = 40000;
+        }else{
+            $data['code'] = 10000;
+            $data['user'] = $model;
+        }
+        return $data;
+    }
+
+    //检查用户账户是否存在
+    public static function checkUserAccountExsit()
+    {
+        if(!isset($_POST['account'],$_POST['device'],$_POST['type'])){
+            return $data['code'] = 20000;
+        }
+
+        $model = static::findOne([
+            'account'=>$_POST['account'],
+            'device' =>$_POST['device'],
+            'type'=>$_POST['type']]);
+        if(!$model){
+            $data['code'] = 40000;
+        }else{
+            $data['code'] = 10000;
+            $data['user'] = $model;
+        }
+        return $data;
+    }
+
+    //创建用户账户
+    public function create($id)
+    {
+        $this->user_id = $id;
+        $this->access_token = $this->setToken();
+        $this->account = $_POST['account'];
+        $this->device  = $_POST['device'];
+        $this->type    = $_POST['type'];
+        $this->save();
+        return $this;
     }
 
     /**
@@ -104,15 +141,15 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
     //检查用户是否登录
     public static function checkAccess()
     {
-        //$user_id    = $_POST['user_id'];
-        //$account    = $_POST['account'];
-        //$device     = $_POST['device'];
-        //$type       = $_POST['type'];
-
         //判断是否接收到用户登录类型
         if(isset($_POST['user_id'],$_POST['account'],$_POST['device'],$_POST['type']))
         {
-            $user   = self::find()->where($_POST)->one();
+            $conditions['user_id'] = $_POST['user_id'];
+            $conditions['account'] = $_POST['account'];
+            $conditions['device']  = $_POST['device'];
+            $conditions['type']    = $_POST['type'];
+
+            $user   = self::find()->where($conditions)->one();
 
             //判断是否查到用户
             if(empty($user))
@@ -128,7 +165,6 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
                     $user->save();
 
                     //状态为10,进入主界面
-                    //Yii::$app->response->statusCode  = 200;
                     $data['code']           = 10000;
                     $data['access_token']   = $user->access_token;
 
@@ -144,11 +180,11 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         }else{
             //未提交必要参数,返回登录界面
             $data['code']     = 20000;
-            //$data['message']  = Yii::$app->params['codes'][$data['code']];
         }
 
         return $data;
     }
+
 
     //生成Token
     public static function setToken()
@@ -164,50 +200,30 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
     }
 
 
-    //检查待创建用户数据是否有效
-    public static function checkUserData()
-    {
-        //$user_id    = $_POST['user_id'];
-        //$account    = $_POST['account'];
-        //$device     = $_POST['device'];
-        //$type       = $_POST['type'];
-        if(isset($_POST['account'],$_POST['created_by'],$_POST['device'],$_POST['type'],$_POST['timestamp'],$_POST['sign']))
-        {
-            $sign = self::checkSign();
-            if($sign == 1)
-            {
-                $data['code']  = 10000;
-                return $data;
-            }else{
-                $data['code']  = 30000;
-                return $data;
-            }
-
-        }else{
-            $data['code']  = 20000;
-            return $data;
-        }
-    }
-
     //检查签名
-    protected static function checkSign()
+    public static function checkSign()
     {
+        //验证参数
+        if(!isset($_POST['account'],$_POST['created_by'],
+            $_POST['device'],$_POST['type'],
+            $_POST['timestamp'],$_POST['sign'])) {
+            return $data['code']  = 20000;
+        }
+
+        //制作签名
         $secret = self::getSecret();
         $str  = '';
         $sign = $_POST['sign'];
         unset($_POST['sign']);
         ksort($_POST);
-        foreach ($_POST as $value){
-            $str .= $value;
-        }
-//        print_r($_POST);
-//        echo $_sign = md5($str.$secret);
+        foreach ($_POST as $value){$str .= $value;}
         $_sign = md5($str.$secret);
-        if($sign == $_sign){
-            return 1;
-        }else{
-            return 0;
-        }
+        //print_r($_POST);
+        //echo $_sign;
+
+        //验证签名
+        $data['code'] = ($sign == $_sign)?10000:30000;
+        return $data;
     }
 
 }

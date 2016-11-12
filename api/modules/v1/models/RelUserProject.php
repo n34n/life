@@ -48,6 +48,12 @@ class RelUserProject extends ActiveRecord
         ];
     }
 
+    //加入项目
+    public function joinProject()
+    {
+
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

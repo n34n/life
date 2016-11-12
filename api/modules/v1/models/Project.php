@@ -77,13 +77,14 @@ class Project extends ActiveRecord implements Linkable
 
 
     //创建项目
-    public function create($user_id,$is_default=0)
+    public function create($user_id,$type=1,$is_default=0)
     {
 
-        if(isset($user_id,$_POST['name'],$_POST['type'],$_POST['created_by']))
+        $type = isset($_POST['type'])?$_POST['type']:$type;
+        if(isset($user_id,$_POST['name'],$type,$_POST['created_by']))
         {
             $this->name = $_POST['name'];
-            $this->type = $_POST['type'];
+            $this->type = $type;
             $this->created_at = time();
             $this->created_by = $_POST['created_by'];
             if($this->save()){
@@ -112,7 +113,7 @@ class Project extends ActiveRecord implements Linkable
     public function createDefault($user_id)
     {
         $_POST['name'] = Yii::$app->params['defaultProject'];
-        return $this->create($user_id,1);
+        return $this->create($user_id,1,1);
     }
 
 

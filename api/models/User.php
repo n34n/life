@@ -25,13 +25,18 @@ class User extends ActiveRecord implements IdentityInterface {
         return $query;
     }
 
-    public function savedata()
+    public function create()
     {
+        //创建用户
         $this->created_at = time();
         $this->tag_data   = trim(Yii::$app->params['defaultTags']);
         $this->save();
         $user_id = $this->getId();
-        return $user_id;
+
+        //创建用户账户
+        $ua   = new UserAccount();
+        $data = $ua->create($user_id);
+        return $data;
     }
 
     /**

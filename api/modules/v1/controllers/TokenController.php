@@ -38,40 +38,45 @@ class TokenController extends ActiveController
     public function actionGetToken()
     {
         $modelClass = $this->modelClass;
-        $data = $modelClass::checkUserData();
+
+        $data = $modelClass::checkSign();
+
         if($data['code'] == 10000){
-            $user = $modelClass::findUser();
-            $proj = new Project();
-            if($user != null){
-                $data['code'] = 10000;
-                $data['is_new'] = 'N';
-                $data['user'] = $user;
-                $_proj = $proj->getDefault($user->user_id);
-                $data['project'] = $_proj['data'];
+            //检查用户是否存在
+            $user = $modelClass::checkUserExsit();
+            if($user['code'] == 10000) {//(用户::User::存在)处理下方事项
+
+                $data['code']  = 10000;
+                $data['isNew'] = 'N';
+                $ua = $modelClass::checkUserAccountExsit();
+
+                if($ua['code'] == 10000) {//(用户账户::UserAccount::存在)处理下方事项
+                    $data['user']  = $ua;
+                }else{//(用户账户::UserAccount::不存在)处理下方事项
+                    $ua = new UserAccount();
+                    $data['user'] = $ua->create($user['user']->user_id);
+                }
+
+                //获取用户默认项目
+                $proj = new Project();
+                $p = $proj->getDefault($user['user']->user_id);//默认项目数据封装
+                $data['project'] = $p['data'];
                 return $data;
-            }else{
+
+            }else{//(用户::User::不存在)处理下方事项
+
+                $data['code']  = 10000;
+                $data['isNew'] = 'Y';
+
                 //创建用户
-                $user    = new User();
-                $user_id = $user->savedata();
+                $user           = new User();
+                $data['user']   = $user->create();
 
-                //用户账户表
-                $_user = new UserAccount();
-                $_user->user_id = $user_id;
-                $_user->access_token  = $modelClass::setToken();
-                $_user->account = $_POST['account'];
-                $_user->device  = $_POST['device'];
-                $_user->type    = $_POST['type'];
-                $_user->save();
+                //新用户初始化,创建默认项目
+                $proj = new Project();
+                $p = $proj->createDefault($data['user']->user_id);
+                $data['project'] = $p['data'];
 
-                //项目
-                //$_POST['user_id'] = $user_id;
-                $_POST['type'] = 1;
-                $_proj = $proj->createDefault($user_id);
-
-                $data['code']    = 10000;
-                $data['is_new'] = 'Y';
-                $data['user']    = $_user;
-                $data['project'] = $_proj['data'];
                 return $data;
             }
 
