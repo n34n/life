@@ -53,7 +53,7 @@ class RelUserProject extends ActiveRecord
     {
         $model = self::findOne(['user_id'=>$uid, 'project_id'=>$pid]);
         if($model){
-            return $model;
+            return 10000;
         }else{
             return 10111;
         }

@@ -31,9 +31,9 @@ class Upload extends UploadedFile
     /*
      * 创建实例
      */
-    public function createInstance($model, $field)
+    public function createInstance($field)
     {
-        return $this->file = UploadedFile::getInstance($model, $field);
+        return $this->file = UploadedFile::getInstanceByName($field);
     }
 
 

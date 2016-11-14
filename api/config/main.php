@@ -119,6 +119,18 @@ return [
                     ],
                 ],
 
+
+                //图片控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'v1/images',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'POST upload' => 'upload',
+                    ],
+                ],
+
+
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/user',
