@@ -48,6 +48,17 @@ class RelUserProject extends ActiveRecord
         ];
     }
 
+    //检查用户是否有权限操作项目
+    public static function checkUserHasProject($uid,$pid)
+    {
+        $model = self::findOne(['user_id'=>$uid, 'project_id'=>$pid]);
+        if($model){
+            return $model;
+        }else{
+            return 10111;
+        }
+    }
+
     //加入项目
     public function joinProject()
     {

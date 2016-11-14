@@ -2,40 +2,97 @@
 namespace api\controllers;
 
 use Yii;
-use yii\rest\ActiveController;
-use yii\web\Response;
 use yii\web\Controller;
-
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use common\models\LoginForm;
 
 /**
  * Site controller
  */
-class SiteController extends ActiveController
+class SiteController extends Controller
 {
-    public $modelClass = 'api\modules\v1\models\Goods';
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-        $behaviors = parent::behaviors();
-        $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
-        return $behaviors;
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
     }
 
-    public function actionError()
+    /**
+     * @inheritdoc
+     */
+    public function actions()
     {
-        $error = Yii::app()->errorHandler->error;
-        Yii::$app->response->statusCode=404;
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
 
-        if( $error )
-        {
-            //$this -> render( 'error', array( 'error' => $error ) );
-            $data['code'] = 404;
-            $data['error'] = $error;
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionIndex()
+    {
+        return $this->render('index');
+    }
 
-            return $data;
+    /**
+     * Login action.
+     *
+     * @return string
+     */
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
         }
 
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Logout action.
+     *
+     * @return string
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 }

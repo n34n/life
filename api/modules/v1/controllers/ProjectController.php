@@ -75,29 +75,6 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-//    public function actionUpdate($id)
-//    {
-////        $rest = \Yii\rest\yii\rest\UpdateAction::className();
-////
-//        $model = new yii\rest\UpdateAction;
-//        //$m = $model->findModel($id);
-//        $s = $this->updateScenario;
-//        //$data  = $m->run();
-//        $modelClass = $this->modelClass;
-//        //$data = $modelClass->run();
-//        //$data = $modelClass->run();
-//
-//        return $data;
-////        return $rest;
-//
-////        return [
-////            'class' => 'yii\rest\UpdateAction',
-////            'modelClass' => $this->modelClass,
-////            'checkAccess' => [$this, 'checkAccess'],
-////            'scenario' => $this->updateScenario,
-////        ];
-//    }
-
     //设置默认项目
     public function actionSetDefault()
     {

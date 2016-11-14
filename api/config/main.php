@@ -97,30 +97,28 @@ return [
                         'POST get-token' => 'get-token',
                     ],
                 ],
-                //用户登录
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'v1/login',
-                    'pluralize' => false,
-                    'extraPatterns' => [
-                        'POST get-token' => 'get-token',
-                    ],
-                ],
+
                 //项目控制
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/project',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        //'POST update'     => 'update',
                         'POST set-default' => 'set-default',
                     ],
                 ],
 
+
+                //盒子控制
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => ['v1/goods']
+                    'controller' => 'v1/box',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        //'POST set-default' => 'set-default',
+                    ],
                 ],
+
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/user',

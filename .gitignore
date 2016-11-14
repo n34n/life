@@ -17,6 +17,9 @@ nbproject
 # windows thumbnail cache
 Thumbs.db
 
+#upload files
+/uploads
+
 # composer vendor dir
 /vendor
 

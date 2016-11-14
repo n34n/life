@@ -51,7 +51,7 @@ class TokenController extends ActiveController
                 $ua = $modelClass::checkUserAccountExsit();
 
                 if($ua['code'] == 10000) {//(用户账户::UserAccount::存在)处理下方事项
-                    $data['user']  = $ua;
+                    $data['user']  = $ua['user'];
                 }else{//(用户账户::UserAccount::不存在)处理下方事项
                     $ua = new UserAccount();
                     $data['user'] = $ua->create($user['user']->user_id);

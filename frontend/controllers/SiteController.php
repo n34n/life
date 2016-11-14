@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\components\Upload;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -209,5 +210,11 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    public function actionUpload()
+    {
+        $u = new Upload();
+        $u->run();
     }
 }
