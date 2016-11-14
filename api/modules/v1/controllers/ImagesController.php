@@ -52,7 +52,7 @@ class ImagesController extends ActiveController
     public function actionUpload()
     {
         $model = new Images();
-        $data = $model->upload();
+        $data = $model->upload('box');
         return $data;
     }
 

@@ -44,7 +44,7 @@ class Images extends ActiveRecord
     }
 
 
-    public function upload()
+    public function upload($model_name='item')
     {
         //保存文件
         $f = new Upload();
@@ -58,7 +58,7 @@ class Images extends ActiveRecord
         $img_s = $f->thumb($file,'s',120,120);
 
         //图片库关联
-        $this->model     = 'box';
+        $this->model     = $model_name;
         $this->o_path    = $file['path'].$file['file'];
         $this->l_path    = $img_l;
         $this->m_path    = $img_m;
