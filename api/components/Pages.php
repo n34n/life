@@ -8,25 +8,16 @@
 
 namespace api\components;
 
-use yii;
-use yii\data\Pagination;
-
-class Pages extends Pagination
+class Pages
 {
     //public $totalCount;
 
-    public function run($totalCount)
+    public static function Pages($list)
     {
-        $pageSize = Yii::$app->params['pageSize'];
-        $pages    = new Pagination(['totalCount' => $totalCount,'pageSize' => $pageSize]);
-
-        $p['info']['current'] = $pages->page+1;
-        $p['info']['pageCount'] = $pages->pageCount;
-        $p['info']['pageSize'] = $pageSize;
-        $p['info']['totalCount'] = (int)$totalCount;
-        $p['offset'] = $pages->offset;
-        $p['limit']  = $pages->limit;
-
+        $p['total-count'] = $list->getPagination()->totalCount;
+        $p['page-size'] = $list->getPagination()->pageSize;
+        $p['page-count'] = $list->getPagination()->pageCount;
+        $p['current-page'] = $list->getPagination()->page+1;
         return $p;
     }
 

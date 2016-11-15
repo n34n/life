@@ -12,6 +12,7 @@ use yii\data\ActiveDataProvider;
 use api\models\User;
 use api\modules\v1\models\Project;
 use api\modules\v1\models\RelUserProject;
+use api\components\Pages;
 
 class BoxController extends ActiveController
 {
@@ -28,6 +29,7 @@ class BoxController extends ActiveController
         return $behaviors;
     }
 
+
     protected function verbs()
     {
         return [
@@ -36,6 +38,7 @@ class BoxController extends ActiveController
             'create' => ['POST'],
             'update' => ['PUT'],
             'delete' => ['POST'],
+            'search' => ['GET'],
         ];
     }
 
@@ -47,11 +50,42 @@ class BoxController extends ActiveController
         return $actions;
     }
 
+
+    //盒子列表
+    public function actionIndex()
+    {
+        if(!isset($_GET['project_id'])) {
+            $data['code'] = 20000;
+            return $data;
+        }else{
+            $data['code'] = RelUserProject::checkUserHasProject($this->userinfo->user_id,$_GET['project_id']);
+            if($data['code'] == 10111) {return $data;}
+        }
+
+        $model         = new Box();
+        $list          = $model->search(Yii::$app->request->queryParams);
+
+        $data['code']  = 10000;
+        $data['list']  = $list->getModels();
+        $data['pages'] = Pages::Pages($list);
+
+        return $data;
+    }
+
+
     //创建盒子
     public function actionCreate()
     {
         $model = new Box();
         $data = $model->create($this->userinfo->user_id);
+        return $data;
+    }
+
+    //创建盒子
+    public function actionUpdate($id)
+    {
+        $model = new Box();
+        $data  = $model->updateInfo($this->userinfo->user_id,$id);
         return $data;
     }
 

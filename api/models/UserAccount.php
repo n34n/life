@@ -166,6 +166,7 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
 
                     //状态为10,进入主界面
                     $data['code']           = 10000;
+                    $data['img']   = $user->access_token;
                     $data['access_token']   = $user->access_token;
 
                     $proj = new Project();

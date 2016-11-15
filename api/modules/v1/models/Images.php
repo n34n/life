@@ -44,6 +44,32 @@ class Images extends ActiveRecord
     }
 
 
+    public function fields()
+    {
+        return [
+            'img_id',
+            'model',
+            'rel_id',
+            'o_path' => function(){
+                $data = (empty($this->o_path))?'':Yii::$app->params['imgServer'].$this->o_path;
+                return $data;
+             },
+            'l_path' => function(){
+                $data = (empty($this->l_path))?'':Yii::$app->params['imgServer'].$this->l_path;
+                return $data;
+            },
+            'm_path' => function(){
+                $data = (empty($this->m_path))?'':Yii::$app->params['imgServer'].$this->m_path;
+                return $data;
+            },
+            's_path' => function(){
+                $data = (empty($this->s_path))?'':Yii::$app->params['imgServer'].$this->s_path;
+                return $data;
+            },
+        ];
+    }
+
+
     public function upload($model_name='item')
     {
         //保存文件
@@ -67,7 +93,6 @@ class Images extends ActiveRecord
 
         //返回客户端数据
         $data['code']      = 10000;
-        $data['server']    = Yii::$app->params['imgServer'];
         $data['images']  = $this;
 
         return $data;

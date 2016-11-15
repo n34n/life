@@ -4,11 +4,9 @@ namespace api\modules\v1\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
 
-use yii\web\Link;
-use yii\web\Linkable;
-use yii\helpers\Url;
 use api\modules\v1\models\Images;
 
 /**
@@ -25,8 +23,9 @@ use api\modules\v1\models\Images;
  * @property Project $project
  * @property Item[] $items
  */
-class Box extends ActiveRecord implements Linkable
+class Box extends ActiveRecord
 {
+    public $keyword;
     /**
      * @inheritdoc
      */
@@ -47,6 +46,50 @@ class Box extends ActiveRecord implements Linkable
             [['created_by', 'updated_by'], 'string', 'max' => 45],
             //[['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Project::className(), 'targetAttribute' => ['project_id' => 'project_id']],
         ];
+    }
+
+
+    public function fields()
+    {
+        return [
+            'box_id',
+            'name',
+            'created_at',
+            'created_by',
+            'img',
+        ];
+    }
+
+
+    //获取盒子列表
+    public static function getList($project_id)
+    {
+        //$condition = array('r.user_id'=>$user_id);
+        $query = self::find()->where(['project_id'=>$project_id]);
+        return $query;
+    }
+
+
+    public function search($params){
+
+        $query = $this->find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params['pageSize'],
+            ],
+        ]);
+
+        $query->where(['project_id' => $_GET['project_id']]);
+        if(isset($_GET['keyword'])){
+            $keywords = trim($_GET['keyword']);
+            $keyword_list = explode(' ',$keywords);
+            $query->andFilterWhere(['or like', 'name', $keyword_list]);
+
+        }
+
+        return $dataProvider;
     }
 
 
@@ -90,12 +133,67 @@ class Box extends ActiveRecord implements Linkable
     }
 
 
-    //生成链接
-    public function getLinks()
+    //更新盒子
+    public function updateInfo($user_id,$id)
     {
-        return [
-            Link::REL_SELF => Url::to(['/v1/box/view', 'box_id' => $this->box_id], true),
-        ];
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$params['project_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //验证资源是否存在
+        $model = $this->findOne(['box_id'=>$id,'project_id'=>$params['project_id']]);
+        if(!$model){
+            $data['code'] = 50000;
+            return $data;
+        }
+
+        //保存数据
+        foreach ($params as $key=>$val){
+            if($model->hasProperty($key)){$model->$key = $val;}
+        }
+
+
+
+//        //检查用户与项目是否匹配
+//        $rel = RelUserProject::checkUserHasProject($user_id,$_POST['project_id']);
+//        if($rel == 10111){
+//            $data['code']  = $rel;
+//            return $data;
+//        }
+//
+//        //验证令牌
+//        if(!isset($user_id,$id)){
+//            $data['code'] = 401;
+//            return $data;
+//        }
+
+
+        /*
+         * 项目类型变化时需做如下处理
+         * 单人转多人无需处理
+         * 多人转单人则需要将成员踢出项目
+         */
+
+        $data['code'] = $model->save()?10000:10001;
+        return $data;
+    }
+
+
+    //获取图片
+    public function getImg()
+    {
+        return $this->hasOne(Images::className(), ['rel_id' => 'box_id'])->where(['model'=>'box']);
     }
 
 //    /**

@@ -7,9 +7,9 @@ use yii\db\ActiveRecord;
 use api\modules\v1\models\RelUserProject;
 
 use yii\web\BadRequestHttpException;
-use yii\web\Link;
-use yii\web\Linkable;
-use yii\helpers\Url;
+//use yii\web\Link;
+//use yii\web\Linkable;
+//use yii\helpers\Url;
 
 
 /**
@@ -25,7 +25,7 @@ use yii\helpers\Url;
  *
  * @property Box[] $boxes
  */
-class Project extends ActiveRecord implements Linkable
+class Project extends ActiveRecord //implements Linkable
 {
     /**
      * @inheritdoc
@@ -57,7 +57,7 @@ class Project extends ActiveRecord implements Linkable
             'type',
             'created_at',
             'created_by',
-            'extra',
+            'rel',
         ];
     }
 
@@ -196,15 +196,15 @@ class Project extends ActiveRecord implements Linkable
     }
 
     //生成链接
-    public function getLinks()
+/*    public function getLinks()
     {
         return [
             Link::REL_SELF => Url::to(['/v1/project/view', 'project_id' => $this->project_id], true),
         ];
-    }
+    }*/
 
     //扩展字段
-    public function getExtra()
+    public function getRel()
     {
         return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id']);
     }

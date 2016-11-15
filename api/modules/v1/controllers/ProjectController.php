@@ -10,7 +10,7 @@ use yii\filters\auth\QueryParamAuth;
 use yii\data\ActiveDataProvider;
 use api\modules\v1\models\Project;
 use api\models\User;
-//use api\components\Pages;
+use api\components\Pages;
 
 class ProjectController extends ActiveController
 {
@@ -53,10 +53,16 @@ class ProjectController extends ActiveController
         $modelClass = $this->modelClass;
         $query      = $modelClass::getList($this->userinfo->user_id);
 
-        return new ActiveDataProvider([
+        $list = new ActiveDataProvider([
             'query' => $query,
             'pagination' => ['pageSize'=>Yii::$app->params['pageSize']]
         ]);
+
+        $data['code']  = 10000;
+        $data['list']  = $list->getModels();
+        $data['pages'] = Pages::Pages($list);
+
+        return $data;
     }
 
     //创建项目

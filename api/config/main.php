@@ -32,18 +32,6 @@ return [
                 if($response->data !== null){
                     $code = Yii::$app->response->statusCode;
 
-                    //头部处理
-                    $header = Yii::$app->response->headers->toArray();
-                    if(!empty($header['x-pagination-total-count'])){
-                        //print_r($header['x-pagination-total-count']);
-                        $head['total-count'] = $header['x-pagination-total-count'][0];
-                        $head['page-size'] = $header['x-pagination-per-page'][0];
-                        $head['page-count'] = $header['x-pagination-page-count'][0];
-                        $head['current-page'] = $header['x-pagination-current-page'][0];
-                    }else{
-                        $head = '';
-                    }
-
                     //代码信息
                     if(isset($response->data['code'])){
                         $response->data['message'] = Yii::$app->params['codes'][$response->data['code']];
@@ -53,7 +41,6 @@ return [
                         'success' => $response->isSuccessful,
                         'status' => $code,//$response->data['code'],
                         'text' => Yii::$app->params['codes'][$code],
-                        'header' => $head,
                         'data' => $response->data,//['data'],
                     ];
                 }
@@ -115,7 +102,7 @@ return [
                     'controller' => 'v1/box',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        //'POST set-default' => 'set-default',
+                        'GET search' => 'search',
                     ],
                 ],
 
