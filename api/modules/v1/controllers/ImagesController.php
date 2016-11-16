@@ -51,24 +51,10 @@ class ImagesController extends ActiveController
 
     public function actionUpload()
     {
-/*        $model = new Images();
+        $model = new Images();
         $model_name = (isset($_POST['model_name']))?$_POST['model_name']:'item';
         $data = $model->upload($model_name);
-        return $data;*/
-        $file_data = file_get_contents ( 'php://input' ) ? file_get_contents ( 'php://input' ) : gzuncompress ( $GLOBALS ['HTTP_RAW_POST_DATA'] );
-
-        echo '================================';
-        echo 'file data:';
-        print_r($file_data);
-        echo '================================';
-        echo '_FILES:';
-        print_r($_FILES);
-
-        $data['code'] = 10000;
-        $data['file_data'] = $file_data;
-        $data['files'] = $_FILES;
         return $data;
-
     }
 
 
