@@ -21,9 +21,9 @@ return [
     'components' => [
         'request' => [
  //           'csrfParam' => '_csrf-api',
-//            'parsers' => [
-//                'application/json' => 'yii\web\JsonParser',
-//            ]
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'response' => [
             'class' => 'yii\web\Response',
