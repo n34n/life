@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
 
 use api\modules\v1\models\Images;
+use api\modules\v1\models\Log;
 
 /**
  * This is the model class for table "box".
@@ -126,9 +127,12 @@ class Box extends ActiveRecord
             $img->save();
         }
 
+        //日志
+        $log = new Log();
+        $log->addLog($_POST['project_id'],$this->box_id,$uid,'box','create',$this->name,$_POST['created_by']);
+
         $data['code'] = 10000;
         $data['info'] = $this;
-
         return $data;
     }
 
@@ -146,7 +150,7 @@ class Box extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$params['project_id'])){
+        if(!isset($user_id,$id,$params['project_id'])){
             $data['code']  = 20000;
             return $data;
         }
@@ -162,30 +166,21 @@ class Box extends ActiveRecord
         foreach ($params as $key=>$val){
             if($model->hasProperty($key)){$model->$key = $val;}
         }
+        $model->save();
 
+        //保存图片
+        if(isset($params['img_id'])){
+            $img = Images::findOne($params['img_id']);
+            $img->img_id = $params['img_id'];
+            $img->rel_id = $id;
+            $img->save();
+        }
 
+        //日志
+        $log = new Log();
+        $log->addLog($params['project_id'],$id,$user_id,'box','update',$model->name,$params['updated_by']);
 
-//        //检查用户与项目是否匹配
-//        $rel = RelUserProject::checkUserHasProject($user_id,$_POST['project_id']);
-//        if($rel == 10111){
-//            $data['code']  = $rel;
-//            return $data;
-//        }
-//
-//        //验证令牌
-//        if(!isset($user_id,$id)){
-//            $data['code'] = 401;
-//            return $data;
-//        }
-
-
-        /*
-         * 项目类型变化时需做如下处理
-         * 单人转多人无需处理
-         * 多人转单人则需要将成员踢出项目
-         */
-
-        $data['code'] = $model->save()?10000:10001;
+        $data['code'] = 10000;
         return $data;
     }
 
