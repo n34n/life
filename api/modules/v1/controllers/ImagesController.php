@@ -64,6 +64,11 @@ class ImagesController extends ActiveController
         echo '_FILES:';
         print_r($_FILES);
 
+        $data['code'] = 10000;
+        $data['file_data'] = $file_data;
+        $data['files'] = $_FILES;
+        return $data;
+
     }
 
 
