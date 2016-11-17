@@ -106,6 +106,15 @@ return [
                     ],
                 ],
 
+                //物品控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'v1/item',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET search' => 'search',
+                    ],
+                ],
 
                 //图片控制
                 [

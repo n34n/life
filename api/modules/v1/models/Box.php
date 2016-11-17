@@ -122,6 +122,7 @@ class Box extends ActiveRecord
         //保存图片
         if(isset($_POST['img_id'])){
             $img = Images::findOne($_POST['img_id']);
+            $img->model  = 'box';
             $img->img_id = $_POST['img_id'];
             $img->rel_id = $this->box_id;
             $img->save();
@@ -150,7 +151,7 @@ class Box extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['project_id'])){
+        if(!isset($user_id,$id,$params['project_id'],$params['updated_by'])){
             $data['code']  = 20000;
             return $data;
         }
@@ -171,6 +172,7 @@ class Box extends ActiveRecord
         //保存图片
         if(isset($params['img_id'])){
             $img = Images::findOne($params['img_id']);
+            $img->model  = 'box';
             $img->img_id = $params['img_id'];
             $img->rel_id = $id;
             $img->save();

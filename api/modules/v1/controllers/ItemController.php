@@ -2,7 +2,6 @@
 
 namespace api\modules\v1\controllers;
 
-use api\modules\v1\models\Box;
 use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
@@ -10,11 +9,13 @@ use yii\filters\auth\QueryParamAuth;
 use yii\data\ActiveDataProvider;
 
 use api\models\User;
-use api\modules\v1\models\Project;
 use api\modules\v1\models\RelUserProject;
+use api\modules\v1\models\Project;
+use api\modules\v1\models\Box;
+use api\modules\v1\models\Item;
 use api\components\Pages;
 
-class BoxController extends ActiveController
+class ItemController extends ActiveController
 {
     public $modelClass = 'api\modules\v1\models\Box';
 
@@ -50,8 +51,7 @@ class BoxController extends ActiveController
         return $actions;
     }
 
-
-    //盒子列表
+    //物品列表
     public function actionIndex()
     {
         if(!isset($_GET['project_id'])) {
@@ -62,7 +62,7 @@ class BoxController extends ActiveController
             if($data['code'] == 10111) {return $data;}
         }
 
-        $model         = new Box();
+        $model         = new Item();
         $list          = $model->search(Yii::$app->request->queryParams);
 
         $data['code']  = 10000;
@@ -72,21 +72,19 @@ class BoxController extends ActiveController
         return $data;
     }
 
-
-    //创建盒子
+    //创建物品
     public function actionCreate()
     {
-        $model = new Box();
+        $model = new Item();
         $data = $model->create($this->userinfo->user_id);
         return $data;
     }
 
-    //更新盒子
+    //更新物品
     public function actionUpdate($id)
     {
-        $model = new Box();
+        $model = new Item();
         $data  = $model->updateInfo($this->userinfo->user_id,$id);
         return $data;
     }
-
 }

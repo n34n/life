@@ -34,7 +34,7 @@ class ImagesController extends ActiveController
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT'],
-            'delete' => ['POST'],
+            'delete' => ['DELETE'],
             'upload' => ['POST'],
         ];
     }
@@ -53,7 +53,16 @@ class ImagesController extends ActiveController
     {
         $model = new Images();
         $model_name = (isset($_POST['model_name']))?$_POST['model_name']:'item';
-        $data = $model->upload($model_name);
+        $data = $model->upload($model_name,$this->userinfo->user_id);
+        return $data;
+    }
+
+    public function actionDelete($id)
+    {
+        $model = new Images();
+        $params = Yii::$app->request->bodyParams;
+        $model_name = (isset($params['model_name']))?$params['model_name']:'item';
+        $data = $model->remove($model_name,$id,$this->userinfo->user_id);
         return $data;
     }
 
