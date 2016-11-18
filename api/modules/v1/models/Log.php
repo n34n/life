@@ -47,13 +47,34 @@ class Log extends ActiveRecord
     public function fields()
     {
         return [
-            'id' => $this->rel_id,
+            'id',
+            'parent_id',
+            'rel_id',
             'model',
             'action',
             'message',
             'created_by',
             'created_at',
         ];
+    }
+
+
+    public function getList(){
+
+        $query = $this->find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params['pageSize'],
+            ],
+        ]);
+
+        $query->where(['parent_id' => $_GET['parent_id']]);
+
+        $query->orderBy("created_at DESC");
+
+        return $dataProvider;
     }
 
 
@@ -66,7 +87,6 @@ class Log extends ActiveRecord
         $this->action       = $action;
         $this->message      = $message;
         $this->created_by   = $created_by;
-        $this->save();
-
+        return $this->save();
     }
 }

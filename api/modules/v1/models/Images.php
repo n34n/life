@@ -159,7 +159,7 @@ class Images extends ActiveRecord
         }
 
         //删除文件
-        $this->removeFile($query);
+        self::removeFile($query);
         $query->delete();
 
         //更新关联记录
@@ -186,8 +186,14 @@ class Images extends ActiveRecord
 
     }
 
+    public static function removeImg($id)
+    {
+        $db = self::findOne($id);
+        self::removeFile($db);
+        $db->delete();
+    }
 
-    protected function removeFile($db)
+    protected static function removeFile($db)
     {
         $path = Yii::$app->params['UploadPath'];
         if(file_exists($path.$db->o_path)){unlink($path.$db->o_path);}

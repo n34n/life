@@ -28,6 +28,7 @@ use api\modules\v1\models\Log;
  */
 class Item extends ActiveRecord
 {
+    public $move_error=array();
     /**
      * @inheritdoc
      */
@@ -57,6 +58,7 @@ class Item extends ActiveRecord
             'box_id',
             'project_id',
             'name',
+            'user_id',
             'created_at',
             'created_by',
             'updated_at',
@@ -122,7 +124,6 @@ class Item extends ActiveRecord
             return $data;
         }
 
-
         //准备数据,保存数据
         $post = Yii::$app->request->post();
         foreach ($post as $key=>$val){
@@ -130,6 +131,7 @@ class Item extends ActiveRecord
                 $this->$key = $val;
             }
         }
+        $this->user_id = $uid;
         $this->updated_by = $this->created_by;
         $this->save();
 
@@ -148,7 +150,8 @@ class Item extends ActiveRecord
         foreach ($tags as $_tag){
             $tag->isNewRecord = true;
             $tag->item_id = $this->item_id;
-            $tag->tag = $_tag;
+            $tag->tag_id = $_tag['tag_id'];
+            $tag->tag = $_tag['tag'];
             $tag->save();
         }
 
@@ -176,7 +179,7 @@ class Item extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['edit_type'],$params['project_id'],$params['box_id'],$params['updated_by'])){
+        if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$params['updated_by'])){
             $data['code']  = 20000;
             return $data;
         }
@@ -188,24 +191,11 @@ class Item extends ActiveRecord
             return $data;
         }
 
-        switch ($params['edit_type'])
-        {
-            case 'name'://更新名称
-                $data = $this->updateName($params,$model,$id);
-                if($data['code'] != 10000){
-                    return $data;
-                }
-                break;
-            case 'image':
-                break;
-            case 'tag':
-                break;
-            default:
-                $data['code'] = 20001;
-                return $data;
-                break;
+        //更新名称
+        $data = $this->updateName($params,$model,$id);
+        if($data['code'] != 10000){
+            return $data;
         }
-
 
         //日志
         $log = new Log();
@@ -223,7 +213,7 @@ class Item extends ActiveRecord
             $data['code'] = 50100;
             return $data;
         }else{
-            $message = '原名称['.$model->name.'],修改为['.$params['name'].']';
+            $message = '名称['.$model->name.'->'.$params['name'].']';
         }
 
         $model->item_id = $id;
@@ -235,6 +225,124 @@ class Item extends ActiveRecord
         return $data;
     }
 
+
+    //删除物品
+    public function remove($user_id,$id)
+    {
+        //验证方法
+        if(!Yii::$app->request->isDelete)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$params['updated_by'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //验证资源是否存在
+        $query = self::findOne(['item_id'=>$id,'box_id'=>$params['box_id'],'project_id'=>$params['project_id']]);
+        if(empty($query)){
+            //无数据
+            $data['code'] = 50000;
+            return $data;
+        }
+
+        $model = $query->toArray();
+
+        //删除图片资源
+        if(isset($model['img']['img_id']) && $model['img']['img_id']!=''){
+            Images::removeImg($model['img']['img_id']);
+        }
+
+        //删除标签
+        Tag::deleteAll(['item_id'=>$id]);
+
+        //更新盒子修改时间
+        Box::updateAll(['updated_by'=>$params['updated_by']],'box_id=:id',[':id'=>$params['box_id']]);
+
+        //删除物品记录
+        $query->delete();
+
+        //日志
+        $log = new Log();
+        $log->addLog($params['box_id'],$id,$user_id,'item','delete',$model['name'],$params['updated_by']);
+
+        $data['code'] = 10000;
+        return $data;
+
+    }
+
+
+    //移动物品
+    public function move($user_id)
+    {
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$params['items'],$params['project_id'],$params['old_box_id'],$params['new_box_id'],$params['updated_by'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        $old_box = Box::findOne(['box_id'=>$params['old_box_id'],'project_id'=>$params['project_id']]);
+        $new_box = Box::findOne(['box_id'=>$params['new_box_id'],'project_id'=>$params['project_id']]);
+
+
+        if(!$old_box || !$new_box){
+            $data['code']  = 50001;
+            return $data;
+        }
+
+        foreach ($params['items'] as $id){
+            $this->moveOne($user_id,$id,$old_box,$new_box,$params['updated_by']);
+        }
+
+        $data['code'] = 10000;
+
+        if(!empty($this->move_error)){
+            $data['error'] = $this->move_error;
+        }
+
+        return $data;
+    }
+
+
+    //移动单个物品
+    public function moveOne($user_id,$id,$old_box,$new_box,$updated_by)
+    {
+        //验证移动物品前数据
+        $model = self::findOne(['item_id'=>$id, 'box_id'=>$old_box->box_id]);
+        if(empty($model)){
+            $message = '#'.$id.'从['.$old_box->name.']盒子移出失败';
+            $this->move_error[] = $message;
+            $log = new Log();
+            $log->addLog($old_box->box_id,$id,$user_id,'item','move-out',$message,$updated_by);
+            return;
+        }
+
+        //移动物品更新数据
+        $model->box_id      = $new_box->box_id;
+        $model->updated_by  = $updated_by;
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $log->addLog($old_box->box_id,$id,$user_id,'item','move-out',$old_box->name,$updated_by);
+        $log = new Log();
+        $log->addLog($new_box->box_id,$id,$user_id,'item','move-in',$new_box->name,$updated_by);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -250,9 +358,7 @@ class Item extends ActiveRecord
         return $this->hasOne(Images::className(), ['rel_id' => 'item_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+
     public function getTags()
     {
         return $this->hasMany(Tag::className(), ['item_id' => 'item_id']);

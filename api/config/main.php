@@ -113,7 +113,15 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'GET search' => 'search',
+                        'PUT move'  => 'move',
                     ],
+                ],
+
+                //标签,日志控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['v1/tag','v1/log'],
+                    'pluralize' => false,
                 ],
 
                 //图片控制

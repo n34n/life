@@ -55,6 +55,7 @@ class Box extends ActiveRecord
         return [
             'box_id',
             'name',
+            'user_id',
             'created_at',
             'created_by',
             'img',
@@ -117,6 +118,7 @@ class Box extends ActiveRecord
                 $this->$key = $val;
             }
         }
+        $this->user_id = $uid;
         $this->save();
 
         //保存图片

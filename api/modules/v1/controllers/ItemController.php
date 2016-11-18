@@ -38,7 +38,8 @@ class ItemController extends ActiveController
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT'],
-            'delete' => ['POST'],
+            'move' =>   ['PUT'],
+            'delete' => ['DELETE'],
             'search' => ['GET'],
         ];
     }
@@ -47,7 +48,7 @@ class ItemController extends ActiveController
     {
         $actions = parent::actions();
         // 注销系统自带的实现方法
-        unset($actions['index'], $actions['create'], $actions['update'], $actions['delete']);
+        unset($actions['index'], $actions['view'], $actions['create'], $actions['update'], $actions['delete']);
         return $actions;
     }
 
@@ -72,6 +73,19 @@ class ItemController extends ActiveController
         return $data;
     }
 
+    //查看物品
+    public function actionView($id)
+    {
+        $info          = Item::findOne($id);
+        if(empty($info)){
+            $data['code'] = 50000;
+            return $data;
+        }
+        $data['code']  = 10000;
+        $data['info']  = $info;
+        return $data;
+    }
+
     //创建物品
     public function actionCreate()
     {
@@ -80,11 +94,27 @@ class ItemController extends ActiveController
         return $data;
     }
 
-    //更新物品
+    //编辑物品
     public function actionUpdate($id)
     {
         $model = new Item();
         $data  = $model->updateInfo($this->userinfo->user_id,$id);
+        return $data;
+    }
+
+    //移动物品
+    public function actionMove()
+    {
+        $model = new Item();
+        $data  = $model->move($this->userinfo->user_id);
+        return $data;
+    }
+
+    //删除物品
+    public function actionDelete($id)
+    {
+        $model = new Item();
+        $data  = $model->remove($this->userinfo->user_id,$id);
         return $data;
     }
 }

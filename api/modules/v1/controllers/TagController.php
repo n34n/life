@@ -7,12 +7,11 @@ use yii\rest\ActiveController;
 use yii\web\Response;
 use yii\filters\auth\QueryParamAuth;
 use api\models\User;
-use api\modules\v1\models\Log;
-use api\components\Pages;
+use api\modules\v1\models\Tag;
 
-class LogController extends ActiveController
+class TagController extends ActiveController
 {
-    public $modelClass = 'api\modules\v1\models\Log';
+    public $modelClass = 'api\modules\v1\models\Tag';
 
     public $userinfo;
 
@@ -29,9 +28,12 @@ class LogController extends ActiveController
     protected function verbs()
     {
         return [
-            'index'  => ['GET', 'HEAD'],
+            'index' => ['GET', 'HEAD'],
+            'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
+            'update' => ['PUT'],
             'delete' => ['DELETE'],
+            'upload' => ['POST'],
         ];
     }
 
@@ -44,21 +46,11 @@ class LogController extends ActiveController
         return $actions;
     }
 
-    //物品列表
-    public function actionIndex()
+
+    public function actionUpdate()
     {
-        if(!isset($_GET['parent_id'])){
-            $data['code'] = 20000;
-            return $data;
-        }
-
-        $model         = new Log();
-        $list          = $model->getList();
-
-        $data['code']  = 10000;
-        $data['list']  = $list->getModels();
-        $data['pages'] = Pages::Pages($list);
-
+        $model = new Tag();
+        $data = $model->updateInfo($this->userinfo->user_id);
         return $data;
     }
 }
