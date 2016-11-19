@@ -37,8 +37,7 @@ class BoxController extends ActiveController
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT'],
-            'delete' => ['POST'],
-            'search' => ['GET'],
+            'delete' => ['DELETE'],
         ];
     }
 
@@ -81,11 +80,21 @@ class BoxController extends ActiveController
         return $data;
     }
 
+
     //更新盒子
     public function actionUpdate($id)
     {
         $model = new Box();
         $data  = $model->updateInfo($this->userinfo->user_id,$id);
+        return $data;
+    }
+
+
+    //删除盒子
+    public function actionDelete($id)
+    {
+        $model = new Box();
+        $data  = $model->remove($this->userinfo->user_id,$id);
         return $data;
     }
 

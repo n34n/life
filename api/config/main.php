@@ -101,9 +101,6 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'v1/box',
                     'pluralize' => false,
-                    'extraPatterns' => [
-                        'GET search' => 'search',
-                    ],
                 ],
 
                 //物品控制
@@ -112,7 +109,6 @@ return [
                     'controller' => 'v1/item',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET search' => 'search',
                         'PUT move'  => 'move',
                     ],
                 ],

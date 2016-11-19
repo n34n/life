@@ -40,7 +40,6 @@ class ItemController extends ActiveController
             'update' => ['PUT'],
             'move' =>   ['PUT'],
             'delete' => ['DELETE'],
-            'search' => ['GET'],
         ];
     }
 

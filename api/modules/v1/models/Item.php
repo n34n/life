@@ -218,6 +218,7 @@ class Item extends ActiveRecord
 
         $model->item_id = $id;
         $model->name = $params['name'];
+        $model->updated_by = $params['updated_by'];
         $model->save();
 
         $data['code']    = 10000;
@@ -355,7 +356,7 @@ class Item extends ActiveRecord
 
     public function getImg()
     {
-        return $this->hasOne(Images::className(), ['rel_id' => 'item_id']);
+        return $this->hasOne(Images::className(), ['rel_id' => 'item_id'])->where(['model'=>'item']);
     }
 
 

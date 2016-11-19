@@ -165,19 +165,10 @@ class Box extends ActiveRecord
             return $data;
         }
 
-        //保存数据
-        foreach ($params as $key=>$val){
-            if($model->hasProperty($key)){$model->$key = $val;}
-        }
-        $model->save();
-
-        //保存图片
-        if(isset($params['img_id'])){
-            $img = Images::findOne($params['img_id']);
-            $img->model  = 'box';
-            $img->img_id = $params['img_id'];
-            $img->rel_id = $id;
-            $img->save();
+        //更新名称
+        $data = $this->updateName($params,$model,$id);
+        if($data['code'] != 10000){
+            return $data;
         }
 
         //日志
@@ -186,6 +177,82 @@ class Box extends ActiveRecord
 
         $data['code'] = 10000;
         return $data;
+    }
+
+
+    //更新名称
+    protected function updateName($params,$model,$id)
+    {
+        if($params['name'] == $model->name){
+            $data['code'] = 50100;
+            return $data;
+        }else{
+            $message = '名称['.$model->name.'->'.$params['name'].']';
+        }
+
+        $model->box_id = $id;
+        $model->name = $params['name'];
+        $model->updated_by = $params['updated_by'];
+        $model->save();
+
+        $data['code']    = 10000;
+        $data['message'] = $message;
+        return $data;
+    }
+
+
+    //删除盒子
+    public function remove($user_id,$id)
+    {
+        //验证方法
+        if(!Yii::$app->request->isDelete)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$id,$params['box_id'],$params['project_id'],$params['updated_by'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //验证资源是否存在
+        $query = self::findOne(['box_id'=>$id,'project_id'=>$params['project_id']]);
+        if(empty($query)){
+            //无数据
+            $data['code'] = 50000;
+            return $data;
+        }
+
+        //删除物品及相关
+        $items = Item::findAll(['box_id'=>$id]);
+        if(!empty($items)){
+            $params['box_id'] = $id;
+            foreach ($items as $item){
+                $obj = new Item();
+                $obj->remove($user_id,$item->item_id);
+            }
+        }
+
+        //删除图片资源
+        $model = $query->toArray();
+        if(isset($model['img']['img_id']) && $model['img']['img_id']!=''){
+            Images::removeImg($model['img']['img_id']);
+        }
+
+        //删除盒子记录
+        $query->delete();
+
+        //日志
+        $log = new Log();
+        $log->addLog($params['project_id'],$id,$user_id,'box','delete',$model['name'],$params['updated_by']);
+
+        $data['code'] = 10000;
+        return $data;
+
     }
 
 
