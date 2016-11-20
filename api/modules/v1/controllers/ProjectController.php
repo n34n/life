@@ -98,4 +98,12 @@ class ProjectController extends ActiveController
         }
     }
 
+    //编辑项目
+    public function actionDelete($id)
+    {
+        $model = new Project();
+        $data  = $model->remove($this->userinfo->user_id,$id);
+        return $data;
+    }
+
 }

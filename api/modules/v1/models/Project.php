@@ -91,8 +91,6 @@ class Project extends ActiveRecord //implements Linkable
 
         $query->orderBy("updated_at DESC");
 
-
-
         return $dataProvider;
     }
 
@@ -146,11 +144,13 @@ class Project extends ActiveRecord //implements Linkable
         {
             $data['code'] = 400;
             return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
         }
 
-        //验证令牌
-        if(!isset($user_id,$id)){
-            $data['code'] = 401;
+        //检查参数
+        if(!isset($user_id,$id,$params['updated_by'])){
+            $data['code']  = 20000;
             return $data;
         }
 
@@ -161,19 +161,93 @@ class Project extends ActiveRecord //implements Linkable
             return $data;
         }
 
-        //保存数据
-        $d = Yii::$app->request->bodyParams;
-        foreach ($d as $key=>$val){
-            if($model->hasProperty($key)){$model->$key = $val;}
+        //验证权限
+        $model = RelUserProject::findOne(['project_id'=>$id,'user_id'=>$user_id]);
+        if($model->is_manager != 1){
+            $data['code'] = 10111;
+            return $data;
         }
 
-        /*
-         * 项目类型变化时需做如下处理
-         * 单人转多人无需处理
-         * 多人转单人则需要将成员踢出项目
-         */
+        //更新名称
+        if(isset($params['name'])){
+            $data = $this->updateName($user_id,$id,$params,$model);
+            if($data['code'] != 10000){
+                return $data;
+            }
+        }
 
-        $data['code'] = $model->save()?10000:10001;
+        //更新类型
+        if(isset($params['type'])){
+            $data = $this->updateType($user_id,$id,$params,$model);
+            if($data['code'] != 10000){
+                return $data;
+            }
+        }
+
+        $data['code'] = 10000;
+        return $data;
+    }
+
+
+    //更新名称
+    protected function updateName($user_id,$id,$params,$model)
+    {
+        if($params['name'] == $model->name){
+            $data['code'] = 50100;
+            return $data;
+        }else{
+            $message = '名称['.$model->name.'->'.$params['name'].']';
+        }
+
+        $model->project_id = $id;
+        $model->name = $params['name'];
+        $model->updated_by = $params['updated_by'];
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $log->addLog($params['project_id'],0,$user_id,'project','update-name',$message,$params['updated_by']);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
+
+    //更新项目类型
+    protected function updateType($user_id,$id,$params,$model)
+    {
+        if($params['type'] == $model->type){
+            $data['code'] = 50100;
+            return $data;
+        }
+
+        switch ($params['type'])
+        {
+            case 1:
+                //将其他用户踢出项目
+                RelUserProject::deleteAll(['project_id'=>$id,'is_manager'=>0]);
+                $message = "从多人项目转成单人项目";
+                break;
+            case 2:
+                $message = "从单人项目转成多人项目";
+                break;
+            default:
+                $data['code'] = 50100;
+                return $data;
+                break;
+        }
+
+        //更新项目类型
+        $model->project_id = $id;
+        $model->type = $params['type'];
+        $model->updated_by = $params['updated_by'];
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $log->addLog($params['project_id'],0,$user_id,'project','update-type',$message,$params['updated_by']);
+
+        $data['code']    = 10000;
         return $data;
     }
 

@@ -24,7 +24,6 @@ class RelUserProject extends ActiveRecord
         return 'rel_user_project';
     }
 
-
     public function fields()
     {
         return [
@@ -32,7 +31,6 @@ class RelUserProject extends ActiveRecord
             'project_id',
             'is_default',
             'is_manager',
-            //'extra',
         ];
     }
 
@@ -58,13 +56,7 @@ class RelUserProject extends ActiveRecord
             return 10111;
         }
     }
-
-    //加入项目
-    public function joinProject()
-    {
-
-    }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
