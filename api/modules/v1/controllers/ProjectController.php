@@ -2,12 +2,10 @@
 
 namespace api\modules\v1\controllers;
 
-use api\modules\v1\models\RelUserProject;
 use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use yii\filters\auth\QueryParamAuth;
-use yii\data\ActiveDataProvider;
 use api\modules\v1\models\Project;
 use api\models\User;
 use api\components\Pages;
@@ -34,7 +32,7 @@ class ProjectController extends ActiveController
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT'],
-            'delete' => ['POST'],
+            'delete' => ['DELETE'],
         ];
     }
 
@@ -50,13 +48,18 @@ class ProjectController extends ActiveController
     //项目列表
     public function actionIndex()
     {
-        $modelClass = $this->modelClass;
-        $query      = $modelClass::getList($this->userinfo->user_id);
+        if(!isset($_GET['user_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+        
+        if($this->userinfo->user_id!=$_GET['user_id']){
+            $data['code']  = 30001;
+            return $data;
+        }
 
-        $list = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => ['pageSize'=>Yii::$app->params['pageSize']]
-        ]);
+        $model         = new Project();
+        $list          = $model->search($this->userinfo->user_id);
 
         $data['code']  = 10000;
         $data['list']  = $list->getModels();

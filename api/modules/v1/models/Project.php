@@ -4,6 +4,7 @@ namespace api\modules\v1\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
 
 use yii\web\BadRequestHttpException;
@@ -69,7 +70,30 @@ class Project extends ActiveRecord //implements Linkable
         $query = self::find()->from(['p'=>'project'])
             ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
             ->where($condition);
+
         return $query;
+    }
+
+
+    public function search($user_id){
+
+        $query = $this->find();
+        $query->joinWith(['rel']);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params['pageSize'],
+            ],
+        ]);
+
+        $query->where(['user_id' => $user_id]);
+
+        $query->orderBy("updated_at DESC");
+
+
+
+        return $dataProvider;
     }
 
 
@@ -203,9 +227,10 @@ class Project extends ActiveRecord //implements Linkable
         ];
     }*/
 
+
     //扩展字段
     public function getRel()
     {
-        return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id']);
+        return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id'])->where(['user_id'=>$_GET['user_id']]);
     }
 }

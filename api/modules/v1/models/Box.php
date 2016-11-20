@@ -91,6 +91,8 @@ class Box extends ActiveRecord
 
         }
 
+        $query->orderBy("updated_at DESC");
+
         return $dataProvider;
     }
 
