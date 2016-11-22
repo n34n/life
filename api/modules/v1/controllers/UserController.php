@@ -56,7 +56,7 @@ class UserController extends ActiveController
     public function actionUpdate()
     {
         $model = new User();
-        $data  = $model->updateInfo($this->userinfo->user_id);
+        $data  = $model->updateInfo($this->userinfo);
         return $data;
     }
 

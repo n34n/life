@@ -58,7 +58,7 @@ class User extends ActiveRecord implements IdentityInterface {
     }
 
 
-    public function updateInfo($user_id)
+    public function updateInfo($userinfo)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -69,6 +69,15 @@ class User extends ActiveRecord implements IdentityInterface {
             $params = Yii::$app->request->bodyParams;
         }
 
+        //检查参数
+        if(isset($params['nickname']) || isset($params['tags'])) {
+            $user_id = $userinfo->user_id;
+        }else{
+            $data['code'] = 20000;
+            return $data;
+        }
+
+        //检查数据是否存在
         $model = $this->findOne(['user_id'=>$user_id]);
         if(!$model){
             $data['code'] = 50000;
@@ -80,6 +89,11 @@ class User extends ActiveRecord implements IdentityInterface {
             $data = $this->updateNickname($user_id,$params,$model);
         }
 
+        //更新标签
+        if(isset($params['tags'])){
+            $data = $this->updateTags($userinfo,$params,$model);
+        }
+
         $data['code'] = 10000;
         return $data;
     }
@@ -89,21 +103,35 @@ class User extends ActiveRecord implements IdentityInterface {
     protected function updateNickname($user_id,$params,$model)
     {
         $nickname = $this->getNickname($model);
-
         if(isset($params['type']) && $params['type']=='update') {
             $model->nickname = $params['nickname'];
         }else{
             $model->_nickname = $params['nickname'];
         }
 
-        $message = '名称['.$nickname.'->'.$params['nickname'].']';
-
         $model->user_id = $user_id;
-        //$model->nickname = $params['nickname'];
         $model->save();
 
         //日志
         $log = new Log();
+        $message = '名称['.$nickname.'->'.$params['nickname'].']';
+        $log->addLog($user_id,0,$user_id,'user','update',$message,$nickname);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
+    //更新标签
+    protected function updateTags($userinfo,$params,$model)
+    {
+        $nickname = $this->getNickname($userinfo);
+        $model->user_id = $user_id = $userinfo->user_id;
+        $model->tag_data= $params['tags'];
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $message = '标签更新';
         $log->addLog($user_id,0,$user_id,'user','update',$message,$nickname);
 
         $data['code']    = 10000;
