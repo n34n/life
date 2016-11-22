@@ -4,6 +4,8 @@ use api\modules\v1\models\Project;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use api\models\User;
+use api\modules\v1\models\Images;
 
 class UserAccount extends ActiveRecord implements IdentityInterface {
     /**
@@ -15,6 +17,18 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         return 'user_account';
     }
 
+
+    public function fields()
+    {
+        return [
+            'user_id',
+            'access_token',
+            'account',
+            'device',
+            'type',
+            'info',
+        ];
+    }
     /**
      * Finds an identity by the given ID.
      * @param string|integer $id the ID to be looked for
@@ -226,5 +240,14 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
         $data['code'] = ($sign == $_sign)?10000:30000;
         return $data;
     }
+
+
+    //获取用户信息
+    public function getInfo()
+    {
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
+    }
+
+
 
 }

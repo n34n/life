@@ -36,6 +36,7 @@ class ImagesController extends ActiveController
             'update' => ['PUT'],
             'delete' => ['DELETE'],
             'upload' => ['POST'],
+            'upload-avatar' => ['POST'],
         ];
     }
 
@@ -56,6 +57,15 @@ class ImagesController extends ActiveController
         $data = $model->upload($model_name,$this->userinfo->user_id);
         return $data;
     }
+
+
+    public function actionUploadAvatar()
+    {
+        $model = new Images();
+        $data = $model->uploadAvatar($this->userinfo->user_id);
+        return $data;
+    }
+
 
     public function actionDelete($id)
     {

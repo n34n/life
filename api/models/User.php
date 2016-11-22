@@ -1,5 +1,6 @@
 <?php
 namespace api\models;
+use api\modules\v1\models\Images;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -16,6 +17,20 @@ class User extends ActiveRecord implements IdentityInterface {
         return 'user';
     }
 
+    public function fields()
+    {
+        return [
+            'user_id',
+            'nickname',
+            '_nickname',
+            'avatar',
+            'tag_data',
+            'created_at',
+            'updated_at',
+            'img',
+        ];
+    }
+
     public static function getUserInfo($token)
     {
         $query = self::find()->from(['u'=>'user'])
@@ -29,14 +44,74 @@ class User extends ActiveRecord implements IdentityInterface {
     {
         //创建用户
         $this->created_at = time();
+        $this->_nickname = $_POST['created_by'];
         $this->tag_data   = trim(Yii::$app->params['defaultTags']);
         $this->save();
         $user_id = $this->getId();
 
         //创建用户账户
         $ua   = new UserAccount();
-        $data = $ua->create($user_id);
+        $data['account'] = $ua->create($user_id);
+
         return $data;
+    }
+
+
+    public function updateInfo($user_id)
+    {
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        $model = $this->findOne(['user_id'=>$user_id]);
+        if(!$model){
+            $data['code'] = 50000;
+            return $data;
+        }
+
+        //更新昵称
+        if(isset($params['nickname'])){
+            $data = $this->updateNickname($user_id,$params,$model);
+        }
+
+        //更新类型
+        if(isset($params['type'])){
+            $data = $this->updateType($user_id,$id,$params,$model);
+            if($data['code'] != 10000){
+                return $data;
+            }
+        }
+    }
+
+
+    //更新名称
+    protected function updateNickname($user_id,$params,$model)
+    {
+        $model->nickname = $this->getNickname($model);
+        $message = '名称['.$model->nickname.'->'.$params['nickname'].']';
+
+        $model->user_id = $user_id;
+        $model->nickname = $params['nickname'];
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $log->addLog($user_id,0,$user_id,'user','update',$message,$model->nickname);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
+
+    //获取用户昵称
+    protected function getNickname($model)
+    {
+        return $model->nickname = ($model->nickname=="")?$model->_nickname:$model->nickname;
     }
 
     /**
@@ -97,5 +172,12 @@ class User extends ActiveRecord implements IdentityInterface {
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+
+
+    //获取图片
+    public function getImg()
+    {
+        return $this->hasOne(Images::className(), ['rel_id' => 'user_id'])->where(['model'=>'avatar']);
     }
 }

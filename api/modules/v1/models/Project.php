@@ -6,6 +6,7 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
+use api\modules\v1\models\Log;
 
 use yii\web\BadRequestHttpException;
 //use yii\web\Link;
@@ -52,14 +53,13 @@ class Project extends ActiveRecord //implements Linkable
 
     public function fields()
     {
-        return [
-            'project_id',
-            'name',
-            'type',
-            'created_at',
-            'created_by',
-            'rel',
-        ];
+        $fields = parent::fields();
+        if(isset($_GET['user_id'])){
+            $fields['rel'] = 'rel';
+        }
+        unset($fields['updated_at'],$fields['updated_by']);
+
+        return $fields;
     }
 
 
@@ -89,7 +89,7 @@ class Project extends ActiveRecord //implements Linkable
 
         $query->where(['user_id' => $user_id]);
 
-        $query->orderBy("updated_at DESC");
+        $query->orderBy("project_id ASC");
 
         return $dataProvider;
     }
@@ -98,33 +98,36 @@ class Project extends ActiveRecord //implements Linkable
     //创建项目
     public function create($user_id,$type=1,$is_default=0)
     {
+        $type = isset($type)?$type:1;
+        if(!isset($user_id,$_POST['name'],$type,$_POST['created_by'])) {
+            $data['code'] = 20000;
+            return $data;
+        }
 
-        $type = isset($_POST['type'])?$_POST['type']:$type;
-        if(isset($user_id,$_POST['name'],$type,$_POST['created_by']))
-        {
-            $this->name = $_POST['name'];
-            $this->type = $type;
-            $this->created_at = time();
-            $this->created_by = $_POST['created_by'];
-            if($this->save()){
-                $rel = new RelUserProject();
-                $rel->user_id = $user_id;
-                $rel->project_id = $this->getPrimaryKey();
-                $rel->is_manager = 1;
-                $rel->is_default = ($is_default==1)?1:0;
-                if($rel->save()){
-                    $data['code'] = 10000;
-                    $data['data'] = $rel;
-                }else{
-                    $data['code'] = 10002;
-                }
+        $this->name = $_POST['name'];
+        $this->type = $type;
+        $this->created_at = time();
+        $this->created_by = $_POST['created_by'];
+        $this->updated_by = $_POST['created_by'];
+
+        if($this->save()){
+            $rel = new RelUserProject();
+            $rel->user_id = $user_id;
+            $rel->project_id = $this->getPrimaryKey();
+            $rel->is_manager = 1;
+            $rel->is_default = ($is_default==1)?1:0;
+            if($rel->save()){
+                $data['code'] = 10000;
+                $data['data'] = $rel;
             }else{
-                $data['code'] = 10001;
+                $data['code'] = 10002;
             }
         }else{
-            $data['code'] = 20000;
+            $data['code'] = 10001;
         }
+
         return $data;
+
     }
 
 
@@ -132,7 +135,8 @@ class Project extends ActiveRecord //implements Linkable
     public function createDefault($user_id)
     {
         $_POST['name'] = Yii::$app->params['defaultProject'];
-        return $this->create($user_id,1,1);
+        $data = $this->create($user_id,1,1);
+        return $data['data'];
     }
 
 
@@ -149,7 +153,7 @@ class Project extends ActiveRecord //implements Linkable
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['updated_by'])){
+        if(!isset($user_id,$id,$params['updated_by']) || !(isset($params['name']) || isset($params['type']))){
             $data['code']  = 20000;
             return $data;
         }
@@ -162,8 +166,8 @@ class Project extends ActiveRecord //implements Linkable
         }
 
         //验证权限
-        $model = RelUserProject::findOne(['project_id'=>$id,'user_id'=>$user_id]);
-        if($model->is_manager != 1){
+        $rel = RelUserProject::findOne(['project_id'=>$id,'user_id'=>$user_id]);
+        if($rel->is_manager != 1){
             $data['code'] = 10111;
             return $data;
         }
@@ -206,7 +210,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],0,$user_id,'project','update-name',$message,$params['updated_by']);
+        $log->addLog($id,0,$user_id,'project','update-name',$message,$params['updated_by']);
 
         $data['code']    = 10000;
         return $data;
@@ -224,7 +228,10 @@ class Project extends ActiveRecord //implements Linkable
         switch ($params['type'])
         {
             case 1:
-                //将其他用户踢出项目
+                /*
+                 * 将其他用户踢出项目
+                 * 客户端:在执行更新类型时,应告知用户,多人转单人时将会把其他用户踢出该项目后,才能转成单人项目
+                 */
                 RelUserProject::deleteAll(['project_id'=>$id,'is_manager'=>0]);
                 $message = "从多人项目转成单人项目";
                 break;
@@ -245,7 +252,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],0,$user_id,'project','update-type',$message,$params['updated_by']);
+        $log->addLog($id,0,$user_id,'project','update-type',$message,$params['updated_by']);
 
         $data['code']    = 10000;
         return $data;
@@ -290,7 +297,7 @@ class Project extends ActiveRecord //implements Linkable
         }else{
             $data['code'] = 20000;
         }
-        return $data;
+        return $data['data'];
     }
 
     //生成链接

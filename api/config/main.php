@@ -127,6 +127,7 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST upload' => 'upload',
+                        'POST upload-avatar' => 'upload-avatar',
                     ],
                 ],
 
@@ -136,10 +137,7 @@ return [
                     'controller' => 'v1/user',
                     //'except' => ['login', 'logout'],
                     'pluralize' => false,
-                    'extraPatterns' => [
-                        'GET get-token'     => 'get-token',
-                        'POST check-access' => 'check-access',
-                    ],
+
                 ],
             ],
         ],

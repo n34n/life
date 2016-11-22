@@ -60,7 +60,7 @@ class TokenController extends ActiveController
                 //获取用户默认项目
                 $proj = new Project();
                 $p = $proj->getDefault($user['user']->user_id);//默认项目数据封装
-                $data['project'] = $p['data'];
+                $data['project'] = $p;
                 return $data;
 
             }else{//(用户::User::不存在)处理下方事项
@@ -74,8 +74,8 @@ class TokenController extends ActiveController
 
                 //新用户初始化,创建默认项目
                 $proj = new Project();
-                $p = $proj->createDefault($data['user']->user_id);
-                $data['project'] = $p['data'];
+                $p = $proj->createDefault($data['user']['account']->user_id);
+                $data['project'] = $p;
 
                 return $data;
             }

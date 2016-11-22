@@ -2,79 +2,62 @@
 
 namespace api\modules\v1\controllers;
 
+use yii;
 use yii\rest\ActiveController;
-use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use yii\filters\auth\QueryParamAuth;
+use api\models\User;
+use api\modules\v1\models\Images;
 
 class UserController extends ActiveController
 {
     public $modelClass = 'api\models\User';
 
+    public $userinfo;
+
     public function behaviors() {
         $behaviors = parent::behaviors();
-
-/*        $behaviors['authenticator'] = [
-            'class' => QueryParamAuth::className(),
-        ];*/
-
+        $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
-
+        $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
         return $behaviors;
     }
 
     public function actions()
     {
         $actions = parent::actions();
-
-        // 禁用"delete" 和 "create" 操作
-        //unset($actions['delete'], $actions['create']);
-
-        // 使用"prepareDataProvider()"方法自定义数据provider
-        //$actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
-
+        // 注销系统自带的实现方法
+        unset($actions['index'], $actions['view'], $actions['create'], $actions['update'], $actions['delete']);
         return $actions;
     }
 
-/*    public function beforeAction($event)
+    protected function verbs()
     {
-        echo $action = $event->action->id;
-        //die();
-        if (isset($this->actions[$action])) {
-            $verbs = $this->actions[$action];
-        } elseif (isset($this->actions['*'])) {
-            $verbs = $this->actions['*'];
-        } else {
-            return $event->isValid;
+        return [
+            'view' => ['GET', 'HEAD'],
+            'update' => ['PUT'],
+        ];
+    }
+
+    //查看用户信息
+    public function actionView($id)
+    {
+        if($id != $this->userinfo->user_id){
+            $data['code'] = 405;
+            return $data;
         }
-
-        $verb = Yii::$app->getRequest()->getMethod();
-        $allowed = array_map('strtoupper', $verbs);
-        if (!in_array($verb, $allowed)) {
-            $event->isValid = false;
-            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
-            Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
-            throw new MethodNotAllowedHttpException('Method Not Allowed. This url can only handle the following request methods: ' . implode(', ', $allowed) . '.');
-        }
-
-        return $event->isValid;
-    }*/
-
-/*    public function prepareDataProvider()
-    {
-        // 为"index"操作准备和返回数据provider
-    }*/
-
-    public function actionLogin()
-    {
-
+        $model = new User();
+        $data['code'] = 10000;
+        $data['user']  = $model->findOne($id);
+        return $data;
     }
 
     //获取令牌
-    public function actionGetToken()
+    public function actionUpdate()
     {
-        $modelClass = $this->modelClass;
-        return $modelClass::getToken();
+        $model = new User();
+        $data  = $model->updateInfo($this->userinfo->user_id);
+        return $data;
     }
 
     //验证用户是否登录
