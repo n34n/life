@@ -114,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface {
     //获取用户昵称
     protected function getNickname($model)
     {
-        return $model->nickname = ($model->nickname=="")?$model->_nickname:$model->nickname;
+        return $nickname = ($model->nickname!="")?$model->nickname:$model->_nickname;
     }
 
     /**
