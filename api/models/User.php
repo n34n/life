@@ -7,6 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use api\models\UserAccount;
+use api\modules\v1\models\Log;
 
 class User extends ActiveRecord implements IdentityInterface {
     /**
@@ -79,29 +80,31 @@ class User extends ActiveRecord implements IdentityInterface {
             $data = $this->updateNickname($user_id,$params,$model);
         }
 
-        //更新类型
-        if(isset($params['type'])){
-            $data = $this->updateType($user_id,$id,$params,$model);
-            if($data['code'] != 10000){
-                return $data;
-            }
-        }
+        $data['code'] = 10000;
+        return $data;
     }
 
 
     //更新名称
     protected function updateNickname($user_id,$params,$model)
     {
-        $model->nickname = $this->getNickname($model);
-        $message = '名称['.$model->nickname.'->'.$params['nickname'].']';
+        $nickname = $this->getNickname($model);
+
+        if(isset($params['type']) && $params['type']=='update') {
+            $model->nickname = $params['nickname'];
+        }else{
+            $model->_nickname = $params['nickname'];
+        }
+
+        $message = '名称['.$nickname.'->'.$params['nickname'].']';
 
         $model->user_id = $user_id;
-        $model->nickname = $params['nickname'];
+        //$model->nickname = $params['nickname'];
         $model->save();
 
         //日志
         $log = new Log();
-        $log->addLog($user_id,0,$user_id,'user','update',$message,$model->nickname);
+        $log->addLog($user_id,0,$user_id,'user','update',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;

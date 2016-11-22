@@ -138,10 +138,12 @@ class Item extends ActiveRecord
         //保存图片
         if(isset($_POST['img_id'])){
             $img = Images::findOne($_POST['img_id']);
-            $img->model  = 'item';
-            $img->img_id = $_POST['img_id'];
-            $img->rel_id = $this->item_id;
-            $img->save();
+            if(!empty($img)){
+                $img->model  = 'item';
+                $img->img_id = $_POST['img_id'];
+                $img->rel_id = $this->item_id;
+                $img->save();
+            }
         }
 
 
