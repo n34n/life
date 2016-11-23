@@ -116,7 +116,7 @@ return [
                 //标签,日志控制
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => ['v1/tag','v1/log'],
+                    'controller' => ['v1/tag','v1/log','v1/article'],
                     'pluralize' => false,
                 ],
 

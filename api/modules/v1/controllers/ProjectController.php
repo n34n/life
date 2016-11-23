@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\models\RelUserProject;
 use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
@@ -40,7 +41,7 @@ class ProjectController extends ActiveController
     {
         $actions = parent::actions();
         // 注销系统自带的实现方法
-        unset($actions['index'], $actions['create'], $actions['update'], $actions['delete']);
+        unset($actions['index'], $actions['view'], $actions['create'], $actions['update'], $actions['delete']);
         return $actions;
     }
 
@@ -65,6 +66,20 @@ class ProjectController extends ActiveController
         $data['list']  = $list->getModels();
         $data['pages'] = Pages::Pages($list);
 
+        return $data;
+    }
+
+    //项目列表
+    public function actionView($id)
+    {
+        //检查用户是否权限访问项目
+        $code = RelUserProject::checkUserHasProject($this->userinfo->user_id,$id);
+        if($code != 10000){
+            $data['code'] = $code;
+            return $data;
+        }
+
+        $data         = Project::findOne($id);
         return $data;
     }
 

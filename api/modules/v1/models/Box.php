@@ -55,10 +55,13 @@ class Box extends ActiveRecord
         return [
             'box_id',
             'name',
-            'user_id',
+            'item_total',
             'created_at',
             'created_by',
-            'img',
+            'img'=>function(){
+                        $data = (empty($this->img))?'':$this->img;
+                        return $data;
+                    },
         ];
     }
 
