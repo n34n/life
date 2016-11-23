@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\models;
 
+use phpDocumentor\Reflection\Types\This;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
@@ -103,16 +104,16 @@ class Item extends ActiveRecord
 
 
     //创建物品
-    public function create($uid)
+    public function create($user_id)
     {
         //检查参数
-        if(!isset($uid,$_POST['project_id'],$_POST['box_id'],$_POST['name'],$_POST['created_by'])){
+        if(!isset($user_id,$_POST['img_id'],$_POST['project_id'],$_POST['box_id'],$_POST['name'],$_POST['created_by'])){
             $data['code']  = 20000;
             return $data;
         }
 
         //检查用户与项目是否匹配
-        $rel = RelUserProject::checkUserHasProject($uid,$_POST['project_id']);
+        $rel = RelUserProject::checkUserHasProject($user_id,$_POST['project_id']);
         if($rel == 10111){
             $data['code']  = $rel;
             return $data;
@@ -127,47 +128,66 @@ class Item extends ActiveRecord
             return $data;
         }
 
-        //准备数据,保存数据
+        //根据上传图片数量,批量生成物品
         $post = Yii::$app->request->post();
+        $succ_total = 0;
+        foreach ($post['img_id'] as $img_id){
+            $succ_total += $this->createData($post,$img_id,$tags,$user_id);
+        }
+
+        $data['code'] = 10000;
+        $data['info'] = "成功添加物品".$succ_total."个";
+        return $data;
+    }
+
+
+    //插入数据
+    public function createData($post,$img_id,$tags,$user_id)
+    {
+        //数据保存成功标记
+        $succ = 0;
+
+        //保存物品
+        $model = new Item();
+        $model->isNewRecord = true;
         foreach ($post as $key=>$val){
-            if($this->hasProperty($key)){
-                $this->$key = $val;
+            if($model->hasProperty($key)){
+                $model->$key = $val;
             }
         }
-        $this->user_id = $uid;
-        $this->updated_by = $this->created_by;
-        $this->save();
-
-        //保存图片
-        if(isset($_POST['img_id'])){
-            $img = Images::findOne($_POST['img_id']);
-            if(!empty($img)){
-                $img->model  = 'item';
-                $img->img_id = $_POST['img_id'];
-                $img->rel_id = $this->item_id;
-                $img->save();
-            }
+        $model->user_id = $user_id;
+        $model->updated_by = $model->created_by;
+        if($model->save()){
+            $succ += 1;
         }
 
+
+        //关联图片
+        $img = Images::findOne($img_id);
+        if(!empty($img)){
+            $img->model  = 'item';
+            $img->img_id = $img_id;
+            $img->rel_id = $model->item_id;
+            if($img->save()){
+                $succ += 1;
+            }
+        }
 
         //保存标签
         $tag = new Tag();
         foreach ($tags as $_tag){
             $tag->isNewRecord = true;
-            $tag->item_id = $this->item_id;
+            $tag->item_id = $model->item_id;
             $tag->tag_id = $_tag['tag_id'];
             $tag->tag = $_tag['tag'];
             $tag->save();
         }
 
-
         //日志
         $log = new Log();
-        $log->addLog($_POST['box_id'],$this->item_id,$uid,'item','create',$this->name,$_POST['created_by']);
+        $log->addLog($model->box_id,$model->item_id,$user_id,'item','create',$model->name,$_POST['created_by']);
 
-        $data['code'] = 10000;
-        $data['info'] = $this;
-        return $data;
+        return ($succ==2)?1:0;
     }
 
 
