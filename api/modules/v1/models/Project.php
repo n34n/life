@@ -300,6 +300,48 @@ class Project extends ActiveRecord //implements Linkable
         return $data['data'];
     }
 
+
+    //加入项目
+    public function join($user)
+    {
+        //检查参数
+        if(!isset($user->user_id,$_POST['project_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        if($user->user_id == $_POST['manager_id']){
+            $data['code']  = 405;
+            return $data;
+        }
+
+        //验证资源是否存在
+        $data['code'] = RelUserProject::checkUserHasProject($_POST['manager_id'],$_POST['project_id']);
+        if($data['code'] != 10000) {return $data;}
+
+        //验证用户是否已经添加过
+        $data['code'] = RelUserProject::checkUserHasProject($user->user_id,$_POST['project_id']);
+        if($data['code'] == 10000) {$data['code']=10112;return $data;}
+
+        //关联项目
+        $rel = new RelUserProject();
+        $rel->user_id = $user->user_id;
+        $rel->project_id = $_POST['project_id'];
+        $rel->is_manager = 0;
+        $rel->save();
+
+        //用户数据
+        $nickname = ($user->nickname == "")?$user->_nickname:$user->nickname;
+        $message  = $nickname."成功加入项目";
+
+        //日志
+        $log = new Log();
+        $log->addLog($_POST['project_id'],0,$user->user_id,'project','join',$message,$nickname);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
     //生成链接
 /*    public function getLinks()
     {

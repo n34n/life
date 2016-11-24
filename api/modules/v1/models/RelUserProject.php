@@ -50,7 +50,7 @@ class RelUserProject extends ActiveRecord
     public static function checkUserHasProject($uid,$pid)
     {
         $model = self::findOne(['user_id'=>$uid, 'project_id'=>$pid]);
-        if($model){
+        if(!empty($model)){
             return 10000;
         }else{
             return 10111;

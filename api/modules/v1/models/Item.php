@@ -157,10 +157,7 @@ class Item extends ActiveRecord
         }
         $model->user_id = $user_id;
         $model->updated_by = $model->created_by;
-        if($model->save()){
-            $succ += 1;
-        }
-
+        if($model->save()){$succ += 1;}
 
         //关联图片
         $img = Images::findOne($img_id);
@@ -168,9 +165,7 @@ class Item extends ActiveRecord
             $img->model  = 'item';
             $img->img_id = $img_id;
             $img->rel_id = $model->item_id;
-            if($img->save()){
-                $succ += 1;
-            }
+            if($img->save()){$succ += 1;}
         }
 
         //保存标签

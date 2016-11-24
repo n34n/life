@@ -92,6 +92,7 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST set-default' => 'set-default',
+                        'POST join' => 'join',
                     ],
                 ],
 

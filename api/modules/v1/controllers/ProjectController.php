@@ -34,6 +34,7 @@ class ProjectController extends ActiveController
             'create' => ['POST'],
             'update' => ['PUT'],
             'delete' => ['DELETE'],
+            'join' => ['POST'],
         ];
     }
 
@@ -111,6 +112,14 @@ class ProjectController extends ActiveController
             $data['code']  = 20000;
             return $data;
         }
+    }
+
+    //加入项目
+    public function actionJoin()
+    {
+        $model = new Project();
+        $data  = $model->join($this->userinfo);
+        return $data;
     }
 
     //编辑项目
