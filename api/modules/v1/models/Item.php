@@ -78,7 +78,7 @@ class Item extends ActiveRecord
 
         $query = $this->find();
         $query->joinWith(['tags']);
-        $query->select("item.*, tag.tag");
+        $query->select("item.*,tag.tag_id,tag.tag");
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -87,6 +87,7 @@ class Item extends ActiveRecord
             ],
         ]);
 
+        //按关键字搜索
         $query->where(['project_id' => $_GET['project_id']]);
         if(isset($_GET['keyword'])){
             $keywords = trim($_GET['keyword']);
@@ -96,10 +97,33 @@ class Item extends ActiveRecord
 
         }
 
+        //按tag_id筛选
+        if(isset($_GET['tags']) && $_GET['tags']!=""){
+            $keywords = trim($_GET['tags']);
+            $keyword_list = explode(',',$keywords);
+            $query->andFilterWhere(['tag_id'=>$keyword_list]);
+        }
+
         $query->groupBy(["item_id"]);
         $query->orderBy("updated_at DESC");
 
+        //echo $query->createCommand()->rawSql;
+
         return $dataProvider;
+    }
+
+
+    //标签列表
+    public function filterTags(){
+        $connection  = Yii::$app->db;
+        $sql = "SELECT `tag`.`tag_id`, `tag`.`tag` FROM `tag` 
+                LEFT JOIN `item` ON `item`.`item_id` = `tag`.`item_id` 
+                WHERE `project_id`='".$_GET['project_id']."' GROUP BY `tag_id`";
+
+        $command = $connection->createCommand($sql);
+        $query   = $command->queryAll();
+
+        return $query;
     }
 
 

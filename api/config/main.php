@@ -20,7 +20,7 @@ return [
     ],
     'components' => [
         'request' => [
- //           'csrfParam' => '_csrf-api',
+            'csrfParam' => '_csrf-api',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
@@ -71,7 +71,7 @@ return [
 
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => true,
+            'showScriptName' => false,
             'enableStrictParsing' =>true,
             'rules' => [
                 //初始化检查
@@ -139,6 +139,22 @@ return [
                     //'except' => ['login', 'logout'],
                     'pluralize' => false,
 
+                ],
+
+//                [
+//                    'class' => 'yii\web\UrlRule',
+//                    //'controller' => 'site',
+//                    //'pattern' => 'site/gen-swg',
+//                    //'route' => 'site/gen-swg',
+//                    //'except' => ['login', 'logout'],
+//                    //'pluralize' => false,
+//
+//                ],
+
+                [
+                    'class' => 'yii\web\UrlRule',
+                    'pattern' => 'site/gen-swg',
+                    'route' => 'site/gen-swg'
                 ],
             ],
         ],

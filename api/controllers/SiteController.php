@@ -1,11 +1,14 @@
 <?php
+
+
 namespace api\controllers;
 
 use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
 
 /**
  * Site controller
@@ -18,26 +21,26 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+//                    [
+//                        'actions' => ['login', 'error'],
+//                        'allow' => true,
+//                    ],
+//                    [
+//                        'actions' => ['logout', 'index'],
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                ],
+//            ],
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'logout' => ['post'],
+//                ],
+//            ],
         ];
     }
 
@@ -60,7 +63,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        //phpinfo();
+        echo 'hello';
+        //return $this->render('index');
     }
 
     /**
@@ -94,5 +99,16 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionGenSwg()
+    {
+         $projectRoot = Yii::getAlias('@apiroot') . '/api';
+         $swagger = \Swagger\scan($projectRoot);
+//         $json_file = $projectRoot . '/web/swagger-docs/swagger.json';
+//        $is_write = file_put_contents($json_file, $swagger);
+//        if ($is_write == true) {
+//            $this->redirect('/swagger-ui/dist/index.html');
+//        }
     }
 }

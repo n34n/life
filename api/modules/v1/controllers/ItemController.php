@@ -64,9 +64,11 @@ class ItemController extends ActiveController
 
         $model         = new Item();
         $list          = $model->search(Yii::$app->request->queryParams);
+        $tag_list      = $model->filterTags();
 
         $data['code']  = 10000;
         $data['list']  = $list->getModels();
+        $data['tags']  = $tag_list;
         $data['pages'] = Pages::Pages($list);
 
         return $data;
