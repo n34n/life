@@ -1,10 +1,11 @@
 <?php
 namespace api\models;
-use api\modules\v1\models\Project;
+
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use api\models\User;
+use api\modules\v1\models\Project;
 use api\modules\v1\models\Images;
 
 class UserAccount extends ActiveRecord implements IdentityInterface {
@@ -180,12 +181,13 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
 
                     //状态为10,进入主界面
                     $data['code']           = 10000;
-                    $data['img']   = $user->access_token;
                     $data['access_token']   = $user->access_token;
+
+                    $data['user'] = User::findOne($user->user_id);
 
                     $proj = new Project();
                     $_proj= $proj->getDefault($user->user_id);
-                    $data['project'] = $_proj['data'];
+                    $data['project'] = $_proj;
 
                 }else{
                     //状态为0,返回登录界面

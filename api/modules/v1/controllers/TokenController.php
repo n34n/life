@@ -27,14 +27,108 @@ class TokenController extends ActiveController
         return $actions;
     }
 
-    //验证用户是否登录
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/token/check-access",
+     * 		tags={"Token"},
+     * 		operationId="checkToken",
+     * 		summary="验证用户登录状态",
+     *      @SWG\Parameter(
+     * 			name="user_id",
+     * 			in="formData",
+     * 			required=false,
+     *          type="integer",
+     * 			description="用户ID",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="account",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="string",
+     * 			description="账户唯一标识",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="device",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="string",
+     * 			description="设备唯一标识",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="type",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="string",
+     * 			description="登录类型:mobile,email,weixin,weibo,qq",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionCheckAccess()
     {
         $modelClass = $this->modelClass;
         return $modelClass::checkAccess();
     }
 
-    //获取令牌
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/token/get-token",
+     * 		tags={"Token"},
+     * 		operationId="getToken",
+     * 		summary="获取身份令牌",
+     *      @SWG\Parameter(
+     * 			name="account",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="账户唯一标识",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="device",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="设备唯一标识",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="type",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="登录类型:mobile,email,weixin,weibo,qq",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="created_by",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="第三方显示名称，或手机号，用于生成项目时做为创建人使用",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="timestamp",
+     * 			in="formData",
+     * 			required=true,
+     *          type="integer",
+     * 			description="时间戳",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="sign",
+     * 			in="formData",
+     * 			required=true,
+     *          type="string",
+     * 			description="签名：根据上述字段键名升续后，进行键值连接生成Str，再在Str末尾连接秘钥Key，最后加密md5(Str+Key)",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionGetToken()
     {
         $modelClass = $this->modelClass;
@@ -74,7 +168,7 @@ class TokenController extends ActiveController
 
                 //新用户初始化,创建默认项目
                 $proj = new Project();
-                $p = $proj->createDefault($data['user']['account']->user_id);
+                $p = $proj->createDefault($data['user']['account']->user_id,$data['user']['account']->_nickname);
                 $data['project'] = $p;
 
                 return $data;

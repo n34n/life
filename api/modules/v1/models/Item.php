@@ -323,6 +323,17 @@ class Item extends ActiveRecord
     }
 
 
+    //删除所有记录
+    public static function removeAll($project_id)
+    {
+        $items = self::findAll(['project_id'=>$project_id]);
+        foreach ($items as $item){
+            Tag::deleteAll(['item_id'=>$item->item_id]);
+        }
+        self::deleteAll(['project_id'=>$project_id]);
+    }
+
+
     //移动物品
     public function move($user_id)
     {

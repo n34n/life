@@ -8,10 +8,9 @@ use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
 use api\modules\v1\models\Log;
 
-use yii\web\BadRequestHttpException;
-//use yii\web\Link;
-//use yii\web\Linkable;
-//use yii\helpers\Url;
+use api\modules\v1\models\Box;
+use api\modules\v1\models\Item;
+use api\modules\v1\models\Images;
 
 
 /**
@@ -96,10 +95,10 @@ class Project extends ActiveRecord //implements Linkable
 
 
     //创建项目
-    public function create($user_id,$type=1,$is_default=0)
+    public function create($user_id,$nickname,$type=1,$is_default=0)
     {
         $type = isset($type)?$type:1;
-        if(!isset($user_id,$_POST['name'],$type,$_POST['created_by'])) {
+        if(!isset($user_id,$_POST['name'],$type,$nickname)) {
             $data['code'] = 20000;
             return $data;
         }
@@ -107,8 +106,8 @@ class Project extends ActiveRecord //implements Linkable
         $this->name = $_POST['name'];
         $this->type = $type;
         $this->created_at = time();
-        $this->created_by = $_POST['created_by'];
-        $this->updated_by = $_POST['created_by'];
+        $this->created_by = $nickname;
+        $this->updated_by = $nickname;
 
         if($this->save()){
             $rel = new RelUserProject();
@@ -132,16 +131,16 @@ class Project extends ActiveRecord //implements Linkable
 
 
     //新建用户时,创建默认项目
-    public function createDefault($user_id)
+    public function createDefault($user_id,$nickname)
     {
         $_POST['name'] = Yii::$app->params['defaultProject'];
-        $data = $this->create($user_id,1,1);
+        $data = $this->create($user_id,$nickname,1,1);
         return $data['data'];
     }
 
 
     //更新项目
-    public function updateInfo($user_id,$id)
+    public function updateInfo($user_id,$nickname,$id)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -153,7 +152,7 @@ class Project extends ActiveRecord //implements Linkable
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['updated_by']) || !(isset($params['name']) || isset($params['type']))){
+        if(!isset($user_id,$nickname,$id) || !(isset($params['name']) || isset($params['type']))){
             $data['code']  = 20000;
             return $data;
         }
@@ -174,7 +173,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //更新名称
         if(isset($params['name'])){
-            $data = $this->updateName($user_id,$id,$params,$model);
+            $data = $this->updateName($user_id,$nickname,$id,$params,$model);
             if($data['code'] != 10000){
                 return $data;
             }
@@ -182,7 +181,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //更新类型
         if(isset($params['type'])){
-            $data = $this->updateType($user_id,$id,$params,$model);
+            $data = $this->updateType($user_id,$nickname,$id,$params,$model);
             if($data['code'] != 10000){
                 return $data;
             }
@@ -194,7 +193,7 @@ class Project extends ActiveRecord //implements Linkable
 
 
     //更新名称
-    protected function updateName($user_id,$id,$params,$model)
+    protected function updateName($user_id,$nickname,$id,$params,$model)
     {
         if($params['name'] == $model->name){
             $data['code'] = 50100;
@@ -205,12 +204,12 @@ class Project extends ActiveRecord //implements Linkable
 
         $model->project_id = $id;
         $model->name = $params['name'];
-        $model->updated_by = $params['updated_by'];
+        $model->updated_by = $nickname;
         $model->save();
 
         //日志
         $log = new Log();
-        $log->addLog($id,0,$user_id,'project','update-name',$message,$params['updated_by']);
+        $log->addLog($id,0,$user_id,'project','update-name',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -218,7 +217,7 @@ class Project extends ActiveRecord //implements Linkable
 
 
     //更新项目类型
-    protected function updateType($user_id,$id,$params,$model)
+    protected function updateType($user_id,$nickname,$id,$params,$model)
     {
         if($params['type'] == $model->type){
             $data['code'] = 50100;
@@ -247,12 +246,12 @@ class Project extends ActiveRecord //implements Linkable
         //更新项目类型
         $model->project_id = $id;
         $model->type = $params['type'];
-        $model->updated_by = $params['updated_by'];
+        $model->updated_by = $nickname;
         $model->save();
 
         //日志
         $log = new Log();
-        $log->addLog($id,0,$user_id,'project','update-type',$message,$params['updated_by']);
+        $log->addLog($id,0,$user_id,'project','update-type',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -331,7 +330,7 @@ class Project extends ActiveRecord //implements Linkable
         $rel->save();
 
         //用户数据
-        $nickname = ($user->nickname == "")?$user->_nickname:$user->nickname;
+        $nickname = $user->nickname;
         $message  = $nickname."成功加入项目";
 
         //日志
@@ -339,6 +338,62 @@ class Project extends ActiveRecord //implements Linkable
         $log->addLog($_POST['project_id'],0,$user->user_id,'project','join',$message,$nickname);
 
         $data['code']    = 10000;
+        return $data;
+    }
+
+
+    //删除项目
+    public function remove($user,$id)
+    {
+        //验证方法
+        if(!Yii::$app->request->isDelete)
+        {
+            $data['code'] = 400;
+            return $data;
+        }
+
+        //检查参数
+        if(!isset($user->user_id,$user->nickname,$id)){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //检查资源是否存在
+        $proj = RelUserProject::findOne(['project_id'=>$id,'user_id'=>$user->user_id]);
+        if(empty($proj)){
+            $data['code']  = 50001;
+            return $data;
+        }else{
+            //检查是否有项目权限
+            if($proj->is_manager!=1){
+                $data['code']  = 10111;
+                return $data;
+            }
+            $obj = self::findOne($id);
+            $name = $obj->name;
+        }
+
+        //删除图片
+        Images::removeAll($id);
+
+        //删除物品
+        Item::removeAll($id);
+
+        //删除盒子
+        Box::deleteAll(['project_id'=>$id]);
+
+        //删除项目成员
+        RelUserProject::deleteAll(['project_id'=>$id]);
+
+        //删除项目
+        $obj->delete();
+
+        //创建日志
+        $log = new Log();
+        $message = "删除项目[#".$id." ".$name."]";
+        $log->addLog($id,0,$user->user_id,'project','delete',$message,$user->nickname);
+
+        $data['code'] = 10000;
         return $data;
     }
 

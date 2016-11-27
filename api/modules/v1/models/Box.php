@@ -87,7 +87,7 @@ class Box extends ActiveRecord
         ]);
 
         $query->where(['project_id' => $_GET['project_id']]);
-        if(isset($_GET['keyword'])){
+        if(isset($_GET['keyword']) && $_GET['keyword']!="" && ($_GET['keyword']!="{keyword}")){
             $keywords = trim($_GET['keyword']);
             $keyword_list = explode(' ',$keywords);
             $query->andFilterWhere(['or like', 'name', $keyword_list]);

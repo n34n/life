@@ -24,6 +24,7 @@ class ProjectController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
+        $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
         return $behaviors;
     }
 
@@ -52,16 +53,9 @@ class ProjectController extends ActiveController
      *
      *	@SWG\Get(
      * 		path="/project?access-token={access_token}&user_id={user_id}",
-     * 		tags={"Projects"},
+     * 		tags={"Project"},
      * 		operationId="listProject",
      * 		summary="项目列表",
-     * 		@SWG\Parameter(
-     * 			name="user_id",
-     * 			in="path",
-     * 			required=true,
-     * 			type="integer",
-     * 			description="用户ID",
-     * 		),
      * 		@SWG\Parameter(
      * 			name="access_token",
      * 			in="path",
@@ -69,6 +63,13 @@ class ProjectController extends ActiveController
      *          type="string",
      * 			description="访问令牌",
      *		),
+     * 		@SWG\Parameter(
+     * 			name="user_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="用户ID",
+     * 		),
      * 		@SWG\Response(
      * 			response=200,
      * 			description="成功",
@@ -102,7 +103,7 @@ class ProjectController extends ActiveController
      *
      *	@SWG\Get(
      * 		path="/project/{id}?access-token={access_token}&user_id={user_id}",
-     * 		tags={"Projects"},
+     * 		tags={"Project"},
      * 		operationId="viewProject",
      * 		summary="查看项目",
      *      @SWG\Parameter(
@@ -113,19 +114,19 @@ class ProjectController extends ActiveController
      * 			description="项目ID",
      * 		),
      * 		@SWG\Parameter(
-     * 			name="user_id",
-     * 			in="path",
-     * 			required=true,
-     * 			type="integer",
-     * 			description="用户ID",
-     * 		),
-     * 		@SWG\Parameter(
      * 			name="access_token",
      * 			in="path",
      * 			required=true,
      *          type="string",
      * 			description="访问令牌",
      *		),
+     * 		@SWG\Parameter(
+     * 			name="user_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="用户ID",
+     * 		),
      * 		@SWG\Response(
      * 			response=200,
      * 			description="成功",
@@ -145,19 +146,93 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-    //创建项目
+
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/project?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="createProject",
+     * 		summary="添加项目",
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="name",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="项目名称",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="type",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目类型:1为单人项目，2为多人项目",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionCreate()
     {
         $model = new Project();
-        $data  = $model->create($this->userinfo->user_id);
+        $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname);
         return $data;
     }
 
-    //编辑项目
+    /**
+     *
+     *	@SWG\Put(
+     * 		path="/project/{id}?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="updateProject",
+     * 		summary="编辑项目",
+     *      @SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="name",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="string",
+     * 			description="项目名称",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="type",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="项目类型:1为单人项目，2为多人项目",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionUpdate($id)
     {
         $model = new Project();
-        $data  = $model->updateInfo($this->userinfo->user_id,$id);
+        $data  = $model->updateInfo($this->userinfo->user_id,$this->userinfo->nickname,$id);
         return $data;
     }
 
@@ -175,7 +250,41 @@ class ProjectController extends ActiveController
         }
     }
 
-    //加入项目
+
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/project/join?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="joinProject",
+     * 		summary="成员加入项目",
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="manager_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目管理员ID",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionJoin()
     {
         $model = new Project();
@@ -183,11 +292,37 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-    //编辑项目
+    /**
+     *
+     *	@SWG\Delete(
+     * 		path="/project/{id}?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="updateProject",
+     * 		summary="删除项目",
+     *      @SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionDelete($id)
     {
         $model = new Project();
-        $data  = $model->remove($this->userinfo->user_id,$id);
+        $data  = $model->remove($this->userinfo,$id);
         return $data;
     }
 

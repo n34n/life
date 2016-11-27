@@ -262,6 +262,15 @@ class Images extends ActiveRecord
         $db->delete();
     }
 
+    public static function removeAll($project_id)
+    {
+        $imgs = self::findAll(['project_id'=>$project_id]);
+        foreach ($imgs as $db){
+            self::removeFile($db);
+        }
+        self::deleteAll(['project_id'=>$project_id]);
+    }
+
     protected static function removeFile($db)
     {
         $path = Yii::$app->params['UploadPath'];

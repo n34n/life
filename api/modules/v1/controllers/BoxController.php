@@ -26,6 +26,7 @@ class BoxController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
+        $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
         return $behaviors;
     }
 
@@ -41,6 +42,33 @@ class BoxController extends ActiveController
         ];
     }
 
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/box/{id}?access-token={access_token}",
+     * 		tags={"Box"},
+     * 		operationId="viewBox",
+     * 		summary="查看盒子",
+     * 		@SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actions()
     {
         $actions = parent::actions();
@@ -50,7 +78,40 @@ class BoxController extends ActiveController
     }
 
 
-    //盒子列表
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/box?access-token={access_token}&project_id={project_id}&keyword={keyword}",
+     * 		tags={"Box"},
+     * 		operationId="listBox",
+     * 		summary="盒子列表|搜索",
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="keyword",
+     * 			in="path",
+     * 			required=false,
+     *          type="string",
+     * 			description="搜索关键字:多个关键字中间可用空格隔开",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionIndex()
     {
         if(!isset($_GET['project_id'])) {
