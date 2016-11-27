@@ -20,7 +20,7 @@ return [
     ],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-api',
+            //'csrfParam' => '_csrf-api',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]

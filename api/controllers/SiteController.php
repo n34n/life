@@ -101,14 +101,14 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function actionGenSwg()
-    {
-         $projectRoot = Yii::getAlias('@apiroot') . '/api';
-         $swagger = \Swagger\scan($projectRoot);
-//         $json_file = $projectRoot . '/web/swagger-docs/swagger.json';
-//        $is_write = file_put_contents($json_file, $swagger);
-//        if ($is_write == true) {
-//            $this->redirect('/swagger-ui/dist/index.html');
-//        }
-    }
+//    public function actionGenSwg()
+//    {
+//         $projectRoot = Yii::getAlias('@apiroot') . '/api';
+//         $swagger = \Swagger\scan($projectRoot);
+////         $json_file = $projectRoot . '/web/swagger-docs/swagger.json';
+////        $is_write = file_put_contents($json_file, $swagger);
+////        if ($is_write == true) {
+////            $this->redirect('/swagger-ui/dist/index.html');
+////        }
+//    }
 }

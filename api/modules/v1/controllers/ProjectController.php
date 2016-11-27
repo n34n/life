@@ -11,6 +11,7 @@ use api\modules\v1\models\Project;
 use api\models\User;
 use api\components\Pages;
 
+
 class ProjectController extends ActiveController
 {
     public $modelClass = 'api\modules\v1\models\Project';
@@ -47,7 +48,33 @@ class ProjectController extends ActiveController
     }
 
 
-    //项目列表
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/project?access-token={access_token}&user_id={user_id}",
+     * 		tags={"Projects"},
+     * 		operationId="listProject",
+     * 		summary="项目列表",
+     * 		@SWG\Parameter(
+     * 			name="user_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="用户ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionIndex()
     {
         if(!isset($_GET['user_id'])){
@@ -70,7 +97,41 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-    //项目列表
+
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/project/{id}?access-token={access_token}&user_id={user_id}",
+     * 		tags={"Projects"},
+     * 		operationId="viewProject",
+     * 		summary="查看项目",
+     *      @SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="user_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="用户ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionView($id)
     {
         //检查用户是否权限访问项目
