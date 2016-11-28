@@ -38,7 +38,7 @@ class Tag extends ActiveRecord
     }
 
 
-    public function updateInfo($user_id)
+    public function updateInfo($user_id,$nickname)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -50,7 +50,7 @@ class Tag extends ActiveRecord
         }
 
         //验证参数
-        if(!isset($user_id,$params['box_id'],$params['item_id'],$params['updated_by'],$params['tags'])){
+        if(!isset($user_id,$params['box_id'],$params['item_id'],$params['tags'],$nickname)){
             $data['code'] = 20000;
             return $data;
         }
@@ -67,7 +67,8 @@ class Tag extends ActiveRecord
 
         //更新标签
         $message = '';
-        foreach ($params['tags'] as $_tag){
+        $tags= json_decode($params['tags'],true);
+        foreach ($tags as $_tag){
             $this->isNewRecord = true;
             $this->item_id = $item->item_id;
             $this->tag_id = $_tag['tag_id'];
@@ -78,12 +79,12 @@ class Tag extends ActiveRecord
         //$message = substr($message,0,-1);
 
         //盒子物品更新修改时间
-        Box::updateAll(['updated_by'=>$params['updated_by']],'box_id=:id',[':id'=>$params['box_id']]);
-        Item::updateAll(['updated_by'=>$params['updated_by']],'item_id=:id',[':id'=>$params['item_id']]);
+        Box::updateAll(['updated_by'=>$nickname],'box_id=:id',[':id'=>$params['box_id']]);
+        Item::updateAll(['updated_by'=>$nickname],'item_id=:id',[':id'=>$params['item_id']]);
 
         //日志
         $log = new Log();
-        $log->addLog($params['box_id'],$params['item_id'],$user_id,'item','tag-update',$message,$params['updated_by']);
+        $log->addLog($params['box_id'],$params['item_id'],$user_id,'item','tag-update',$message,$nickname);
 
         $data['code'] = 10000;
         return $data;
