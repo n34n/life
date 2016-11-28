@@ -83,7 +83,7 @@ class BoxController extends ActiveController
     /**
      *
      *	@SWG\Get(
-     * 		path="/box?access-token={access_token}&project_id={project_id}&keyword={keyword}",
+     * 		path="/box?access-token={access_token}&project_id={project_id}&keyword={keyword}&page={page}",
      * 		tags={"Box"},
      * 		operationId="listBox",
      * 		summary="盒子列表|搜索",
@@ -108,6 +108,13 @@ class BoxController extends ActiveController
      *          type="string",
      * 			description="搜索关键字:多个关键字中间可用空格隔开",
      *		),
+     * 		@SWG\Parameter(
+     * 			name="page",
+     * 			in="path",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="当前请求第X页",
+     * 		),
      * 		@SWG\Response(
      * 			response=200,
      * 			description="成功",

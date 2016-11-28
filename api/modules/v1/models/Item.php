@@ -89,7 +89,7 @@ class Item extends ActiveRecord
 
         //按关键字搜索
         $query->where(['project_id' => $_GET['project_id']]);
-        if(isset($_GET['keyword'])){
+        if(isset($_GET['keyword']) && $_GET['keyword']!="" && ($_GET['keyword']!="{keyword}")){
             $keywords = trim($_GET['keyword']);
             $keyword_list = explode(' ',$keywords);
             $query->andFilterWhere(['or like', 'name', $keyword_list]);
@@ -98,7 +98,7 @@ class Item extends ActiveRecord
         }
 
         //按tag_id筛选
-        if(isset($_GET['tags']) && $_GET['tags']!=""){
+        if(isset($_GET['tags']) && $_GET['tags']!="" && ($_GET['tags']!="{tags}")){
             $keywords = trim($_GET['tags']);
             $keyword_list = explode(',',$keywords);
             $query->andFilterWhere(['tag_id'=>$keyword_list]);
@@ -128,10 +128,10 @@ class Item extends ActiveRecord
 
 
     //创建物品
-    public function create($user_id)
+    public function create($user_id,$nickname)
     {
         //检查参数
-        if(!isset($user_id,$_POST['img_id'],$_POST['project_id'],$_POST['box_id'],$_POST['name'],$_POST['created_by'])){
+        if(!isset($user_id,$_POST['img_id'],$_POST['project_id'],$_POST['box_id'],$_POST['name'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
@@ -144,8 +144,8 @@ class Item extends ActiveRecord
         }
 
         //标签处理
-        if(isset($_POST['tags']) && is_array($_POST['tags'])){
-            $tags = $_POST['tags'];
+        if(isset($_POST['tags'])){
+            $tags= json_decode($_POST['tags'],true);
             unset($_POST['tags']);
         }else{
             $data['code']  = 20000;
@@ -156,7 +156,7 @@ class Item extends ActiveRecord
         $post = Yii::$app->request->post();
         $succ_total = 0;
         foreach ($post['img_id'] as $img_id){
-            $succ_total += $this->createData($post,$img_id,$tags,$user_id);
+            $succ_total += $this->createData($post,$img_id,$tags,$user_id,$nickname);
         }
 
         $data['code'] = 10000;
@@ -166,7 +166,7 @@ class Item extends ActiveRecord
 
 
     //插入数据
-    public function createData($post,$img_id,$tags,$user_id)
+    public function createData($post,$img_id,$tags,$user_id,$nickname)
     {
         //数据保存成功标记
         $succ = 0;
@@ -180,7 +180,8 @@ class Item extends ActiveRecord
             }
         }
         $model->user_id = $user_id;
-        $model->updated_by = $model->created_by;
+        $model->created_by = $nickname;
+        $model->updated_by = $nickname;
         if($model->save()){$succ += 1;}
 
         //关联图片
@@ -204,14 +205,14 @@ class Item extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($model->box_id,$model->item_id,$user_id,'item','create',$model->name,$_POST['created_by']);
+        $log->addLog($model->box_id,$model->item_id,$user_id,'item','create',$model->name,$nickname);
 
         return ($succ==2)?1:0;
     }
 
 
     //更新物品
-    public function updateInfo($user_id,$id)
+    public function updateInfo($user_id,$nickname,$id)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -223,7 +224,7 @@ class Item extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$params['updated_by'])){
+        if(!isset($user_id,$nickname,$id,$params['project_id'],$params['box_id'])){
             $data['code']  = 20000;
             return $data;
         }
@@ -236,14 +237,14 @@ class Item extends ActiveRecord
         }
 
         //更新名称
-        $data = $this->updateName($params,$model,$id);
+        $data = $this->updateName($params,$model,$id,$nickname);
         if($data['code'] != 10000){
             return $data;
         }
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],$id,$user_id,'box','update',$data['message'],$params['updated_by']);
+        $log->addLog($params['project_id'],$id,$user_id,'box','update',$data['message'],$nickname);
 
         $data['code'] = 10000;
         return $data;
@@ -251,7 +252,7 @@ class Item extends ActiveRecord
 
 
     //更新名称
-    protected function updateName($params,$model,$id)
+    protected function updateName($params,$model,$id,$nickname)
     {
         if($params['name'] == $model->name){
             $data['code'] = 50100;
@@ -262,7 +263,7 @@ class Item extends ActiveRecord
 
         $model->item_id = $id;
         $model->name = $params['name'];
-        $model->updated_by = $params['updated_by'];
+        $model->updated_by = $nickname;
         $model->save();
 
         $data['code']    = 10000;
@@ -272,7 +273,7 @@ class Item extends ActiveRecord
 
 
     //删除物品
-    public function remove($user_id,$id)
+    public function remove($user_id,$nickname,$id)
     {
         //验证方法
         if(!Yii::$app->request->isDelete)
@@ -284,7 +285,7 @@ class Item extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$params['updated_by'])){
+        if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
@@ -308,14 +309,15 @@ class Item extends ActiveRecord
         Tag::deleteAll(['item_id'=>$id]);
 
         //更新盒子修改时间
-        Box::updateAll(['updated_by'=>$params['updated_by']],'box_id=:id',[':id'=>$params['box_id']]);
+        Box::updateAll(['updated_by'=>$nickname],'box_id=:id',[':id'=>$params['box_id']]);
 
         //删除物品记录
         $query->delete();
 
         //日志
         $log = new Log();
-        $log->addLog($params['box_id'],$id,$user_id,'item','delete',$model['name'],$params['updated_by']);
+        $message = '物品['.$id.' '.$model['name'].']';
+        $log->addLog($params['box_id'],$id,$user_id,'item','delete',$message,$nickname);
 
         $data['code'] = 10000;
         return $data;
@@ -335,7 +337,7 @@ class Item extends ActiveRecord
 
 
     //移动物品
-    public function move($user_id)
+    public function move($user_id,$nickname)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -347,8 +349,14 @@ class Item extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$params['items'],$params['project_id'],$params['old_box_id'],$params['new_box_id'],$params['updated_by'])){
+        if(!isset($user_id,$params['items'],$params['project_id'],$params['old_box_id'],$params['new_box_id'],$nickname)){
             $data['code']  = 20000;
+            return $data;
+        }
+
+        //检查转移物品数量
+        if(empty($params['items'])){
+            $data['code']  = 50000;
             return $data;
         }
 
@@ -362,7 +370,7 @@ class Item extends ActiveRecord
         }
 
         foreach ($params['items'] as $id){
-            $this->moveOne($user_id,$id,$old_box,$new_box,$params['updated_by']);
+            $this->moveOne($user_id,$id,$old_box,$new_box,$nickname);
         }
 
         $data['code'] = 10000;
@@ -386,6 +394,9 @@ class Item extends ActiveRecord
             $log = new Log();
             $log->addLog($old_box->box_id,$id,$user_id,'item','move-out',$message,$updated_by);
             return;
+        }else{
+            $message_old = '['.$id.' '.$model->name.']从盒子移出';
+            $message_new = '['.$id.' '.$model->name.']移入盒子';
         }
 
         //移动物品更新数据
@@ -395,9 +406,9 @@ class Item extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($old_box->box_id,$id,$user_id,'item','move-out',$old_box->name,$updated_by);
+        $log->addLog($old_box->box_id,$id,$user_id,'item','move-out',$message_old,$updated_by);
         $log = new Log();
-        $log->addLog($new_box->box_id,$id,$user_id,'item','move-in',$new_box->name,$updated_by);
+        $log->addLog($new_box->box_id,$id,$user_id,'item','move-in',$message_new,$updated_by);
     }
 
     /**

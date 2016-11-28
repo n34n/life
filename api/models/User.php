@@ -72,6 +72,7 @@ class User extends ActiveRecord implements IdentityInterface {
         //检查参数
         if(isset($params['nickname']) || isset($params['tags'])) {
             $user_id = $userinfo->user_id;
+            $nickname= $userinfo->nickname;
         }else{
             $data['code'] = 20000;
             return $data;
@@ -86,7 +87,7 @@ class User extends ActiveRecord implements IdentityInterface {
 
         //更新昵称
         if(isset($params['nickname'])){
-            $data = $this->updateNickname($user_id,$params,$model);
+            $data = $this->updateNickname($user_id,$nickname,$params,$model);
         }
 
         //更新标签
@@ -100,9 +101,9 @@ class User extends ActiveRecord implements IdentityInterface {
 
 
     //更新名称
-    protected function updateNickname($user_id,$params,$model)
+    protected function updateNickname($user_id,$nickname,$params,$model)
     {
-        $nickname = $this->getNickname($model);
+        //$nickname = $this->getNickname($model);
         if(isset($params['type']) && $params['type']=='update') {
             $model->nickname = $params['nickname'];
         }else{
@@ -124,7 +125,6 @@ class User extends ActiveRecord implements IdentityInterface {
     //更新标签
     protected function updateTags($userinfo,$params,$model)
     {
-        $nickname = $this->getNickname($userinfo);
         $model->user_id = $user_id = $userinfo->user_id;
         $model->tag_data= $params['tags'];
         $model->save();
@@ -132,7 +132,7 @@ class User extends ActiveRecord implements IdentityInterface {
         //日志
         $log = new Log();
         $message = '标签更新';
-        $log->addLog($user_id,0,$user_id,'user','update',$message,$nickname);
+        $log->addLog($user_id,0,$user_id,'user','update',$message,$userinfo->nickname);
 
         $data['code']    = 10000;
         return $data;
