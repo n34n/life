@@ -135,29 +135,143 @@ class BoxController extends ActiveController
     }
 
 
-    //创建盒子
+
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/box?access-token={access_token}",
+     * 		tags={"Box"},
+     * 		operationId="createBox",
+     * 		summary="添加盒子",
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="name",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="盒子名称",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="img_id",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="图片ID可以为空,则说明用户未上传盒子图片",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionCreate()
     {
         $model = new Box();
-        $data = $model->create($this->userinfo->user_id);
+        $data = $model->create($this->userinfo->user_id,$this->userinfo->nickname);
         return $data;
     }
 
 
-    //更新盒子
+    /**
+     *
+     *	@SWG\Put(
+     * 		path="/box/{id}?access-token={access_token}",
+     * 		tags={"Box"},
+     * 		operationId="createBox",
+     * 		summary="编辑盒子",
+     * 		@SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="name",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="盒子名称",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionUpdate($id)
     {
         $model = new Box();
-        $data  = $model->updateInfo($this->userinfo->user_id,$id);
+        $data  = $model->updateInfo($this->userinfo->user_id,$this->userinfo->nickname,$id);
         return $data;
     }
 
 
-    //删除盒子
+    /**
+     *
+     *	@SWG\Delete(
+     * 		path="/box/{id}?access-token={access_token}",
+     * 		tags={"Box"},
+     * 		operationId="createBox",
+     * 		summary="编辑盒子",
+     * 		@SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Response(
+     * 			response=200,
+     * 			description="成功",
+     * 		),
+     * 	)
+     */
     public function actionDelete($id)
     {
         $model = new Box();
-        $data  = $model->remove($this->userinfo->user_id,$id);
+        $data  = $model->remove($this->userinfo->user_id,$this->userinfo->nickname,$id);
         return $data;
     }
 

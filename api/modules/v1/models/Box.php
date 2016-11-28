@@ -55,8 +55,14 @@ class Box extends ActiveRecord
         return [
             'box_id',
             'name',
-            'item_total',
-            'created_at',
+            'item_total'=>function(){
+                            $data = (empty($this->item_total))?'':$this->item_total;
+                            return $data;
+                        },
+            'created_at'=>function(){
+                            $data = (empty($this->created_at))?'':$this->created_at;
+                            return $data;
+                        },
             'created_by',
             'img'=>function(){
                         $data = (empty($this->img))?'':$this->img;
@@ -101,16 +107,16 @@ class Box extends ActiveRecord
 
 
     //创建盒子
-    public function create($uid)
+    public function create($user_id,$nickname)
     {
         //检查参数
-        if(!isset($uid,$_POST['project_id'],$_POST['name'],$_POST['created_by'])){
+        if(!isset($user_id,$_POST['project_id'],$_POST['name'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
 
         //检查用户与项目是否匹配
-        $rel = RelUserProject::checkUserHasProject($uid,$_POST['project_id']);
+        $rel = RelUserProject::checkUserHasProject($user_id,$_POST['project_id']);
         if($rel == 10111){
             $data['code']  = $rel;
             return $data;
@@ -123,7 +129,8 @@ class Box extends ActiveRecord
                 $this->$key = $val;
             }
         }
-        $this->user_id = $uid;
+        $this->user_id = $user_id;
+        $this->created_by = $nickname;
         $this->save();
 
         //保存图片
@@ -137,7 +144,7 @@ class Box extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($_POST['project_id'],$this->box_id,$uid,'box','create',$this->name,$_POST['created_by']);
+        $log->addLog($_POST['project_id'],$this->box_id,$user_id,'box','create',$this->name,$nickname);
 
         $data['code'] = 10000;
         $data['info'] = $this;
@@ -146,7 +153,7 @@ class Box extends ActiveRecord
 
 
     //更新盒子
-    public function updateInfo($user_id,$id)
+    public function updateInfo($user_id,$nickname,$id)
     {
         //验证方法
         if(!Yii::$app->request->isPut)
@@ -155,10 +162,11 @@ class Box extends ActiveRecord
             return $data;
         }else{
             $params = Yii::$app->request->bodyParams;
+            $params['updated_by'] = $nickname;
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['project_id'],$params['updated_by'])){
+        if(!isset($user_id,$id,$params['project_id'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
@@ -178,7 +186,7 @@ class Box extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],$id,$user_id,'box','update',$model->name,$params['updated_by']);
+        $log->addLog($params['project_id'],$id,$user_id,'box','update',$data['message'],$nickname);
 
         $data['code'] = 10000;
         return $data;
@@ -207,7 +215,7 @@ class Box extends ActiveRecord
 
 
     //删除盒子
-    public function remove($user_id,$id)
+    public function remove($user_id,$nickname,$id)
     {
         //验证方法
         if(!Yii::$app->request->isDelete)
@@ -219,15 +227,21 @@ class Box extends ActiveRecord
         }
 
         //检查参数
-        if(!isset($user_id,$id,$params['box_id'],$params['project_id'],$params['updated_by'])){
+        if(!isset($user_id,$id,$params['project_id'],$nickname)){
             $data['code']  = 20000;
+            return $data;
+        }
+
+        //检查用户是否有权限
+        $rel = RelUserProject::checkUserHasProject($user_id,$params['project_id']);
+        if($rel == 10111){
+            $data['code']  = $rel;
             return $data;
         }
 
         //验证资源是否存在
         $query = self::findOne(['box_id'=>$id,'project_id'=>$params['project_id']]);
         if(empty($query)){
-            //无数据
             $data['code'] = 50000;
             return $data;
         }
@@ -235,7 +249,6 @@ class Box extends ActiveRecord
         //删除物品及相关
         $items = Item::findAll(['box_id'=>$id]);
         if(!empty($items)){
-            $params['box_id'] = $id;
             foreach ($items as $item){
                 $obj = new Item();
                 $obj->remove($user_id,$item->item_id);
@@ -253,7 +266,7 @@ class Box extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],$id,$user_id,'box','delete',$model['name'],$params['updated_by']);
+        $log->addLog($params['project_id'],$id,$user_id,'box','delete',$model['name'],$nickname);
 
         $data['code'] = 10000;
         return $data;
