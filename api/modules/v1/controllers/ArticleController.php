@@ -54,10 +54,6 @@ class ArticleController extends ActiveController
      *          type="string",
      * 			description="访问令牌",
      *		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
 

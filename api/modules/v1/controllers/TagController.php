@@ -21,9 +21,6 @@ class TagController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -54,7 +51,7 @@ class TagController extends ActiveController
      *	@SWG\Put(
      * 		path="/tag/1?access-token={access_token}",
      * 		tags={"Tag"},
-     * 		operationId="createBox",
+     * 		operationId="updateTag",
      * 		summary="编辑标签",
 
      *      @SWG\Parameter(
@@ -84,11 +81,6 @@ class TagController extends ActiveController
      * 			required=true,
      * 			type="string",
      * 			description="标签数据:以json形式提交,例子中为更好阅读加了回车,实际使用时请不要有空格和回车:<br>[<br>{&quot;tag_id&quot;:1,&quot;tag&quot;:&quot;服装&quot;},<br>{&quot;tag_id&quot;:2,&quot;tag&quot;:&quot;鞋靴&quot;}<br>]",
-     * 		),
-     *
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */

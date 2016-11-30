@@ -24,9 +24,6 @@ class ProjectController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -38,7 +35,9 @@ class ProjectController extends ActiveController
             'create' => ['POST'],
             'update' => ['PUT'],
             'delete' => ['DELETE'],
-            'join' => ['POST'],
+            'member-list' => ['GET'],
+            'member-join' => ['POST'],
+            'member-delete' => ['DELETE'],
         ];
     }
 
@@ -71,10 +70,6 @@ class ProjectController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="用户ID",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */
@@ -129,10 +124,6 @@ class ProjectController extends ActiveController
      * 			type="integer",
      * 			description="用户ID",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionView($id)
@@ -176,10 +167,6 @@ class ProjectController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="项目类型:1为单人项目，2为多人项目",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */
@@ -225,10 +212,6 @@ class ProjectController extends ActiveController
      * 			type="integer",
      * 			description="项目类型:1为单人项目，2为多人项目",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionUpdate($id)
@@ -252,11 +235,81 @@ class ProjectController extends ActiveController
         }
     }
 
+    /**
+     *
+     *	@SWG\Delete(
+     * 		path="/project/{id}?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="deleteProject",
+     * 		summary="删除项目",
+     *      @SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 	)
+     */
+    public function actionDelete($id)
+    {
+        $model = new Project();
+        $data  = $model->remove($this->userinfo,$id);
+        return $data;
+    }
+
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/project/member-list?access-token={access_token}&project_id={project_id}",
+     * 		tags={"Project"},
+     * 		operationId="listMember",
+     * 		summary="成员列表",
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 	)
+     */
+    public function actionMemberList()
+    {
+        if(!isset($_GET['project_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        $data['code'] = RelUserProject::checkUserHasProject($this->userinfo->user_id,$_GET['project_id']);
+        if($data['code'] != 10000) {return $data;}
+
+        $list  = RelUserProject::getUserList($_GET['project_id']);
+        $data['code']  = 10000;
+        $data['list']  = $list->getModels();
+        $data['pages'] = Pages::Pages($list);
+
+        return $data;
+    }
 
     /**
      *
      *	@SWG\Post(
-     * 		path="/project/join?access-token={access_token}",
+     * 		path="/project/member-join?access-token={access_token}",
      * 		tags={"Project"},
      * 		operationId="joinProject",
      * 		summary="成员加入项目",
@@ -279,35 +332,25 @@ class ProjectController extends ActiveController
      * 			in="formData",
      * 			required=true,
      * 			type="integer",
-     * 			description="项目管理员ID",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
+     * 			description="管理员ID",
      * 		),
      * 	)
      */
-    public function actionJoin()
+    public function actionMemberJoin()
     {
         $model = new Project();
         $data  = $model->join($this->userinfo);
         return $data;
     }
 
+
     /**
      *
      *	@SWG\Delete(
-     * 		path="/project/{id}?access-token={access_token}",
+     * 		path="/project/member-delete?access-token={access_token}",
      * 		tags={"Project"},
-     * 		operationId="updateProject",
-     * 		summary="删除项目",
-     *      @SWG\Parameter(
-     * 			name="id",
-     * 			in="path",
-     * 			required=true,
-     * 			type="integer",
-     * 			description="项目ID",
-     * 		),
+     * 		operationId="deleteMember",
+     * 		summary="删除成员",
      *      @SWG\Parameter(
      * 			name="access_token",
      * 			in="path",
@@ -315,17 +358,29 @@ class ProjectController extends ActiveController
      *          type="string",
      * 			description="访问令牌",
      *		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
+     *      @SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="user_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="成员ID",
      * 		),
      * 	)
      */
-    public function actionDelete($id)
+    public function actionMemberDelete()
     {
         $model = new Project();
-        $data  = $model->remove($this->userinfo,$id);
+        $data  = $model->deleteMember($this->userinfo);
         return $data;
     }
+
+
 
 }

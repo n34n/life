@@ -80,10 +80,6 @@ class LogController extends ActiveController
      * 			type="integer",
      * 			description="当前请求第X页",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionIndex()

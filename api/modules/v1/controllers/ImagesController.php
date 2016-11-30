@@ -23,9 +23,6 @@ class ImagesController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -94,10 +91,6 @@ class ImagesController extends ActiveController
      * 			type="integer",
      * 			description="关联模型的ID,比如上传盒子图片,则关联这个盒子的ID,一般在编辑状态下才会使用",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionUpload()
@@ -131,15 +124,11 @@ class ImagesController extends ActiveController
      * 			description="要上传的图片文件",
      * 		),
      *      @SWG\Parameter(
-     * 			name="type",
+     * 			name="avatar_url",
      * 			in="formData",
      * 			required=false,
      * 			type="string",
-     * 			description="微信获取头像时,不用提交type参数,用户在账户内自行上传头像时type=update",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
+     * 			description="微信获取头像时,提交头像的URL地址,用户自行更新头像则不需要提交该参数",
      * 		),
      * 	)
      */
@@ -192,10 +181,6 @@ class ImagesController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="关联模型的ID,比如上传盒子图片,则关联这个盒子的ID,一般在编辑状态下才会使用",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */

@@ -26,9 +26,6 @@ class BoxController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -44,33 +41,6 @@ class BoxController extends ActiveController
         ];
     }
 
-    /**
-     *
-     *	@SWG\Get(
-     * 		path="/box/{id}?access-token={access_token}",
-     * 		tags={"Box"},
-     * 		operationId="viewBox",
-     * 		summary="查看盒子",
-     * 		@SWG\Parameter(
-     * 			name="id",
-     * 			in="path",
-     * 			required=true,
-     * 			type="integer",
-     * 			description="盒子ID",
-     * 		),
-     * 		@SWG\Parameter(
-     * 			name="access_token",
-     * 			in="path",
-     * 			required=true,
-     *          type="string",
-     * 			description="访问令牌",
-     *		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
-     * 	)
-     */
     public function actions()
     {
         $actions = parent::actions();
@@ -115,10 +85,6 @@ class BoxController extends ActiveController
      * 			type="integer",
      * 			description="当前请求第X页",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionIndex()
@@ -141,6 +107,29 @@ class BoxController extends ActiveController
         return $data;
     }
 
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/box/{id}?access-token={access_token}",
+     * 		tags={"Box"},
+     * 		operationId="viewBox",
+     * 		summary="查看盒子",
+     * 		@SWG\Parameter(
+     * 			name="id",
+     * 			in="path",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 	)
+     */
 
 
     /**
@@ -178,10 +167,6 @@ class BoxController extends ActiveController
      * 			type="integer",
      * 			description="图片ID可以为空,则说明用户未上传盒子图片",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionCreate()
@@ -197,7 +182,7 @@ class BoxController extends ActiveController
      *	@SWG\Put(
      * 		path="/box/{id}?access-token={access_token}",
      * 		tags={"Box"},
-     * 		operationId="createBox",
+     * 		operationId="updateBox",
      * 		summary="编辑盒子",
      * 		@SWG\Parameter(
      * 			name="id",
@@ -227,10 +212,6 @@ class BoxController extends ActiveController
      * 			type="string",
      * 			description="盒子名称",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionUpdate($id)
@@ -246,8 +227,8 @@ class BoxController extends ActiveController
      *	@SWG\Delete(
      * 		path="/box/{id}?access-token={access_token}",
      * 		tags={"Box"},
-     * 		operationId="createBox",
-     * 		summary="编辑盒子",
+     * 		operationId="deleteBox",
+     * 		summary="删除盒子",
      * 		@SWG\Parameter(
      * 			name="id",
      * 			in="path",
@@ -268,10 +249,6 @@ class BoxController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="项目ID",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */

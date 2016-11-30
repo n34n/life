@@ -4,6 +4,8 @@ namespace api\modules\v1\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\data\ActiveDataProvider;
+use api\models\User;
 
 /**
  * This is the model class for table "rel_user_project".
@@ -31,6 +33,7 @@ class RelUserProject extends ActiveRecord
             'project_id',
             'is_default',
             'is_manager',
+            'user',
         ];
     }
 
@@ -55,6 +58,24 @@ class RelUserProject extends ActiveRecord
         }else{
             return 10111;
         }
+    }
+
+    public static function getUserList($pid)
+    {
+        $query = self::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params['pageSize'],
+            ],
+        ]);
+
+        $query->where(['project_id' => $pid]);
+
+        $query->orderBy("join_at");
+
+        return $dataProvider;
     }
     
     /**

@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\models;
 
+use api\models\User;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
@@ -335,7 +336,69 @@ class Project extends ActiveRecord //implements Linkable
 
         //日志
         $log = new Log();
-        $log->addLog($_POST['project_id'],0,$user->user_id,'project','join',$message,$nickname);
+        $log->addLog($_POST['project_id'],0,$user->user_id,'project','member-join',$message,$nickname);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
+
+    //删除成员
+    public function deleteMember($user)
+    {
+        //验证方法
+        if(!Yii::$app->request->isDelete)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user->user_id,$params['project_id'],$params['user_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //检查用户是否是管理员
+        $one = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$params['project_id']]);
+        if(empty($one)){
+            //数据是否存在
+            $data['code'] = 405;
+            return $data;
+        }else{
+            //是否是管理员
+            if($one->is_manager!=1){
+                $data['code'] = 10111;
+                return $data;
+            }
+        }
+
+        //自己不能删除自己
+        if($user->user_id == $params['user_id']){
+            $data['code']  = 405;
+            return $data;
+        }
+
+        //踢出成员
+        $rel = RelUserProject::findOne(['user_id'=>$params['user_id'],'project_id'=>$params['project_id']]);
+        if(empty($rel)){
+            $data['code'] = 50001;
+            return $data;
+        }
+        RelUserProject::deleteAll(['user_id'=>$params['user_id'],'project_id'=>$params['project_id']]);
+
+        //用户数据
+        $userinfo = User::findOne(['user_id'=>$params['user_id']]);
+        $nickname = $user->nickname;
+        $message  = $userinfo->nickname."被踢出项目";
+
+        //print_r($user);
+
+        //日志
+        $log = new Log();
+        $log->addLog($params['project_id'],0,$user->user_id,'project','member-delete',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;

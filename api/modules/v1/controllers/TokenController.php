@@ -62,10 +62,6 @@ class TokenController extends ActiveController
      * 			type="string",
      * 			description="登录类型:mobile,email,weixin,weibo,qq",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionCheckAccess()
@@ -123,10 +119,6 @@ class TokenController extends ActiveController
      *          type="string",
      * 			description="签名：根据上述字段键名升续后，进行键值连接生成Str，再在Str末尾连接秘钥Key，最后加密md5(Str+Key)",
      *		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionGetToken()
@@ -146,6 +138,7 @@ class TokenController extends ActiveController
 
                 if($ua['code'] == 10000) {//(用户账户::UserAccount::存在)处理下方事项
                     $data['user']  = $ua['user'];
+                    User::updateNicknameByLogin($user['user']->user_id,$_POST['created_by']);
                 }else{//(用户账户::UserAccount::不存在)处理下方事项
                     $ua = new UserAccount();
                     $data['user'] = $ua->create($user['user']->user_id);
@@ -168,7 +161,7 @@ class TokenController extends ActiveController
 
                 //新用户初始化,创建默认项目
                 $proj = new Project();
-                $p = $proj->createDefault($data['user']['account']->user_id,$data['user']['account']->_nickname);
+                $p = $proj->createDefault($data['user']['account']->user_id,$data['user']['account']->nickname);
                 $data['project'] = $p;
 
                 return $data;

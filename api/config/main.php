@@ -92,7 +92,9 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST set-default' => 'set-default',
-                        'POST join' => 'join',
+                        'GET member-list' => 'member-list',
+                        'POST member-join' => 'member-join',
+                        'DELETE member-delete' => 'member-delete',
                     ],
                 ],
 

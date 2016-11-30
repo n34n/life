@@ -61,7 +61,11 @@ class Images extends ActiveRecord
                 return $data;
              },
             'l_path' => function(){
-                $data = (empty($this->l_path))?'':Yii::$app->params['imgServer'].$this->l_path;
+                if(!isset($_GET['access-token']) || isset($_POST['avatar_url'])){
+                    $data = (empty($this->l_path))?'':$this->l_path;
+                }else{
+                    $data = (empty($this->l_path))?'':Yii::$app->params['imgServer'].$this->l_path;
+                }
                 return $data;
             },
             'm_path' => function(){
@@ -151,6 +155,8 @@ class Images extends ActiveRecord
     //上传头像
     public function uploadAvatar($user_id,$nickname)
     {
+        $avatar_updated = 1;
+
         //验证参数
         if(!isset($user_id,$nickname)){
             $data['code']  = 20000;
@@ -167,6 +173,14 @@ class Images extends ActiveRecord
         //检查头像是否存在,如果存在则删除头像
         $img = self::findOne(['rel_id'=>$user_id,'model'=>'avatar']);
         if(!empty($img)){
+            //如果用户微信头像没有更新,则不修改头像
+            if(isset($_POST['avatar_url']) && $_POST['avatar_url']!=''){
+                if($img->l_path == $_POST['avatar_url']){
+                    $data['code'] = 50100;
+                    return $data;
+                }
+                $avatar_updated = 0;
+            }
             $this->removeImg($img->img_id);
         }
 
@@ -187,14 +201,15 @@ class Images extends ActiveRecord
         $this->rel_id    = $user_id;
         $this->created_by= $nickname;
         $this->o_path    = $file['path'].$file['file'];
+        $this->l_path    = (isset($_POST['avatar_url']))?$_POST['avatar_url']:'';//保存微信头像URL
         $this->m_path    = $img_m;
         $this->s_path    = $img_s;
         $this->save();
 
         //更新用户avatar属性
-        if(isset($_POST['type']) && $_POST['type']=='update'){
+        if($avatar_updated == 1){
             $user = User::findOne(['user_id'=>$user_id]);
-            $user->avatar = 1;
+            $user->avatar_updated = 1;
             $user->save();
         }
 

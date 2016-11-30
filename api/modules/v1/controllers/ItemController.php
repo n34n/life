@@ -27,9 +27,6 @@ class ItemController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -97,10 +94,6 @@ class ItemController extends ActiveController
      * 			type="integer",
      * 			description="当前请求第X页",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionIndex()
@@ -152,10 +145,6 @@ class ItemController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="项目ID",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */
@@ -230,10 +219,6 @@ class ItemController extends ActiveController
      *          @SWG\Items(type="integer"),
      * 			description="图片ID:保存添加的物品时,说明物品图片已经上传并生成ID,关联时每行一个图片ID",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionCreate()
@@ -284,10 +269,6 @@ class ItemController extends ActiveController
      * 			required=true,
      * 			type="string",
      * 			description="物品名称",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */
@@ -340,10 +321,6 @@ class ItemController extends ActiveController
      * 			type="array",
      * 			description="待转移物品ID:多物品转移时,每行一个物品ID",
      * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionMove()
@@ -387,10 +364,6 @@ class ItemController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="物品ID",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */

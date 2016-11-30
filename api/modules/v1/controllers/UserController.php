@@ -20,9 +20,6 @@ class UserController extends ActiveController
         $behaviors['authenticator'] = ['class' => QueryParamAuth::className()];
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         $this->userinfo = isset($_GET['access-token'])?User::getUserInfo($_GET['access-token']):'';
-        if(!empty($this->userinfo)){
-            $this->userinfo->nickname = ($this->userinfo->nickname!="")?$this->userinfo->nickname:$this->userinfo->_nickname;
-        }
         return $behaviors;
     }
 
@@ -63,10 +60,6 @@ class UserController extends ActiveController
      *          type="string",
      * 			description="访问令牌",
      *		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
-     * 		),
      * 	)
      */
     public function actionView($id)
@@ -127,10 +120,6 @@ class UserController extends ActiveController
      * 			required=false,
      * 			type="integer",
      * 			description="用户标签,用户修改或调整标签后,按json形式提交,例子中为更好阅读加了回车,实际使用时请不要有空格和回车:<br>[<br>{&quot;id&quot;:1,&quot;name&quot;:&quot;服装&quot;},<br>{&quot;id&quot;:2,&quot;name&quot;:&quot;标签B&quot;}<br>]",
-     * 		),
-     * 		@SWG\Response(
-     * 			response=200,
-     * 			description="成功",
      * 		),
      * 	)
      */

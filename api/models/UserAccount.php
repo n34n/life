@@ -12,6 +12,7 @@ class UserAccount extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
+    public $nickname;
 
     public static function tableName()
     {

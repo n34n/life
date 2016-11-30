@@ -38,7 +38,7 @@ class Log extends ActiveRecord
             [['parent_id', 'rel_id', 'user_id'], 'required'],
             [['parent_id', 'rel_id', 'user_id', 'created_at'], 'integer'],
             [['model'], 'string', 'max' => 20],
-            [['action'], 'string', 'max' => 12],
+            [['action'], 'string', 'max' => 15],
             [['message'], 'string', 'max' => 100],
             [['created_by'], 'string', 'max' => 45],
         ];
@@ -50,6 +50,7 @@ class Log extends ActiveRecord
             'id',
             'parent_id',
             'rel_id',
+            'user_id',
             'model',
             'action',
             'message',

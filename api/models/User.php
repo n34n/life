@@ -23,12 +23,15 @@ class User extends ActiveRecord implements IdentityInterface {
         return [
             'user_id',
             'nickname',
-            '_nickname',
-            'avatar',
             'tag_data',
+            'nickname_updated',
+            'avatar_updated',
             'created_at',
             'updated_at',
-            'img',
+            'img'=>function(){
+                        $data = (empty($this->img))?'':$this->img;
+                        return $data;
+                    },
         ];
     }
 
@@ -45,7 +48,7 @@ class User extends ActiveRecord implements IdentityInterface {
     {
         //创建用户
         $this->created_at = time();
-        $this->_nickname = $_POST['created_by'];
+        $this->nickname = $_POST['created_by'];
         $this->tag_data   = trim(Yii::$app->params['defaultTags']);
         $this->save();
         $user_id = $this->getId();
@@ -53,6 +56,7 @@ class User extends ActiveRecord implements IdentityInterface {
         //创建用户账户
         $ua   = new UserAccount();
         $data['account'] = $ua->create($user_id);
+        $data['account']->nickname = $this->nickname;
 
         return $data;
     }
@@ -87,7 +91,9 @@ class User extends ActiveRecord implements IdentityInterface {
 
         //更新昵称
         if(isset($params['nickname'])){
-            $data = $this->updateNickname($user_id,$nickname,$params,$model);
+            if($model->nickname_updated == 0){
+                $data = $this->updateNickname($user_id,$nickname,$params,$model);
+            }
         }
 
         //更新标签
@@ -104,10 +110,9 @@ class User extends ActiveRecord implements IdentityInterface {
     protected function updateNickname($user_id,$nickname,$params,$model)
     {
         //$nickname = $this->getNickname($model);
+        $model->nickname = $params['nickname'];
         if(isset($params['type']) && $params['type']=='update') {
-            $model->nickname = $params['nickname'];
-        }else{
-            $model->_nickname = $params['nickname'];
+            $model->nickname_updated = 1;
         }
 
         $model->user_id = $user_id;
@@ -117,6 +122,31 @@ class User extends ActiveRecord implements IdentityInterface {
         $log = new Log();
         $message = '名称['.$nickname.'->'.$params['nickname'].']';
         $log->addLog($user_id,0,$user_id,'user','update',$message,$nickname);
+
+        $data['code']    = 10000;
+        return $data;
+    }
+
+    //更新名称
+    public static function updateNicknameByLogin($user_id,$nickname)
+    {
+        //$nickname = $this->getNickname($model);
+        $model = self::findOne(['user_id'=>$user_id]);
+        if($model->nickname == $nickname){
+            return;
+        }
+        $_nickname = $model->nickname;
+
+        if($model->nickname_updated == 0){
+            $model->nickname = $nickname;
+        }
+        $model->user_id = $user_id;
+        $model->save();
+
+        //日志
+        $log = new Log();
+        $message = '昵称['.$_nickname.'->'.$nickname.']';
+        $log->addLog($user_id,0,$user_id,'user','update',$message,$_nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -142,7 +172,7 @@ class User extends ActiveRecord implements IdentityInterface {
     //获取用户昵称
     protected function getNickname($model)
     {
-        return $nickname = ($model->nickname!="")?$model->nickname:$model->_nickname;
+        return $model->nickname;
     }
 
     /**
