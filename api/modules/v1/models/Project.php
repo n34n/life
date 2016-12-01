@@ -262,10 +262,20 @@ class Project extends ActiveRecord //implements Linkable
     //设置默认项目
     public function setDefault($user_id,$project_id)
     {
+        //检查参数
+        if(!isset($user_id,$project_id)){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //检查用户是否有操作当前项目权限
         $rel = RelUserProject::findOne(['user_id'=>$user_id,'project_id'=>$project_id]);
         if(!empty($rel)){
-            $rel->is_default = 1;
-            $rel->save();
+            Yii::$app->db->createCommand()
+                ->update('rel_user_project', ['is_default' => 1], ['user_id'=>$user_id,'project_id'=>$project_id])
+                ->execute();
+//            $rel->is_default = 1;
+//            $rel->save();
             RelUserProject::updateAll(['is_default'=>0],
                 'user_id=:user_id And project_id<>:project_id',
                 [':user_id'=>$user_id,':project_id'=>$project_id]);

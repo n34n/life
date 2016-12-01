@@ -34,6 +34,7 @@ class ProjectController extends ActiveController
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT'],
+            'set-default' => ['POST'],
             'delete' => ['DELETE'],
             'member-list' => ['GET'],
             'member-join' => ['POST'],
@@ -221,18 +222,35 @@ class ProjectController extends ActiveController
         return $data;
     }
 
-    //设置默认项目
+
+    /**
+     *
+     *	@SWG\Post(
+     * 		path="/project/set-default?access-token={access_token}",
+     * 		tags={"Project"},
+     * 		operationId="setDefaultProject",
+     * 		summary="设置默认项目",
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     *      @SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 	)
+     */
     public function actionSetDefault()
     {
-        if(isset($this->userinfo->user_id,$_POST['project_id']))
-        {
-            $model = new Project();
-            $data  = $model->setDefault($this->userinfo->user_id,$_POST['project_id']);
-            return $data;
-        }else{
-            $data['code']  = 20000;
-            return $data;
-        }
+        $model = new Project();
+        $data  = $model->setDefault($this->userinfo->user_id,(int)$_POST['project_id']);
+        return $data;
     }
 
     /**

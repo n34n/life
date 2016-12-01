@@ -13,7 +13,7 @@ use api\models\User;
  * @property integer $user_id
  * @property integer $project_id
  * @property integer $is_manager
- *
+ * @property integer $is_default
  * @property User $user
  */
 class RelUserProject extends ActiveRecord
@@ -30,7 +30,9 @@ class RelUserProject extends ActiveRecord
     {
         $fields = parent::fields();
 
-        if(Yii::$app->requestedAction->id != 'get-token'){
+        $no_rel = array('get-token','set-default');
+
+        if(!in_array(Yii::$app->requestedAction->id,$no_rel)){
             $fields['user'] = 'user';
         }
 
@@ -43,8 +45,8 @@ class RelUserProject extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'project_id', 'is_manager'], 'required'],
-            [['user_id', 'project_id', 'is_manager'], 'integer'],
+            [['user_id', 'project_id'], 'required'],
+            [['user_id', 'project_id', 'is_manager', 'is_default'], 'integer'],
             //[['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
