@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\User;
@@ -123,6 +124,7 @@ class TokenController extends ActiveController
      */
     public function actionGetToken()
     {
+        
         $modelClass = $this->modelClass;
 
         $data = $modelClass::checkSign();

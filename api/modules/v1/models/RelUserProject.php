@@ -28,13 +28,13 @@ class RelUserProject extends ActiveRecord
 
     public function fields()
     {
-        return [
-            'user_id',
-            'project_id',
-            'is_default',
-            'is_manager',
-            'user',
-        ];
+        $fields = parent::fields();
+
+        if(Yii::$app->requestedAction->id != 'get-token'){
+            $fields['user'] = 'user';
+        }
+
+        return $fields;
     }
 
     /**
