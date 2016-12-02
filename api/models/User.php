@@ -190,7 +190,22 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return UserAccount::findOne(['access_token' => $token]);
+        //UserAccount::find(['access_token' => $token])->createCommand()
+        //$ua = new UserAccount();
+        $cache = yii::$app->cache;
+
+        $data = $cache->get($token);
+
+        if ($data === false) {
+            // $data 在缓存中没有找到，则重新计算它的值
+            $data = UserAccount::findOne(['access_token' => $token]);
+
+            // 将 $data 存放到缓存供下次使用
+            $cache->set($token, $data, 3600);
+        }
+
+        //$data = UserAccount::findOne(['access_token' => $token]);
+        return $data;
     }
 
     //这个就是我们进行yii\filters\auth\QueryParamAuth调用认证的函数，下面会说到。

@@ -52,6 +52,17 @@ return [
             'enableSession'=>false
             //'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
         ],
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'keyPrefix' => 'lifeqx_',
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211,
+                    'weight' => 100,
+                ],
+            ],
+        ],
         'session' => [
             // this is the name of the session cookie used for login on the api
             'name' => 'advanced-api',
@@ -68,7 +79,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'error',
         ],
-
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
