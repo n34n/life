@@ -55,8 +55,8 @@ class User extends ActiveRecord implements IdentityInterface {
 
         //创建用户账户
         $ua   = new UserAccount();
-        $data['account'] = $ua->create($user_id);
-        $data['account']->nickname = $this->nickname;
+        $data = $ua->create($user_id);
+        $data->nickname = $this->nickname;
 
         return $data;
     }
