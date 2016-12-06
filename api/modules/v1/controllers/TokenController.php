@@ -159,7 +159,8 @@ class TokenController extends ActiveController
 
                 //创建用户
                 $user           = new User();
-                $data['user']   = $user->create();
+                $account        = $user->create();
+                $data['user']   = $account['account'];
 
                 //新用户初始化,创建默认项目
                 $proj = new Project();
