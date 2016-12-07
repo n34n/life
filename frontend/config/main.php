@@ -37,12 +37,20 @@ return [
             'errorAction' => 'site/error',
         ],
 
-        // 'urlManager' => [
-        //     'enablePrettyUrl' => true,
-        //     'showScriptName' => false,
-        //     'rules' => [
-        //     ],
-        // ],
+         'urlManager' => [
+             'enablePrettyUrl' => true,
+             'showScriptName' => false,
+             //'enableStrictParsing' =>true,
+             'rules' => [
+//                 'class' => 'yii\web\UrlRule',
+//                 'controller' => '/token',
+ //                'pluralize' => false,
+//                 'extraPatterns' => [
+//                     'POST check-access' => 'check-access',
+//                     'POST get-token' => 'get-token',
+//                 ],
+             ],
+         ],
     ],
     'params' => $params,
 ];
