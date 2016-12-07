@@ -5,6 +5,8 @@ namespace api\modules\v1\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
+use api\models\User;
+use api\modules\v1\models\Project;
 
 /**
  * This is the model class for table "log".
@@ -46,21 +48,16 @@ class Log extends ActiveRecord
 
     public function fields()
     {
-        return [
-            'id',
-            'parent_id',
-            'rel_id',
-            'user_id',
-            'model',
-            'action',
-            'message',
-            'created_by',
-            'created_at',
-        ];
+        $fields = parent::fields();
+
+        $fields['manager']  = 'manager';
+        $fields['user']     = 'user';
+
+        return $fields;
     }
 
 
-    public function getList(){
+    public function getList($type){
 
         $query = $this->find();
 
@@ -71,9 +68,29 @@ class Log extends ActiveRecord
             ],
         ]);
 
-        $query->where(['parent_id' => $_GET['parent_id']]);
+        $query->where(['parent_id' => $_GET['parent_id']])->andWhere(['model'=>$type]);
 
         $query->orderBy("created_at DESC");
+
+        return $dataProvider;
+    }
+
+    public function getMessage($user_id){
+
+        $query = $this->find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params['pageSize'],
+            ],
+        ]);
+
+        $query->where(['rel_id' => $user_id])->orWhere(['user_id' => $user_id])->andFilterWhere(['model'=>'project']);
+
+        $query->orderBy("created_at DESC");
+
+        //echo $query->createCommand()->rawSql;
 
         return $dataProvider;
     }
@@ -89,5 +106,20 @@ class Log extends ActiveRecord
         $this->message      = $message;
         $this->created_by   = $created_by;
         return $this->save();
+    }
+
+    public function getManager()
+    {
+        return $this->hasOne(User::className(), ['user_id' => 'rel_id']);
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
+    }
+
+    public function getProject()
+    {
+        return $this->hasOne(Project::className(), ['project_id' => 'parent_id']);
     }
 }

@@ -19,6 +19,7 @@ use api\modules\v1\models\Images;
  *
  * @property integer $project_id
  * @property string $name
+ * @property integer $owner_id
  * @property integer $type
  * @property integer $created_at
  * @property string $created_by
@@ -54,10 +55,18 @@ class Project extends ActiveRecord //implements Linkable
     public function fields()
     {
         $fields = parent::fields();
-        if(isset($_GET['user_id'])){
-            $fields['rel'] = 'rel';
-        }
+
         unset($fields['updated_at'],$fields['updated_by']);
+
+        $no_rel = array('index');
+
+//        if(!in_array(Yii::$app->requestedAction->id,$no_rel)){
+//            $fields['rel'] = 'rel';
+//        }
+
+        if(in_array(Yii::$app->requestedAction->id,$no_rel)){
+            $fields['owner'] = 'owner';
+        }
 
         return $fields;
     }
@@ -98,7 +107,6 @@ class Project extends ActiveRecord //implements Linkable
     //创建项目
     public function create($user_id,$nickname,$type=1,$is_default=0)
     {
-        $type = isset($type)?$type:1;
         if(!isset($user_id,$_POST['name'],$type,$nickname)) {
             $data['code'] = 20000;
             return $data;
@@ -106,6 +114,7 @@ class Project extends ActiveRecord //implements Linkable
 
         $this->name = $_POST['name'];
         $this->type = $type;
+        $this->owner_id = $user_id;
         $this->created_at = time();
         $this->created_by = $nickname;
         $this->updated_by = $nickname;
@@ -124,6 +133,14 @@ class Project extends ActiveRecord //implements Linkable
             }
         }else{
             $data['code'] = 10001;
+        }
+
+        //日志
+        if($data['code'] == 10000){
+            $log = new Log();
+            $type = ($this->type==1)?"成功添加个人项目":"成功添加共享项目";
+            $message = $type."[".$this->name."]";
+            $log->addLog($this->project_id,$user_id,$user_id,'project','create',$message,$nickname);
         }
 
         return $data;
@@ -200,7 +217,7 @@ class Project extends ActiveRecord //implements Linkable
             $data['code'] = 50100;
             return $data;
         }else{
-            $message = '名称['.$model->name.'->'.$params['name'].']';
+            $message = '项目['.$model->name.']名称修改为['.$params['name'].']';
         }
 
         $model->project_id = $id;
@@ -210,7 +227,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //日志
         $log = new Log();
-        $log->addLog($id,0,$user_id,'project','update-name',$message,$nickname);
+        $log->addLog($id,$user_id,$user_id,'project','update-name',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -232,11 +249,21 @@ class Project extends ActiveRecord //implements Linkable
                  * 将其他用户踢出项目
                  * 客户端:在执行更新类型时,应告知用户,多人转单人时将会把其他用户踢出该项目后,才能转成单人项目
                  */
+                //删除项目成员
+                $relusers = RelUserProject::find()->where(['project_id'=>$id])->andWhere(['<>', 'user_id', $user_id])->all();
+                foreach ($relusers as $reluser){
+                    $log = new Log();
+                    $_user = User::findOne($reluser->user_id);
+                    $message  = "项目[".$model->name."],注销成员".$_user->nickname;
+                    $log->addLog($id,$user_id,$reluser->user_id,'project','member-delete',$message,$nickname);
+                }
+
+
                 RelUserProject::deleteAll(['project_id'=>$id,'is_manager'=>0]);
-                $message = "从多人项目转成单人项目";
+                $message = "项目[".$model->name."]从共享项目转成个人项目";
                 break;
             case 2:
-                $message = "从单人项目转成多人项目";
+                $message = "项目[".$model->name."]从个人项目转成共享项目";
                 break;
             default:
                 $data['code'] = 50100;
@@ -252,7 +279,7 @@ class Project extends ActiveRecord //implements Linkable
 
         //日志
         $log = new Log();
-        $log->addLog($id,0,$user_id,'project','update-type',$message,$nickname);
+        $log->addLog($id,$user_id,$user_id,'project','update-type',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -341,12 +368,13 @@ class Project extends ActiveRecord //implements Linkable
         $rel->save();
 
         //用户数据
+        $projinfo = self::findOne($_POST['project_id']);
         $nickname = $user->nickname;
-        $message  = $nickname."成功加入项目";
+        $message  = "成功加入项目[".$projinfo->name."]";
 
         //日志
         $log = new Log();
-        $log->addLog($_POST['project_id'],0,$user->user_id,'project','member-join',$message,$nickname);
+        $log->addLog($_POST['project_id'],$_POST['manager_id'],$user->user_id,'project','member-join',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -400,15 +428,16 @@ class Project extends ActiveRecord //implements Linkable
         RelUserProject::deleteAll(['user_id'=>$params['user_id'],'project_id'=>$params['project_id']]);
 
         //用户数据
+        $projinfo = self::findOne($params['project_id']);
         $userinfo = User::findOne(['user_id'=>$params['user_id']]);
         $nickname = $user->nickname;
-        $message  = $userinfo->nickname."被踢出项目";
+        $message  = "项目[".$projinfo->name."],注销成员".$userinfo->nickname;
 
         //print_r($user);
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],0,$user->user_id,'project','member-delete',$message,$nickname);
+        $log->addLog($params['project_id'],$user->user_id,$params['user_id'],'project','member-delete',$message,$nickname);
 
         $data['code']    = 10000;
         return $data;
@@ -432,6 +461,7 @@ class Project extends ActiveRecord //implements Linkable
         }
 
         //检查资源是否存在
+        $info = self::findOne($id);
         $proj = RelUserProject::findOne(['project_id'=>$id,'user_id'=>$user->user_id]);
         if(empty($proj)){
             $data['code']  = 50001;
@@ -439,7 +469,12 @@ class Project extends ActiveRecord //implements Linkable
         }else{
             //检查是否有项目权限
             if($proj->is_manager!=1){
-                $data['code']  = 10111;
+                $data['code']  = 10000;
+                //创建日志
+                $reluser = RelUserProject::findOne(['project_id'=>$id,'is_manager'=>1]);
+                $log = new Log();
+                $message = "退出项目[#".$id." ".$info->name."]";
+                $log->addLog($id,$reluser->user_id,$user->user_id,'project','member-left',$message,$user->nickname);
                 return $data;
             }
             $obj = self::findOne($id);
@@ -456,6 +491,13 @@ class Project extends ActiveRecord //implements Linkable
         Box::deleteAll(['project_id'=>$id]);
 
         //删除项目成员
+        $relusers = RelUserProject::find()->where(['project_id'=>$id])->all();
+        foreach ($relusers as $reluser){
+            $log = new Log();
+            $_user = User::findOne($reluser->user_id);
+            $message  = "项目[".$info->name."],注销成员".$_user->nickname;
+            $log->addLog($id,$user->user_id,$reluser->user_id,'project','member-delete',$message,$user->nickname);
+        }
         RelUserProject::deleteAll(['project_id'=>$id]);
 
         //删除项目
@@ -463,8 +505,8 @@ class Project extends ActiveRecord //implements Linkable
 
         //创建日志
         $log = new Log();
-        $message = "删除项目[#".$id." ".$name."]";
-        $log->addLog($id,0,$user->user_id,'project','delete',$message,$user->nickname);
+        $message = "删除项目[".$name."]";
+        $log->addLog($id,$user->user_id,$user->user_id,'project','delete',$message,$user->nickname);
 
         $data['code'] = 10000;
         return $data;
@@ -483,5 +525,12 @@ class Project extends ActiveRecord //implements Linkable
     public function getRel()
     {
         return $this->hasOne(RelUserProject::className(), ['project_id' => 'project_id'])->where(['user_id'=>$_GET['user_id']]);
+    }
+
+    //扩展字段
+    public function getOwner()
+    {
+        //return $_GET['user_id'];
+        return $this->hasOne(User::className(), ['user_id' => 'owner_id']);
     }
 }

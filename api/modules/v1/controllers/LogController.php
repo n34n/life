@@ -31,6 +31,7 @@ class LogController extends ActiveController
     {
         return [
             'index'  => ['GET', 'HEAD'],
+            'message'=> ['GET'],
             'create' => ['POST'],
             'delete' => ['DELETE'],
         ];
@@ -48,7 +49,7 @@ class LogController extends ActiveController
     /**
      *
      *	@SWG\Get(
-     * 		path="/log?access-token={access_token}&project_id={project_id}&parent_id={parent_id}&page={page}",
+     * 		path="/log?access-token={access_token}&project_id={project_id}&type={type}&parent_id={parent_id}&page={page}",
      * 		tags={"Log"},
      * 		operationId="listLog",
      * 		summary="历史记录",
@@ -65,6 +66,13 @@ class LogController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="type",
+     * 			in="path",
+     * 			required=true,
+     * 			type="string",
+     * 			description="盒子历史记录box,物品历史记录item",
      * 		),
      * 		@SWG\Parameter(
      * 			name="parent_id",
@@ -85,7 +93,7 @@ class LogController extends ActiveController
     public function actionIndex()
     {
         //检查参数
-        if(!isset($_GET['parent_id'],$_GET['project_id'],$this->userinfo->user_id)){
+        if(!isset($_GET['parent_id'],$_GET['project_id'],$_GET['type'],$this->userinfo->user_id)){
             $data['code'] = 20000;
             return $data;
         }
@@ -95,7 +103,43 @@ class LogController extends ActiveController
         if($data['code']!=10000){return $data;}
 
         $model         = new Log();
-        $list          = $model->getList();
+        $list          = $model->getList($_GET['type']);
+
+        $data['code']  = 10000;
+        $data['list']  = $list->getModels();
+        $data['pages'] = Pages::Pages($list);
+
+        return $data;
+    }
+
+    /**
+     *
+     *	@SWG\Get(
+     * 		path="/log/message?access-token={access_token}&page={page}",
+     * 		tags={"Log"},
+     * 		operationId="listMessage",
+     * 		summary="全局消息",
+     * 		@SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="page",
+     * 			in="path",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="当前请求第X页",
+     * 		),
+     * 	)
+     */
+    public function actionMessage()
+    {
+
+        $model         = new Log();
+        $list          = $model->getMessage($this->userinfo->user_id);
 
         $data['code']  = 10000;
         $data['list']  = $list->getModels();

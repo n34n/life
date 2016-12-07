@@ -54,7 +54,7 @@ class ProjectController extends ActiveController
     /**
      *
      *	@SWG\Get(
-     * 		path="/project?access-token={access_token}&user_id={user_id}",
+     * 		path="/project?access-token={access_token}&user_id={user_id}&page={page}",
      * 		tags={"Project"},
      * 		operationId="listProject",
      * 		summary="项目列表",
@@ -71,6 +71,13 @@ class ProjectController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="用户ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="page",
+     * 			in="path",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="当前请求第X页",
      * 		),
      * 	)
      */
@@ -174,7 +181,8 @@ class ProjectController extends ActiveController
     public function actionCreate()
     {
         $model = new Project();
-        $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname);
+        $type = isset($_POST['type'])?$_POST['type']:1;
+        $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname,$type);
         return $data;
     }
 

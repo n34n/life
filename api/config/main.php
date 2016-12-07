@@ -126,11 +126,21 @@ return [
                     ],
                 ],
 
-                //标签,日志控制
+                //标签,文章控制
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => ['v1/tag','v1/log','v1/article'],
+                    'controller' => ['v1/tag','v1/article'],
                     'pluralize' => false,
+                ],
+
+                //日志控制
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['v1/log'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET message' => 'message',
+                    ],
                 ],
 
                 //图片控制
