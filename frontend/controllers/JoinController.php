@@ -25,6 +25,8 @@ class JoinController extends \yii\web\Controller
 
         //检查参数
         if(!isset($_GET['uid'],$_GET['pid'])){
+            print_r($_GET);
+            return;
             return $this->redirect("/join/error?code=20000");
         }
 
