@@ -24,16 +24,15 @@ class JoinController extends \yii\web\Controller
         //return $this->render('index');
 
         //检查参数
-        if(!isset($_GET['uid'],$_GET['pid'])){
-            print_r($_GET);
-            return;
+        if(!isset($_GET['owner_id'],$_GET['project_id'])){
             return $this->redirect("/join/error?code=20000");
         }
 
-        $project_id = $_GET['pid'];
-        $owner_id   = $_GET['uid'];
+        $project_id = $_GET['owner_id'];
+        $owner_id   = $_GET['project_id'];
 
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
+        
         if(empty($rel)){
             return $this->redirect("/join/error?code=50001");
         }
