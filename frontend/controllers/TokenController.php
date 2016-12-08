@@ -2,14 +2,16 @@
 
 namespace frontend\controllers;
 
-use common\components\WechatCallbackapiTest;
+use common\components\Wechat;
 
 class TokenController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        $wechatObj = new WechatCallbackapiTest();
-        $wechatObj->valid();
+        define("TOKEN", "YoonPer"); //TOKEN值
+        $wechatObj = new Wechat();
+        //$wechatObj->valid();
+        $wechatObj->test();
     }
 
 }
