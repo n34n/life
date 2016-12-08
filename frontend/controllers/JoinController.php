@@ -54,7 +54,7 @@ class JoinController extends \yii\web\Controller
             $openid         = $token->openid;
             $url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
             $member_json = file($url);
-            $member = json_decode($userinfo_json[0]);
+            $member = json_decode($member_json[0]);
             //print_r($userinfo);
         }
 
