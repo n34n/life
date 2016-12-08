@@ -24,10 +24,5 @@ class Wechat {
             return false;
         }
     }
-
-    public function test()
-    {
-        echo TOKEN;
-    }
 }
 ?>

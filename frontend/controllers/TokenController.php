@@ -10,8 +10,7 @@ class TokenController extends \yii\web\Controller
     {
         define("TOKEN", "YoonPer"); //TOKEN值
         $wechatObj = new Wechat();
-        //$wechatObj->valid();
-        $wechatObj->test();
+        $wechatObj->valid();
     }
 
 }
