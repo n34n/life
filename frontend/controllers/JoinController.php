@@ -61,11 +61,13 @@ class JoinController extends \yii\web\Controller
         }
 
 
-        //判断是否已经加入项目
+        //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
-        $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
-        if(empty($rel)){
-            return $this->redirect("/join/error?code=10112");
+        if(!empty($user)){
+            $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
+            if(!empty($rel)){
+                return $this->redirect("/join/error?code=10112");
+            }
         }
 
         //项目
