@@ -17,22 +17,20 @@ class JoinController extends \yii\web\Controller
     public function actionIndex()
     {
         $session = Yii::$app->session;
-//        echo urlencode('http://m.lifeqx.com/join?owner_id=1&project_id=3');
+//        echo urlencode('http://m.lifeqx.com/join?uid=1');
 //        return;
 //        echo '<br>';
 //        echo urlencode('http://m.example.com/join');
         //return $this->render('index');
 
-        print_r($_GET);
-        return;
 
         //检查参数
-        if(!isset($_GET['owner_id'],$_GET['project_id'])){
+        if(!isset($_GET['state'],$_GET['uid'])){
             return $this->redirect("/join/error?code=20000");
         }
 
-        $project_id = $_GET['owner_id'];
-        $owner_id   = $_GET['project_id'];
+        $project_id = $_GET['state'];
+        $owner_id   = $_GET['uid'];
 
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
 
