@@ -2,10 +2,12 @@
 
 namespace frontend\controllers;
 
+
 use Yii;
 use frontend\models\Project;
 use frontend\models\RelUserProject;
 use frontend\models\User;
+use frontend\models\UserAccount;
 use yii\web\Session;
 
 class JoinController extends \yii\web\Controller
@@ -60,7 +62,8 @@ class JoinController extends \yii\web\Controller
 
 
         //判断是否已经加入项目
-        $rel = RelUserProject::findOne(['user_id'=>$member->user_id,'project_id'=>$project_id]);
+        $user = UserAccount::findOne(['account'=>$openid]);
+        $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
         if(empty($rel)){
             return $this->redirect("/join/error?code=10112");
         }
@@ -68,7 +71,7 @@ class JoinController extends \yii\web\Controller
         //项目
         $proj  = Project::findOne($project_id);
 
-        //邀请人
+        //主人
         $owner = User::findOne($owner_id);
 
         $session->set('member', $member);
