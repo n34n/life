@@ -2,6 +2,8 @@
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
+    require(__DIR__ . '/../../api/config/key.php'),
+    require(__DIR__ . '/../../api/config/statuscode.php'),
     require(__DIR__ . '/params.php'),
     require(__DIR__ . '/params-local.php')
 );
@@ -41,15 +43,7 @@ return [
              'enablePrettyUrl' => true,
              'showScriptName' => false,
              //'enableStrictParsing' =>true,
-             'rules' => [
-//                 'class' => 'yii\web\UrlRule',
-//                 'controller' => '/token',
- //                'pluralize' => false,
-//                 'extraPatterns' => [
-//                     'POST check-access' => 'check-access',
-//                     'POST get-token' => 'get-token',
-//                 ],
-             ],
+             'rules' => [],
          ],
     ],
     'params' => $params,
