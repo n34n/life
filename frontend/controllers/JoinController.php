@@ -23,6 +23,9 @@ class JoinController extends \yii\web\Controller
 //        echo urlencode('http://m.example.com/join');
         //return $this->render('index');
 
+        print_r($_GET);
+        return;
+
         //检查参数
         if(!isset($_GET['owner_id'],$_GET['project_id'])){
             return $this->redirect("/join/error?code=20000");
@@ -32,7 +35,7 @@ class JoinController extends \yii\web\Controller
         $owner_id   = $_GET['project_id'];
 
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
-        
+
         if(empty($rel)){
             return $this->redirect("/join/error?code=50001");
         }
