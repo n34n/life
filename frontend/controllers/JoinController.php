@@ -58,6 +58,13 @@ class JoinController extends \yii\web\Controller
             //print_r($userinfo);
         }
 
+
+        //判断是否已经加入项目
+        $rel = RelUserProject::findOne(['user_id'=>$member->user_id,'project_id'=>$project_id]);
+        if(empty($rel)){
+            return $this->redirect("/join/error?code=10112");
+        }
+
         //项目
         $proj  = Project::findOne($project_id);
 
@@ -83,21 +90,25 @@ class JoinController extends \yii\web\Controller
         $info = User::join();
 
         if(is_int($info)){
-            switch ($info)
-            {
-                case 20000:
-                    //参数错误
-                    $this->redirect();
-                    break;
-                case 50001:
-                    //项目不存在
-                    $this->redirect();
-                    break;
-                case 400:
-                    //错误请求
-                    $this->redirect();
-                    break;
-            }
+//            switch ($info)
+//            {
+//                case 20000:
+//                    //参数错误
+//                    $this->redirect();
+//                    break;
+//                case 50001:
+//                    //项目不存在
+//                    $this->redirect();
+//                    break;
+//                case 10112:
+//                    $this->redirect();
+//                    break;
+//                case 400:
+//                    //错误请求
+//                    $this->redirect();
+//                    break;
+//            }
+            return $this->redirect("/join/error?code=".$info);
         }
 
         
