@@ -21,6 +21,6 @@ $this->title = '物语千寻';
         <input type="hidden" name="project_id" value="<?=$proj->project_id?>">
         <input type="hidden" name="openid" value="<?=$member->openid?>">
         <input type="hidden" name="nickname" value="<?=$member->nickname?>">
-        <? echo Html::submitButton('加入项目', ['class'=>'btn btn-primary','name' =>'submit-button']) ?>
+        <input type="submit" name="submit-button" value="加入项目">
     <?php ActiveForm::end(); ?>
 </div>

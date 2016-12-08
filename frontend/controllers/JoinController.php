@@ -32,8 +32,8 @@ class JoinController extends \yii\web\Controller
         $project_id = $_GET['state'];
         $owner_id   = $_GET['uid'];
 
+        //判断是否合法访问
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
-
         if(empty($rel)){
             return $this->redirect("/join/error?code=50001");
         }
@@ -58,30 +58,15 @@ class JoinController extends \yii\web\Controller
             //print_r($userinfo);
         }
 
-//        $userinfo['openid']   = 'odTkbwhEqPaDQweliB9avKJTyIWA';
-//        $userinfo['nickname'] = 'Sam';
-//        $userinfo['sex']      = 1;
-//        $userinfo['language'] = 'zh_CN';
-//        $userinfo['city']     = '长宁';
-//        $userinfo['province'] = '上海';
-//        $userinfo['country']  = '中国';
-//        $userinfo['headimgurl'] = 'http://wx.qlogo.cn/mmopen/a0ObXfhfLicMzxGGyTdrYUjZ7qWp7ZlOMju5z2ibGVd2pBcicpNacYg3SqJKVu1jgMCc6PPKniaQOoYy2b324cyf9A/0';
-
-
         //项目
         $proj  = Project::findOne($project_id);
-        //$proj  = $proj->toArray();
 
         //邀请人
         $owner = User::findOne($owner_id);
-        //$owner = $owner->toArray();
 
-        //$_SESSION['userinfo'] = $userinfo;
-        //$_SESSION['projinfo'] = $proj;
         $session->set('member', $member);
         $session->set('proj', $proj);
 
-        //return $this->render('index');
         return $this->render('index', [
             'owner'    => $owner,
             'proj'     => $proj,
