@@ -21,9 +21,6 @@ class JoinController extends \yii\web\Controller
 
        //return $this->render('index2');
 
-        print_r($_GET);
-        return;
-
         //检查参数
         if(!isset($_GET['state'],$_GET['uid'])){
             return $this->redirect("/join/error?code=20000");
@@ -46,6 +43,9 @@ class JoinController extends \yii\web\Controller
         $url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$_GET['code']."&grant_type=authorization_code";
         $token_json = file($url);
         $token = json_decode($token_json[0]);
+
+        print_r($token);
+        return;
 
         //获取用户数据
         if(isset($token) && !empty($token->access_token)){
