@@ -18,12 +18,11 @@ class JoinController extends \yii\web\Controller
     public function actionIndex()
     {
         $session = Yii::$app->session;
-//        echo urlencode('http://m.lifeqx.com/join?uid=1');
-//        return;
-//        echo '<br>';
-//        echo urlencode('http://m.example.com/join');
+
        //return $this->render('index2');
 
+        print_r($_GET);
+        return;
 
         //检查参数
         if(!isset($_GET['state'],$_GET['uid'])){
