@@ -60,7 +60,7 @@ class JoinController extends \yii\web\Controller
             //print_r($userinfo);
         }
 
-
+        
         //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
         if(!empty($user)){
@@ -69,6 +69,7 @@ class JoinController extends \yii\web\Controller
                 return $this->redirect("/join/error?code=10112");
             }
         }
+
 
         //项目
         $proj  = Project::findOne($project_id);
