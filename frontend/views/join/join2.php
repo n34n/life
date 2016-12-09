@@ -21,6 +21,7 @@ $this->title = '物语千寻';
 <div class="dataform">
     <button class="button" onClick="location.href='https://itunes.apple.com/cn/app/bear-hua-li-shu-xie-bi-ji/id1091189122?mt=12'">进入物语千寻</button>
     <a href="https://itunes.apple.com/cn/app/bear-hua-li-shu-xie-bi-ji/id1091189122?mt=12">download</a>
+    <a href=”http://mp.weixin.qq.com/mp/redirect?url=http%3A%2F%2Fitunes.apple.com%2Fus%2Fapp%2Fid399608199%23rd”>download2</a>
 </div>
 
 <div class="android">
