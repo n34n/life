@@ -60,7 +60,7 @@ class JoinController extends \yii\web\Controller
             //print_r($userinfo);
         }
 
-        
+
         //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
         if(!empty($user)){
@@ -92,7 +92,7 @@ class JoinController extends \yii\web\Controller
     public function actionJoin()
     {
         $session = Yii::$app->session;
-        
+
         $info = User::join();
 
         if(is_int($info)){
@@ -117,7 +117,7 @@ class JoinController extends \yii\web\Controller
             return $this->redirect("/join/error?code=".$info);
         }
 
-        
+
         return $this->render('join', [
             'info'     => $info,
             'member'   => $session->get('member'),

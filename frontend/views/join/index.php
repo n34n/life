@@ -9,8 +9,12 @@ $this->title = '物语千寻';
 <div class="ownner">
     <p class="nickname"><?=$owner->nickname?></p>
     <p class="headline">邀请您加入收纳项目</p>
+</div>
+
+<div class="triangle">
     <img src="images_2/triangle.png">
 </div>
+
 <div class="project">
     <h1><?=$proj->name?></h1>
 </div>

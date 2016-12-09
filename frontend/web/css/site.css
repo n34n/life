@@ -1,17 +1,69 @@
 html,
 body {
     height: 100%;
+    margin: -7px 0 0 0;
+    padding: 0;
+    background-color: #F1F1F1;
+    font-family: "PingFangSC-Regular", sans-serif;
+    font-weight: 200;
+    letter-spacing: 0.12px;
 }
 
 .wrap {
     min-height: 100%;
     height: auto;
-    margin: 0 auto -60px;
-    padding: 0 0 60px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.wrap p{
+    margin: 0;
+    padding: 0;
 }
 
 .wrap > .container {
-    padding: 70px 15px 20px;
+    padding: 0;
+    text-align: center;
+}
+
+.ownner{
+    height: 170px;
+    background-color: white;
+}
+
+.ownner .nickname{
+    padding-top: 55px;
+    color: #666;
+    font-size: 14px;
+}
+
+.ownner .headline{
+    padding-top: 24px;
+    color:#F8857C;
+    font-size: 18px;
+}
+
+.project h1{
+    padding-top: 26px;
+    font-size: 20px;
+    color: #666666;
+
+}
+
+.dataform{
+    position: absolute;
+    top: 85%;
+    width: 100%;
+}
+
+.dataform .button{
+    width: 238px;
+    height: 40px;
+    background-image: url("../images_2/button.png");
+    background-size:238px 40px;
+    font-size: 16px;
+    color: white;
+    border: 0;
 }
 
 .footer {
