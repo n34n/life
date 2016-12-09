@@ -12,7 +12,7 @@ $this->title = '物语千寻';
 </div>
 
 <div class="triangle">
-    <img src="images_2/triangle.png">
+    <img src="images_2/triangle.png" width="53" height="30">
 </div>
 
 <div class="project">
