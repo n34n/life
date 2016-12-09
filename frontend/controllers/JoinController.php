@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-
 use Yii;
 use frontend\models\Project;
 use frontend\models\RelUserProject;
@@ -23,7 +22,7 @@ class JoinController extends \yii\web\Controller
 //        return;
 //        echo '<br>';
 //        echo urlencode('http://m.example.com/join');
-        //return $this->render('index');
+       // return $this->render('index2');
 
 
         //检查参数
@@ -39,7 +38,6 @@ class JoinController extends \yii\web\Controller
         if(empty($rel)){
             return $this->redirect("/join/error?code=50001");
         }
-
 
         //微信AppID和秘钥
         $appid  = Yii::$app->params['wx_appid'];
