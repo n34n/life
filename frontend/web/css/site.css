@@ -98,7 +98,7 @@ body {
 
 .dataform{
     position: absolute;
-    top: 85%;
+    top: 82%;
     width: 100%;
 }
 
@@ -110,6 +110,21 @@ body {
     font-size: 16px;
     color: white;
     border: 0;
+}
+
+.android{
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    font-size: 11px;
+    color: #ADADAD;
+    letter-spacing: 0.06px;
+}
+
+.android label{
+    position: relative;
+    top: -3px;
+    left:8px;
 }
 
 @media only screen and (max-width: 400px) {

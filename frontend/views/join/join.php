@@ -18,8 +18,12 @@ $this->title = '物语千寻';
     <img src="../images_2/shape.png">
 </div>
 
-
 <div class="dataform">
     <button class="button" href="#">进入物语千寻</button>
+</div>
+
+<div class="android">
+    <img src="../images_2/android.png" width="15" height="17">
+    <label>安卓版本开发中，暂无下载资源</label>
 </div>
 
