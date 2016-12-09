@@ -19,7 +19,7 @@ $this->title = '物语千寻';
 </div>
 
 <div class="dataform">
-    <button class="button" onClick="location.href='http://mp.weixin.qq.com/mp/redirect?url=http://https%3A%2F%2Fitunes.apple.com%2Fcn%2Fapp%2Fbear-hua-li-shu-xie-bi-ji%2Fid1091189122%3Fmt%3D12'">进入物语千寻</button>
+    <button class="button" onClick="location.href='https://itunes.apple.com/cn/app/bear-hua-li-shu-xie-bi-ji/id1091189122?mt=12'">进入物语千寻</button>
 </div>
 
 <div class="android">
