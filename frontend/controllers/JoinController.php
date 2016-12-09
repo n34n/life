@@ -22,7 +22,7 @@ class JoinController extends \yii\web\Controller
 //        return;
 //        echo '<br>';
 //        echo urlencode('http://m.example.com/join');
-       // return $this->render('index2');
+       //return $this->render('index2');
 
 
         //检查参数
