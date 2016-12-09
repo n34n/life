@@ -89,6 +89,8 @@ class JoinController extends \yii\web\Controller
 
     public function actionJoin()
     {
+        //return $this->render('join2');
+
         $session = Yii::$app->session;
 
         $info = User::join();

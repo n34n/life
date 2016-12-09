@@ -5,6 +5,7 @@ body {
     padding: 0;
     background-color: #F1F1F1;
     font-family: "PingFangSC-Regular", sans-serif;
+    font-size: 14px;
     /*font-weight: 200;*/
     letter-spacing: 0.12px;
 }
@@ -34,13 +35,6 @@ body {
 .ownner .nickname{
     padding-top: 55px;
     color: #666;
-    font-size: 14px;
-}
-
-.ownner p label{
-    position: relative;
-    top: -15px;
-    left:8px;
 }
 
 .ownner .avatar{
@@ -49,12 +43,46 @@ body {
     border-radius:50px;
 }
 
+.ownner p label{
+    position: relative;
+    top: -15px;
+    left:8px;
+}
+
 .ownner .headline{
     padding-top: 24px;
     color:#F8857C;
     font-size: 18px;
 }
 
+.member{
+    height: 268px;
+    background-color: #F8857C;
+    color: white;
+}
+
+.member>div{
+    padding-top: 50px;
+}
+
+.member .avatar{
+    width: 50px;
+    height: 50px;
+    border-radius:50px;
+}
+
+.member .nickname{
+    padding-top: 6px;
+}
+
+.member .headline{
+    padding-top: 30px;
+    font-size: 24px;
+}
+
+.member .project{
+    padding-top: 30px;
+}
 
 .project h1{
     padding-top: 26px;

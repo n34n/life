@@ -5,11 +5,11 @@ use yii\widgets\ActiveForm;
 $this->title = '物语千寻';
 ?>
 
-<!--这里是邀请人及其共享的项目信息-->
 <div class="ownner">
     <p class="nickname">
         <img src="<?php echo Yii::$app->params['imgServer'].$owner->img->s_path; ?>" class="avatar">
         <label><?=$owner->nickname?></label>
+    </p>
     <p class="headline">邀请您加入收纳项目</p>
 </div>
 
