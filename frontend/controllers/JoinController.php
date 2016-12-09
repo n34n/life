@@ -44,8 +44,11 @@ class JoinController extends \yii\web\Controller
         $token_json = file($url);
         $token = json_decode($token_json[0]);
 
-        print_r($token);
-        return;
+        //重复刷新页面
+        if(isset($token->errcode)){
+            //40029 页面已失效
+            return $this->redirect("/join/error?code=".$token->errcode);
+        }
 
         //获取用户数据
         if(isset($token) && !empty($token->access_token)){
