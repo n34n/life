@@ -19,6 +19,8 @@ class JoinController extends \yii\web\Controller
     {
         $session = Yii::$app->session;
 
+//        echo urlencode('https://itunes.apple.com/cn/app/bear-hua-li-shu-xie-bi-ji/id1091189122?mt=12');
+//        return;
        //return $this->render('index2');
 
         //检查参数
