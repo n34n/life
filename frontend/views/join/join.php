@@ -14,8 +14,8 @@ $this->title = '物语千寻';
     <p class="project"><?=$proj->name?></p>
 </div>
 
-<div class="triangle">
-    <img src="../images_2/shape.png" width="375" height="59">
+<div class="shape">
+    <img src="../images_2/shape.png">
 </div>
 
 
