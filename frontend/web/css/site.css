@@ -37,6 +37,12 @@ body {
     font-size: 14px;
 }
 
+.ownner .avatar{
+    width: 100px;
+    height: 100px;
+    border-radius:50px;
+}
+
 .ownner .headline{
     padding-top: 24px;
     color:#F8857C;
