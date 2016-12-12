@@ -19,7 +19,7 @@ $this->title = '物语千寻';
 </div>
 
 <div class="dataform">
-    <button class="button" onClick="location.href='evernote%3A%2F%2F%2Fview%2F76136038%2Fs12%2F4d971333-8b65-45d6-857b-243c850cabf5%2F4d971333-8b65-45d6-857b-243c850cabf5%2F2cd4dc67-1d52-401f-9aad-d5524b646ba2'">进入物语千寻</button>
+    <button class="button" onClick="location.href='https://itunes.apple.com/cn/app/qq-2011/id444934666?mt=8'">进入物语千寻</button>
     <a href="evernote%3A%2F%2F%2Fview%2F76136038%2Fs12%2F4d971333-8b65-45d6-857b-243c850cabf5%2F4d971333-8b65-45d6-857b-243c850cabf5%2F2cd4dc67-1d52-401f-9aad-d5524b646ba2">download</a>
     <a href=”http://mp.weixin.qq.com/mp/redirect?url=https%3A%2F%2Fitunes.apple.com%2Fcn%2Fapp%2Fbear-hua-li-shu-xie-bi-ji%2Fid1091189122%3Fmt%3D12”>download2</a>
 </div>
