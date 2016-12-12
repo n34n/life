@@ -108,6 +108,7 @@ class JoinController extends \yii\web\Controller
 
             print_r($member);
             print_r($proj);
+            return;
         }
 
 
