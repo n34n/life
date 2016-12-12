@@ -19,7 +19,7 @@ class JoinController extends \yii\web\Controller
     {
         $session = Yii::$app->session;
 
-//        echo urlencode('https://itunes.apple.com/cn/app/bear-hua-li-shu-xie-bi-ji/id1091189122?mt=12');
+//        echo urlencode('evernote:///view/76136038/s12/4d971333-8b65-45d6-857b-243c850cabf5/4d971333-8b65-45d6-857b-243c850cabf5/2cd4dc67-1d52-401f-9aad-d5524b646ba2');
 //        return;
        //return $this->render('index2');
 
@@ -93,6 +93,8 @@ class JoinController extends \yii\web\Controller
 
     public function actionJoin()
     {
+        return $this->render('join2');
+
         //已经加入过项目
         if(Yii::$app->request->isGet){
             if(!isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
