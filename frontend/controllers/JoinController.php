@@ -95,8 +95,6 @@ class JoinController extends \yii\web\Controller
     {
         //已经加入过项目
         if(Yii::$app->request->isGet){
-            echo 'hello';
-            return;
             if(!isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
                 $this->redirect("/join/error?code=20000");
             }
@@ -104,14 +102,13 @@ class JoinController extends \yii\web\Controller
             $user_id = $_GET['user_id'];
             $project_id = $_GET['project_id'];
 
-            $member  = Project::findOne($user_id);
+            $member  = User::findOne($user_id);
+            $member->headimgurl = $member->img->s_path;
             $proj  = Project::findOne($project_id);
         }
 
 
         if(Yii::$app->request->isPost){
-            echo 'world';
-            return;
             $session = Yii::$app->session;
 
             $info = User::join();
@@ -121,8 +118,6 @@ class JoinController extends \yii\web\Controller
             }
 
             $member = $session->get('member');
-            $member->headimgurl = $member->img->s_path;
-
             $proj = $session->get('proj');
         }
 
