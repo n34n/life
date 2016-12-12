@@ -21,7 +21,7 @@ $this->title = '物语千寻';
 <div class="dataform">
     <button class="button" onClick="location.href='jsonData://'">进入物语千寻</button>
     <a href="jump">download</a>
-    <a href="com.n34n.jsonData://">yanglandphone</a>
+    <a href="com.baidu.tieba://">com.baidu.tieba</a>
     <a href="https://itunes.apple.com/cn/app/id477927812" id="openApp">贴吧客户端</a>
     <script type="text/javascript">
         document.getElementById('openApp').onclick = function(e){
