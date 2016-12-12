@@ -7,10 +7,24 @@ $this->title = '物语千寻';
 
 <div class="member">
     <div>
-        <img src="<?=$avatar?>" class="avatar">
+        <?php
+            if($avatar == ''){
+               echo '<img class="avatar">';
+            }else{
+                echo '<img src="'.$avatar.'" class="avatar">';
+            }
+        ?>
     </div>
     <p class="nickname"><?=$nickname?></p>
-    <p class="headline">成功加入</p>
+    <p class="headline">
+        <?php
+            if(isset($_GET['succ']) && $_GET['succ']==1){
+                echo '已成功加入';
+            }else{
+                echo '成功加入';
+            }
+        ?>
+    </p>
     <p class="project"><?=$project_name?></p>
 </div>
 
