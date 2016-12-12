@@ -110,6 +110,8 @@ class JoinController extends \yii\web\Controller
 
 
         if(Yii::$app->request->isPost){
+            echo 'world';
+            return;
             $session = Yii::$app->session;
 
             $info = User::join();
