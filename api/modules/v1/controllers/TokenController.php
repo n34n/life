@@ -69,7 +69,8 @@ class TokenController extends ActiveController
     {
         if(Yii::$app->params['maintenance'] == 1){
             $data['code'] = 99999;
-            return $data['code'];
+            $data['message'] = Yii::$app->params['maintenanceMsg'];
+            return $data;
         }
         
         $modelClass = $this->modelClass;

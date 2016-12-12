@@ -1,6 +1,7 @@
 <?php
 return [
     'maintenance'=> 0,//系统维护标识,1为维护中
+    'maintenanceMsg' => "2016年12月31日 2:00-4:00",
     'adminEmail' => '34n@163.com',
     'supportEmail' => 'support@example.com',
     'defaultProject' => '日常',
