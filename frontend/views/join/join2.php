@@ -22,61 +22,16 @@ $this->title = '物语千寻';
     <button class="button" onClick="location.href='jsonData://'">进入物语千寻</button>
     <a href="jump">download</a>
     <a href="com.baidu.tieba://">com.baidu.tieba</a>
-    <a href="https://itunes.apple.com/cn/app/id477927812" id="openApp">贴吧客户端</a>
+    <a href="#" id="openApp">贴吧客户端</a>
     <script type="text/javascript">
-
-        if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i))  {
-
-            //Animation://com.yz.animation
-
-            var isInstalled;
-
-            //var gz = '{"comName":"${com.short_name}","comID":"${com.id}","comPhoneNum":"${com.phone_num}","type":"0"}';
-
-            //var jsongz =JSON.parse(gz);
-
-
-
-            //下面是IOS调用的地址，自己根据情况去修改
-
-            var ifrSrc = 'com.baidu.tieba://';
-
-            var ifr = document.createElement('iframe');
-
-            ifr.src = ifrSrc;
-
-            ifr.style.display = 'none';
-
-            ifr.onload = function() {
-
-                // alert('Is installed.');
-
-                isInstalled = true;
-
-                alert(isInstalled);
-
-                document.getElementById('openApp').click();};
-
-            ifr.onerror = function() {
-
-                // alert('May be not installed.');
-
-                isInstalled = false;
-
-                alert(isInstalled);
-
-            }
-
-            document.body.appendChild(ifr);
-
+        $('#openApp').click(function() {
+            location.href = 'com.baidu.tieba://';
             setTimeout(function() {
-
-                document.body.removeChild(ifr);
-
-            },1000);
-
-        }
-
+                location.href = 'https://itunes.apple.com/cn/app/id477927812';
+            }, 250);
+            setTimeout(function() {
+                location.reload();
+            }, 1000);
         }
     </script>
 </div>
