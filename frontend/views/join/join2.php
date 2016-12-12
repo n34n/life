@@ -24,7 +24,7 @@ $this->title = '物语千寻';
     <a href="com.baidu.tieba://">com.baidu.tieba</a>
     <a href="#" id="openApp">贴吧客户端</a>
     <script type="text/javascript">
-        $('#openApp').click(function() {
+        $('a').click(function() {
             location.href = 'com.baidu.tieba://';
             setTimeout(function() {
                 location.href = 'https://itunes.apple.com/cn/app/id477927812';
