@@ -67,6 +67,11 @@ class TokenController extends ActiveController
      */
     public function actionCheckAccess()
     {
+        if(Yii::$app->params['maintenance'] == 1){
+            $data['code'] = 99999;
+            return $data['code'];
+        }
+        
         $modelClass = $this->modelClass;
         return $modelClass::checkAccess();
     }

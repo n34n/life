@@ -1,5 +1,6 @@
 <?php
 return [
+    'maintenance'=> 0,
     'adminEmail' => '34n@163.com',
     'supportEmail' => 'support@example.com',
     'defaultProject' => '日常',
