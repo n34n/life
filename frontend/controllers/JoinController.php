@@ -95,7 +95,9 @@ class JoinController extends \yii\web\Controller
     {
         //已经加入过项目
         if(Yii::$app->request->isGet){
-            if(isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
+            echo 'hello';
+            return;
+            if(!isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
                 $this->redirect("/join/error?code=20000");
             }
 
