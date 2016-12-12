@@ -103,8 +103,11 @@ class JoinController extends \yii\web\Controller
             $project_id = $_GET['project_id'];
 
             $member  = User::findOne($user_id);
-            $member->headimgurl = $member->img->s_path;
+            //$member->headimgurl = $member->img->s_path;
             $proj  = Project::findOne($project_id);
+
+            print_r($member);
+            print_r($proj);
         }
 
 
