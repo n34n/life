@@ -106,9 +106,9 @@ class JoinController extends \yii\web\Controller
             //$member->headimgurl = $member->img->s_path;
             $proj  = Project::findOne($project_id);
 
-            print_r($member);
-            print_r($proj);
-            return;
+            $avatar       = $member->img->s_path;
+            $nickname     = $member->nickname;
+            $project_name = $proj->name;
         }
 
 
@@ -123,13 +123,18 @@ class JoinController extends \yii\web\Controller
 
             $member = $session->get('member');
             $proj = $session->get('proj');
+
+            $avatar       = $member->headimgurl;
+            $nickname     = $member->nickname;
+            $project_name = $proj->name;
         }
 
 
 
         return $this->render('join', [
-            'member' => $member,
-            'proj'   => $proj,
+            'avatar' => $avatar,
+            'nickname'   => $nickname,
+            'project_name'   => $project_name,
         ]);
     }
 

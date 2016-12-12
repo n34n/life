@@ -7,11 +7,11 @@ $this->title = '物语千寻';
 
 <div class="member">
     <div>
-        <img src="<?=$member->headimgurl?>" class="avatar">
+        <img src="<?=$avatar?>" class="avatar">
     </div>
-    <p class="nickname"><?=$member->nickname?></p>
+    <p class="nickname"><?=$nickname?></p>
     <p class="headline">成功加入</p>
-    <p class="project"><?=$proj->name?></p>
+    <p class="project"><?=$project_name?></p>
 </div>
 
 <div class="shape">
