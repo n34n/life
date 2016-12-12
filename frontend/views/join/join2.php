@@ -19,7 +19,7 @@ $this->title = '物语千寻';
 </div>
 
 <div class="dataform">
-    <button class="button" onClick="location.href='jump'">进入物语千寻</button>
+    <button class="button" onClick="location.href='/join/jump'">进入物语千寻</button>
     <a href="join/jump">download</a>
 </div>
 
