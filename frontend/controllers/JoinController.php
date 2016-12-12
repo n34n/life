@@ -19,6 +19,7 @@ class JoinController extends \yii\web\Controller
     {
         $session = Yii::$app->session;
 
+        return $this->redirect("https://itunes.apple.com/cn/app/qq-2011/id444934666?mt=8");
 //        echo urlencode('evernote:///view/76136038/s12/4d971333-8b65-45d6-857b-243c850cabf5/4d971333-8b65-45d6-857b-243c850cabf5/2cd4dc67-1d52-401f-9aad-d5524b646ba2');
 //        return;
        //return $this->render('index2');

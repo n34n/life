@@ -20,7 +20,7 @@ $this->title = '物语千寻';
 
 <div class="dataform">
     <button class="button" onClick="location.href='https://itunes.apple.com/cn/app/qq-2011/id444934666?mt=8'">进入物语千寻</button>
-    <a href="https://itunes.apple.com/cn/app/qq-2011/id444934666?mt=8">download</a>
+    <a href="/join">download</a>
 </div>
 
 <div class="android">
