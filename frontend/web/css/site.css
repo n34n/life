@@ -90,9 +90,12 @@ body {
 }
 
 .project h1{
-    padding-top: 26px;
+    /*padding-top: 26px;*/
     font-size: 20px;
     color: #666666;
+    line-height: 90px;
+    background: url("../images_2/between.png") no-repeat center;
+    background-size:299px 90px;
 
 }
 
@@ -125,6 +128,24 @@ body {
     position: relative;
     top: -3px;
     left:8px;
+}
+
+.error img{
+    width: 218px;
+    height:227px;
+    padding-top: 33px;
+}
+
+.error h2{
+    padding-top: 50px;
+    font-size: 24px;
+    color: #ADADAD;
+}
+
+.error p{
+    padding-top: 20px;
+    font-size: 18px;
+    color: #ADADAD;
 }
 
 @media only screen and (max-width: 400px) {

@@ -68,7 +68,7 @@ class JoinController extends \yii\web\Controller
         if(!empty($user)){
             $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
             if(!empty($rel)){
-                return $this->redirect("/join/error?code=10112");
+                return $this->redirect("/join/join?succ=1&user_id=$user->user_id&project_id=$project_id");
             }
         }
 
@@ -93,39 +93,40 @@ class JoinController extends \yii\web\Controller
 
     public function actionJoin()
     {
-       // return $this->render('join2');
+        //已经加入过项目
+        if(Yii::$app->request->isGet){
+            if(isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
+                $this->redirect("/join/error?code=20000");
+            }
 
-        $session = Yii::$app->session;
+            $user_id = $_GET['user_id'];
+            $project_id = $_GET['project_id'];
 
-        $info = User::join();
-
-        if(is_int($info)){
-//            switch ($info)
-//            {
-//                case 20000:
-//                    //参数错误
-//                    $this->redirect();
-//                    break;
-//                case 50001:
-//                    //项目不存在
-//                    $this->redirect();
-//                    break;
-//                case 10112:
-//                    $this->redirect();
-//                    break;
-//                case 400:
-//                    //错误请求
-//                    $this->redirect();
-//                    break;
-//            }
-            return $this->redirect("/join/error?code=".$info);
+            $member  = Project::findOne($user_id);
+            $proj  = Project::findOne($project_id);
         }
 
 
+        if(Yii::$app->request->isPost){
+            $session = Yii::$app->session;
+
+            $info = User::join();
+
+            if(is_int($info)){
+                return $this->redirect("/join/error?code=".$info);
+            }
+
+            $member = $session->get('member');
+            $member->headimgurl = $member->img->s_path;
+
+            $proj = $session->get('proj');
+        }
+
+
+
         return $this->render('join', [
-            'info'     => $info,
-            'member'   => $session->get('member'),
-            'proj'   => $session->get('proj'),
+            'member' => $member,
+            'proj'   => $proj,
         ]);
     }
 
