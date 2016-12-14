@@ -4,7 +4,7 @@ body {
     margin: -7px 0 0 0;
     padding: 0;
     background-color: #F1F1F1;
-    font-family: "PingFangSC-Regular", sans-serif;
+    font-family: ".SFNSDisplay-Thin","PingFangSC-Regular", sans-serif;
     font-size: 14px;
     /*font-weight: 200;*/
     letter-spacing: 0.12px;
@@ -158,9 +158,9 @@ body {
 
 /* 文字内容定义 */
 .text_content{
-    padding-top: 30px;
     text-align: left;
     margin: auto 5%;
+    padding: 30px 0;
     line-height: 26px;
     font-size: 14px;
     color: #666666;
