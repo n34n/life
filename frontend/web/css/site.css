@@ -155,6 +155,35 @@ body {
     }
 }
 
+
+/* 文字内容定义 */
+.text_content{
+    padding-top: 30px;
+    text-align: left;
+    margin: auto 5%;
+    line-height: 40px;
+    font-size: 20px;
+}
+
+.text_content p{
+    text-indent: 2em;
+}
+
+.text_content>dl>dt{
+    font-weight: 500;
+}
+
+.text_content>dl>dd{
+    font-weight: 200;
+    margin: 0;
+    padding-bottom: 15px;
+}
+
+.text_content>dl>dd>ul{
+    margin-left: 6%;
+}
+
+
 .footer {
     height: 60px;
     background-color: #f5f5f5;
