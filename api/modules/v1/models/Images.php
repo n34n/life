@@ -49,34 +49,43 @@ class Images extends ActiveRecord
 
     public function fields()
     {
-        return [
-            'img_id',
-            'model',
-            'rel_id'=>function(){
-                $data = (empty($this->rel_id))?'':$this->rel_id;
-                return $data;
-            },
-            'o_path' => function(){
-                $data = (empty($this->o_path))?'':Yii::$app->params['imgServer'].$this->o_path;
-                return $data;
-             },
-            'l_path' => function(){
-                if(!isset($_GET['access-token']) || isset($_POST['avatar_url'])){
-                    $data = (empty($this->l_path))?'':$this->l_path;
-                }else{
-                    $data = (empty($this->l_path))?'':Yii::$app->params['imgServer'].$this->l_path;
-                }
-                return $data;
-            },
-            'm_path' => function(){
-                $data = (empty($this->m_path))?'':Yii::$app->params['imgServer'].$this->m_path;
-                return $data;
-            },
-            's_path' => function(){
+        $fields = parent::fields();
+
+        //$fields['manager']  = 'manager';
+        //$fields['avatar']     = 'avatar';
+
+        $actions = array('message');
+        if(in_array(Yii::$app->requestedAction->id,$actions)){
+            unset($fileds);
+            $fields['s_path'] = function(){
                 $data = (empty($this->s_path))?'':Yii::$app->params['imgServer'].$this->s_path;
-                return $data;
-            },
-        ];
+                return $data;};
+            return $fields;
+        }
+
+        $fields['rel_id'] = function(){
+                                $data = (empty($this->rel_id))?'':$this->rel_id;
+                                return $data;};
+        $fields['o_path'] = function(){
+                                $data = (empty($this->o_path))?'':Yii::$app->params['imgServer'].$this->o_path;
+                                return $data;};
+        $fields['l_path'] = function(){
+                                if(!isset($_GET['access-token']) || isset($_POST['avatar_url'])){
+                                    $data = (empty($this->l_path))?'':$this->l_path;
+                                }else{
+                                    $data = (empty($this->l_path))?'':Yii::$app->params['imgServer'].$this->l_path;
+                                }
+                                return $data;};
+        $fields['m_path'] = function(){
+                                $data = (empty($this->m_path))?'':Yii::$app->params['imgServer'].$this->m_path;
+                                return $data;};
+        $fields['s_path'] = function(){
+                                $data = (empty($this->s_path))?'':Yii::$app->params['imgServer'].$this->s_path;
+                                return $data;};
+
+
+        return $fields;
+        
     }
 
 

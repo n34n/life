@@ -48,10 +48,17 @@ class Log extends ActiveRecord
 
     public function fields()
     {
-        $fields = parent::fields();
+        //$fields = parent::fields();
 
-        $fields['manager']  = 'manager';
-        $fields['user']     = 'user';
+        $fields['manager_id']  = 'rel_id';
+        $fields['user_id']     = 'user_id';
+        $fields['action']      = 'action';
+        $fields['message']     = 'message';
+        $fields['created_at']  = 'created_at';
+        $fields['created_by']  = 'created_by';
+        $fields['avatar']      = function(){
+                                    $data = (empty($this->avatar))?'':Yii::$app->params['imgServer'].$this->avatar->s_path;
+                                    return $data;};
 
         return $fields;
     }
@@ -116,6 +123,11 @@ class Log extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['user_id' => 'user_id']);
+    }
+
+    public function getAvatar()
+    {
+        return $this->hasOne(Images::className(), ['rel_id'=>'user_id'])->where(['model'=>'avatar'])->select(['s_path']);
     }
 
     public function getProject()
