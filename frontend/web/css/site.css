@@ -161,8 +161,9 @@ body {
     padding-top: 30px;
     text-align: left;
     margin: auto 5%;
-    line-height: 40px;
-    font-size: 20px;
+    line-height: 26px;
+    font-size: 14px;
+    color: #666666;
 }
 
 .text_content p{
@@ -176,11 +177,11 @@ body {
 .text_content>dl>dd{
     font-weight: 200;
     margin: 0;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
 }
 
 .text_content>dl>dd>ul{
-    margin-left: 6%;
+    margin-left: 4%;
 }
 
 
