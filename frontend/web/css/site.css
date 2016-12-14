@@ -171,7 +171,7 @@ body {
 }
 
 .text_content>dl>dt{
-    font-weight: 500;
+    font-weight: bold;
 }
 
 .text_content>dl>dd{
@@ -181,7 +181,7 @@ body {
 }
 
 .text_content>dl>dd>ul{
-    margin-left: 4%;
+    margin: 0 4%;
 }
 
 
