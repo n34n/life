@@ -27,7 +27,7 @@ class JoinController extends \yii\web\Controller
 
         //检查参数
         if(!isset($_GET['state'],$_GET['uid'])){
-            return $this->redirect("/join/error?code=20000");
+            return $this->redirect("/site/error?code=20000");
         }
 
         $project_id = $_GET['state'];
@@ -36,7 +36,7 @@ class JoinController extends \yii\web\Controller
         //判断是否合法访问
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
         if(empty($rel)){
-            return $this->redirect("/join/error?code=50001");
+            return $this->redirect("/site/error?code=50001");
         }
 
         //微信AppID和秘钥
@@ -51,7 +51,7 @@ class JoinController extends \yii\web\Controller
         //重复刷新页面
         if(isset($token->errcode)){
             //40029 页面已失效
-            return $this->redirect("/join/error?code=".$token->errcode);
+            return $this->redirect("/site/error?code=".$token->errcode);
         }
 
         //获取用户数据
@@ -95,12 +95,12 @@ class JoinController extends \yii\web\Controller
 
     public function actionJoin()
     {
-        return $this->render('join2');
+        //return $this->render('join2');
 
         //已经加入过项目
         if(Yii::$app->request->isGet){
             if(!isset($_GET['succ'],$_GET['user_id'],$_GET['project_id']) && $_GET['succ'] == 1){
-                $this->redirect("/join/error?code=20000");
+                $this->redirect("/site/error?code=20000");
             }
 
             $user_id = $_GET['user_id'];
@@ -122,7 +122,7 @@ class JoinController extends \yii\web\Controller
             $info = User::join();
 
             if(is_int($info)){
-                return $this->redirect("/join/error?code=".$info);
+                return $this->redirect("/site/error?code=".$info);
             }
 
             $member = $session->get('member');
@@ -155,6 +155,19 @@ class JoinController extends \yii\web\Controller
         return $this->render('error', [
             'code'    => $code,
         ]);
+    }
+
+    public function actionMail(){
+        $mail= Yii::$app->mailer->compose();
+        $mail->setTo('info@lifeqx.com');
+        $mail->setSubject("[意见反馈] 软件缺陷");
+        $mail->setTextBody('你们的软件,在这个页面能不能加上这个那个功能.');   //发布纯文字文本
+        //$mail->setHtmlBody("<br>问我我我我我");    //发布可以带html标签的文本
+        if($mail->send())
+            echo "success";
+        else
+            echo "failse";
+        die();
     }
 
 }
