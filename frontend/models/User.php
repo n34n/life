@@ -36,7 +36,6 @@ class User extends \yii\db\ActiveRecord
         return [
             [['nickname_updated', 'avatar_updated', 'created_at', 'updated_at'], 'integer'],
             [['tag_data'], 'string'],
-            ['email', 'email'],
             [['nickname'], 'string', 'max' => 45],
         ];
     }
