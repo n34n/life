@@ -11,6 +11,9 @@ class FeedbackController extends \yii\web\Controller
         return $this->render('index');
     }
 
+    /*
+     * 用户提交反馈,以邮件形式发到指定邮箱
+     */
     public function actionSubmit()
     {
         if(!isset($_POST['type'],$_POST['des']) && $_POST['des']==""){
@@ -40,10 +43,35 @@ class FeedbackController extends \yii\web\Controller
         //$mail->setTextBody($des);   //发布纯文字文本
         $mail->setHtmlBody($content);    //发布可以带html标签的文本
         if($mail->send())
-            echo "SUCC";
+            return $this->redirect('/feedback/status?status=SUCC');
         else
-            echo "FAILSE";
+            return $this->redirect('/feedback/status?status=FAILSE');
         die();
+    }
+
+    public function actionStatus()
+    {
+        if(isset($_GET['status'])){
+            $status = $_GET['status'];
+        }else{
+            $status = "FAILSE";
+        }
+
+        if($status == "SUCC"){
+            $img = '<img src="../images_2/thanks.png">';
+            $h2  = '意见反馈成功！';
+            $p   = '我们将认真处理你的意见反馈';
+        }else{
+            $img = '';
+            $h2  = '抱歉，提交失败！';
+            $p   = '感谢你的反馈，请稍后重试';
+        }
+
+        return $this->render('status', [
+            'img'   => $img,
+            'h2'    => $h2,
+            'p'     => $p,
+        ]);
     }
 
 }
