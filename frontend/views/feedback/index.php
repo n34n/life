@@ -45,7 +45,7 @@ $this->title = '意见反馈';
     $(function() {
         $(".feedbackForm ul li:first").css("background", "#95C4FC");
         $(".feedbackForm ul li:first").children("a").css("color", "white");
-        $(".feedbackForm .button").css("background", "#ADADAD");
+        //$(".feedbackForm .button").css("background", "#ADADAD");
         
         // 点击 JAVA 变色
         $(".feedbackForm ul li").click(function(e) {
@@ -61,10 +61,10 @@ $this->title = '意见反馈';
 
         $("textarea").change(function(e) {
             if($(this).val() == ""){
-                $(".feedbackForm .button").css("background", "#ADADAD");
+                $(".feedbackForm .button").css("background-position", "0 0");
                 $(".feedbackForm .button").attr("disabled","disabled");
             }else{
-                $(".feedbackForm .button").css("background", "#F8857C");
+                $(".feedbackForm .button").css("background-position", "0 -40px");
                 $(".feedbackForm .button").removeAttr("disabled");
             }
         });

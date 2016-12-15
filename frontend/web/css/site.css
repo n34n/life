@@ -224,7 +224,7 @@ body {
     font-size: 1.2rem;
     color: #ADADAD;
     position: relative;
-    top: 9px;
+    top: 7px;
 
 }
 
@@ -269,16 +269,22 @@ body {
     width: 85%;
     background: none;
     border: none;
+    color: #666666;
 }
 
 .feedbackForm .button{
     margin-top: 50px;
     width: 238px;
     height: 40px;
-    background: #F8857C;
+    /*background: #F8857C;*/
+    /*border-radius: 39px;*/
+    /*background-image: url("../images_2/button2.png");*/
+
+    background: url("../images_2/button2.png") no-repeat;
+
+    background-size:238px 80px;
     border-radius: 39px;
-    /*background-image: url("../images_2/button.png");*/
-    /*background-size:238px 40px;*/
+
     font-size: 16px;
     color: white;
     border: 0;
