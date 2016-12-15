@@ -14,13 +14,13 @@ $this->title = '意见反馈';
     <?php $form = ActiveForm::begin(['action' => ['feedback/submit'],'method'=>'post', 'id'=>'submitForm']); ?>
     <div class="form_desc">
         <p>选择你反馈的意见类型</p>
-        <input type="hidden" name="type" id="type" value="">
+        <input type="hidden" name="type" id="type" value="功能建议">
         <ul>
             <li><a href="#">功能建议</a></li>
             <li><a href="#">问题反馈</a></li>
             <li><a href="#">其他</a></li>
         </ul>
-        <textarea rows="5" cols="40" placeholder="请描述你的建议"></textarea>
+        <textarea rows="5" cols="40" name="des" placeholder="请描述你的建议"></textarea>
     </div>
 
     <div class="form_contact">
@@ -34,22 +34,19 @@ $this->title = '意见反馈';
         </dl>
     </div>
 
-    <input type="submit" name="submit-button" class="button" value="提交">
+    <input type="submit" name="submit-button" class="button" value="提交" disabled="disabled">
     <?php ActiveForm::end(); ?>
 </div>
 
 
 <?=Html::jsFile('../js/jquery.min.js')?>
 <script type="application/javascript">
-//    function setType() {
-//       alert($(this).html);
-//        $(this).css("background","red");
-////        $('.form_desc>ul>li').onclick(){
-////            this.style.color = "##95C4FC";
-////        }
-//    }
 
     $(function() {
+        $(".feedbackForm ul li:first").css("background", "#95C4FC");
+        $(".feedbackForm ul li:first").children("a").css("color", "white");
+        $(".feedbackForm .button").css("background", "#ADADAD");
+        
         // 点击 JAVA 变色
         $(".feedbackForm ul li").click(function(e) {
             $(".feedbackForm ul li").css("background", "white");
@@ -61,6 +58,18 @@ $this->title = '意见反馈';
             $("#type").val($(this).children("a").text());
             //alert();
         });
+
+        $("textarea").change(function(e) {
+            if($(this).val() == ""){
+                $(".feedbackForm .button").css("background", "#ADADAD");
+                $(".feedbackForm .button").attr("disabled","disabled");
+            }else{
+                $(".feedbackForm .button").css("background", "#F8857C");
+                $(".feedbackForm .button").removeAttr("disabled");
+            }
+        });
+
+
     });
 
 </script>

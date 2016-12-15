@@ -157,17 +157,4 @@ class JoinController extends \yii\web\Controller
         ]);
     }
 
-    public function actionMail(){
-        $mail= Yii::$app->mailer->compose();
-        $mail->setTo('info@lifeqx.com');
-        $mail->setSubject("[意见反馈] 软件缺陷");
-        $mail->setTextBody('你们的软件,在这个页面能不能加上这个那个功能.');   //发布纯文字文本
-        //$mail->setHtmlBody("<br>问我我我我我");    //发布可以带html标签的文本
-        if($mail->send())
-            echo "success";
-        else
-            echo "failse";
-        die();
-    }
-
 }

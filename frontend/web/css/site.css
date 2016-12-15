@@ -262,18 +262,23 @@ body {
 
 .feedbackForm dl dd{
     width: 85%;
+    padding-top: 2px;
 }
 
 .feedbackForm dl dd input{
     width: 85%;
+    background: none;
+    border: none;
 }
 
 .feedbackForm .button{
     margin-top: 50px;
     width: 238px;
     height: 40px;
-    background-image: url("../images_2/button.png");
-    background-size:238px 40px;
+    background: #F8857C;
+    border-radius: 39px;
+    /*background-image: url("../images_2/button.png");*/
+    /*background-size:238px 40px;*/
     font-size: 16px;
     color: white;
     border: 0;
