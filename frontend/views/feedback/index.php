@@ -20,17 +20,17 @@ $this->title = '意见反馈';
             <li><a href="#">问题反馈</a></li>
             <li><a href="#">其他</a></li>
         </ul>
-        <textarea rows="5" cols="40" name="des" placeholder="请描述你的建议"></textarea>
+        <?= $form->field($model, 'des')->textArea(['rows' => '5', 'placeholder'=>'请描述你的建议'])->label(false) ?>
     </div>
 
     <div class="form_contact">
         <dl>
             <dt>姓名</dt>
-            <dd><input type="text" name="username" value=""></dd>
+            <dd><?= $form->field($model, 'username')->label(false) ?></dd>
         </dl>
         <dl>
             <dt>邮箱</dt>
-            <dd><input type="text" name="email" value=""></dd>
+            <dd><?= $form->field($model, 'email')->label(false) ?></dd>
         </dl>
     </div>
 

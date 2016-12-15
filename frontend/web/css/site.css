@@ -272,6 +272,14 @@ body {
     color: #666666;
 }
 
+.feedbackForm .help-block{
+    width: 85%;
+    float: left;
+    color: #F8857C;
+    padding-top: 15px;
+    text-align: left;
+}
+
 .feedbackForm .button{
     margin-top: 50px;
     width: 238px;

@@ -2,13 +2,17 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Feedback;
 use Yii;
 
 class FeedbackController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new Feedback();
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
     /*
@@ -16,25 +20,25 @@ class FeedbackController extends \yii\web\Controller
      */
     public function actionSubmit()
     {
-        if(!isset($_POST['type'],$_POST['des']) && $_POST['des']==""){
-            return $this->redirect("");
+        if(!isset($_POST['type'],$_POST['Feedback']['des'])){
+            return $this->redirect("/site/error");
         }
 
         $content = "";
 
-        if(isset($_POST['username'])){
-            $content .= "姓名: ".$_POST['username']."<br/>";
+        //判断姓名
+        if(isset($_POST['Feedback']['username'])){
+            $content .= "姓名: ".$_POST['Feedback']['username']."<br/>";
         }
-
-
-        if(isset($_POST['email'])){
-            $content .= "邮箱: ".$_POST['email']."<br/><br/>";
+        
+        //判断邮箱
+        if(isset($_POST['Feedback']['email'])){
+            $content .= "邮箱: ".$_POST['Feedback']['email']."<br/><br/>";
         }
 
         $type = $_POST['type'];
 
-        $content .= $_POST['des'];
-
+        $content .= $_POST['Feedback']['des'];
 
 
         $mail= Yii::$app->mailer->compose();
@@ -42,11 +46,11 @@ class FeedbackController extends \yii\web\Controller
         $mail->setSubject("[意见反馈] ".$type);
         //$mail->setTextBody($des);   //发布纯文字文本
         $mail->setHtmlBody($content);    //发布可以带html标签的文本
-        if($mail->send())
+        if($mail->send()){
             return $this->redirect('/feedback/status?status=SUCC');
-        else
+        }else{
             return $this->redirect('/feedback/status?status=FAILSE');
-        die();
+        }
     }
 
     public function actionStatus()
