@@ -17,14 +17,28 @@ class FeedbackController extends \yii\web\Controller
             return $this->redirect("");
         }
 
+        $content = "";
+
+        if(isset($_POST['username'])){
+            $content .= "姓名: ".$_POST['username']."<br/>";
+        }
+
+
+        if(isset($_POST['email'])){
+            $content .= "邮箱: ".$_POST['email']."<br/><br/>";
+        }
+
         $type = $_POST['type'];
-        $des  = $_POST['des'];
-        
+
+        $content .= $_POST['des'];
+
+
+
         $mail= Yii::$app->mailer->compose();
         $mail->setTo('info@lifeqx.com');
         $mail->setSubject("[意见反馈] ".$type);
-        $mail->setTextBody($des);   //发布纯文字文本
-        //$mail->setHtmlBody("<br>问我我我我我");    //发布可以带html标签的文本
+        //$mail->setTextBody($des);   //发布纯文字文本
+        $mail->setHtmlBody($content);    //发布可以带html标签的文本
         if($mail->send())
             echo "SUCC";
         else
