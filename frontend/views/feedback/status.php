@@ -12,7 +12,7 @@ $this->title = '意见反馈';
 <div class="feedback_message">
     <h2><?=$h2?></h2>
     <p><?=$p?></p>
-    <input type="button" value="关闭" onclick="WeixinJSBridge.call('closeWindow');" />
+    <input type="button" class="close" value="关闭" onclick="WeixinJSBridge.call('closeWindow');" />
 </div>
 
 

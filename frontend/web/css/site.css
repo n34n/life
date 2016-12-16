@@ -393,6 +393,24 @@ body {
     color: #ADADAD;
 }
 
+.feedback_message .close{
+    margin-top: 80px;
+    width: 165px;
+    height: 40px;
+    /*background: #F8857C;*/
+    /*border-radius: 39px;*/
+    /*background-image: url("../images_2/button2.png");*/
+
+    background: url("../images_2/button_border.png") no-repeat;
+
+    background-size:165px 40px;
+    border-radius: 39px;
+
+    font-size: 16px;
+    color: #adadad;
+    border: 0;
+}
+
 
 
 .footer {
