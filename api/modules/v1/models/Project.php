@@ -127,19 +127,14 @@ class Project extends ActiveRecord //implements Linkable
             $rel->user_id = $user_id;
             $rel->project_id = $this->getPrimaryKey();
             $rel->is_manager = 1;
-            $rel->is_default = ($is_default==1)?1:0;
+            $rel->is_default = $is_default;
             if($rel->save()){
                 $data['code'] = 10000;
-                $data['data'] = $rel->toArray();
-
-                $userinfo = $data['data']['user'];
-                unset($data['data']['user']);
 
                 $data['data']['name']       = $this->name;
                 $data['data']['type']       = $type;
                 $data['data']['created_at'] = $this->created_at;
-
-                $data['data']['user']       = $userinfo;
+                $data['data']['created_by'] = $nickname;
 
             }else{
                 $data['code'] = 10002;
