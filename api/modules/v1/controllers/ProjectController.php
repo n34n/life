@@ -189,7 +189,7 @@ class ProjectController extends ActiveController
     {
         $model = new Project();
         $type = isset($_POST['type'])?$_POST['type']:1;
-        $is_default = isset($_POST['type'])?$_POST['type']:0;
+        $is_default = isset($_POST['is_default'])?$_POST['is_default']:0;
         $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname,$type,$is_default);
         return $data;
     }
