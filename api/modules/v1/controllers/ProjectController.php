@@ -176,13 +176,21 @@ class ProjectController extends ActiveController
      * 			type="integer",
      * 			description="项目类型:1为单人项目，2为多人项目",
      * 		),
+     * 		@SWG\Parameter(
+     * 			name="is_default",
+     * 			in="formData",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="是否为默认项目:0非默认，1为默认",
+     * 		),
      * 	)
      */
     public function actionCreate()
     {
         $model = new Project();
         $type = isset($_POST['type'])?$_POST['type']:1;
-        $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname,$type);
+        $is_default = isset($_POST['type'])?$_POST['type']:0;
+        $data  = $model->create($this->userinfo->user_id,$this->userinfo->nickname,$type,$is_default);
         return $data;
     }
 
