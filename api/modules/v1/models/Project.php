@@ -67,6 +67,10 @@ class Project extends ActiveRecord //implements Linkable
             $fields['owner'] = 'owner';
         }
 
+        if($ctl == "project" && $act="view"){
+            $fields['member'] = 'member';
+        }
+
         return $fields;
     }
 
@@ -522,12 +526,10 @@ class Project extends ActiveRecord //implements Linkable
     }
 
     //生成链接
-/*    public function getLinks()
+   public function getMember()
     {
-        return [
-            Link::REL_SELF => Url::to(['/v1/project/view', 'project_id' => $this->project_id], true),
-        ];
-    }*/
+        return $this->hasMany(RelUserProject::className(), ['project_id' => 'project_id'])->orderBy('join_at');
+    }
 
 
     //扩展字段
