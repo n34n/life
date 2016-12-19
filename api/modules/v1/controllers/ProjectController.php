@@ -143,7 +143,9 @@ class ProjectController extends ActiveController
             return $data;
         }
 
-        $data         = Project::findOne($id);
+        $data['code'] = 10000;
+        $data['info'] = Project::findOne($id);
+
         return $data;
     }
 
