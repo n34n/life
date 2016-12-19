@@ -14,10 +14,10 @@ class Pages
 
     public static function Pages($list)
     {
-        $p['total-count'] = $list->getPagination()->totalCount;
-        $p['page-size'] = $list->getPagination()->pageSize;
-        $p['page-count'] = $list->getPagination()->pageCount;
-        $p['current-page'] = $list->getPagination()->page+1;
+        $p['total_count'] = $list->getPagination()->totalCount;
+        $p['page_size'] = $list->getPagination()->pageSize;
+        $p['page_count'] = $list->getPagination()->pageCount;
+        $p['current_page'] = $list->getPagination()->page+1;
         return $p;
     }
 

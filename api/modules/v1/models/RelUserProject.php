@@ -30,9 +30,12 @@ class RelUserProject extends ActiveRecord
     {
         $fields = parent::fields();
 
-        $no_rel = array('get-token','set-default');
+        $extra = array('get-token','set-default');
 
-        if(!in_array(Yii::$app->requestedAction->id,$no_rel)){
+        $ctl = Yii::$app->controller->id;
+        $act = Yii::$app->requestedAction->id;
+
+        if(!in_array($act,$extra)){
             $fields['user'] = 'user';
         }
 
@@ -88,7 +91,7 @@ class RelUserProject extends ActiveRecord
         return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
-    public function getExtra()
+    public function getProject()
     {
         return $this->hasOne(Project::className(), ['project_id' => 'project_id']);
     }

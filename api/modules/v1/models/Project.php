@@ -58,13 +58,12 @@ class Project extends ActiveRecord //implements Linkable
 
         unset($fields['updated_at'],$fields['updated_by']);
 
-        $no_rel = array('index');
+        $extra = array('index');
 
-//        if(!in_array(Yii::$app->requestedAction->id,$no_rel)){
-//            $fields['rel'] = 'rel';
-//        }
+        $ctl = Yii::$app->controller->id;
+        $act = Yii::$app->requestedAction->id;
 
-        if(in_array(Yii::$app->requestedAction->id,$no_rel)){
+        if(in_array($act,$extra)){
             $fields['owner'] = 'owner';
         }
 
@@ -127,7 +126,17 @@ class Project extends ActiveRecord //implements Linkable
             $rel->is_default = ($is_default==1)?1:0;
             if($rel->save()){
                 $data['code'] = 10000;
-                $data['data'] = $rel;
+                $data['data'] = $rel->toArray();
+
+                $userinfo = $data['data']['user'];
+                unset($data['data']['user']);
+
+                $data['data']['name']       = $this->name;
+                $data['data']['type']       = $type;
+                $data['data']['created_at'] = $this->created_at;
+
+                $data['data']['user']       = $userinfo;
+
             }else{
                 $data['code'] = 10002;
             }
