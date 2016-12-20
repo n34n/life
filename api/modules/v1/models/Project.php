@@ -67,7 +67,7 @@ class Project extends ActiveRecord //implements Linkable
             $fields['owner'] = 'owner';
         }
 
-        if($ctl == "project" && $act="view"){
+        if($ctl == "project" && $act=="view"){
             $fields['member'] = 'member';
         }
 
