@@ -123,6 +123,8 @@ class Box extends ActiveRecord
         }
         $this->user_id = $user_id;
         $this->created_by = $nickname;
+        $this->item_total = 0;
+        $this->created_at = time();
         $this->save();
 
         //保存图片
