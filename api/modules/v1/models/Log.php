@@ -57,7 +57,7 @@ class Log extends ActiveRecord
         $fields['created_at']  = 'created_at';
         $fields['created_by']  = 'created_by';
         $fields['avatar']      = function(){
-                                    $data = (empty($this->avatar))?'':Yii::$app->params['imgServer'].$this->avatar->s_path;
+                                    $data = (empty($this->avatar))?null:Yii::$app->params['imgServer'].$this->avatar->s_path;
                                     return $data;};
 
         return $fields;

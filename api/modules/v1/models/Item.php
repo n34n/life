@@ -64,10 +64,7 @@ class Item extends ActiveRecord
             'created_by',
             'updated_at',
             'updated_by',
-            'img'=>function(){
-                        $data = (empty($this->img))?'':$this->img;
-                        return $data;
-                    },
+            'img',
             'tags',
         ];
     }

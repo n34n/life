@@ -44,11 +44,11 @@ class RelUserProject extends ActiveRecord
             $fields['user_id']    = 'user_id';
             $fields['is_manager'] = 'is_manager';
             $fields['nickname']   = function(){
-                $data = (empty($this->user))?'':$this->user->nickname;
+                $data = (empty($this->user))?null:$this->user->nickname;
                 return $data;
             };
             $fields['avatar']   = function(){
-                $data = (empty($this->user->img))?'':Yii::$app->params['imgServer'].$this->user->img->s_path;
+                $data = (empty($this->user->img))?null:Yii::$app->params['imgServer'].$this->user->img->s_path;
                 return $data;
             };
             $fields['join_at'] = 'join_at';
