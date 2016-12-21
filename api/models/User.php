@@ -26,13 +26,9 @@ class User extends ActiveRecord implements IdentityInterface {
             'tag_data',
             'nickname_updated',
             'avatar_updated',
-            'created_at'=>function(){
-                return null;
-            },
+            'created_at',
             'updated_at',
-            'img'=>function(){
-                return null;
-            },
+            'img',
         ];
     }
 
