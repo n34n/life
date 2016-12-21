@@ -55,17 +55,9 @@ class Box extends ActiveRecord
     {
         return [
             'box_id',
-            'name'=> function(){
-                return null;
-            },
-            'item_total'=>function(){
-                            $data = (empty($this->item_total))?'':$this->item_total;
-                            return $data;
-                        },
-            'created_at'=>function(){
-                            $data = (empty($this->created_at))?'':$this->created_at;
-                            return $data;
-                        },
+            'name',
+            'item_total',
+            'created_at',
             'created_by',
             'img',
         ];
