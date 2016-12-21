@@ -3,6 +3,7 @@
 namespace api\modules\v1\models;
 
 use Yii;
+use yii\base\Object;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
@@ -65,7 +66,7 @@ class Box extends ActiveRecord
                         },
             'created_by',
             'img'=>function(){
-                        $data = (empty($this->img))?'':$this->img;
+                        $data = (empty($this->img))?null:$this->img;
                         return $data;
                     },
         ];
