@@ -55,7 +55,9 @@ class Box extends ActiveRecord
     {
         return [
             'box_id',
-            'name',
+            'name'=> function(){
+                return null;
+            },
             'item_total'=>function(){
                             $data = (empty($this->item_total))?'':$this->item_total;
                             return $data;
@@ -65,10 +67,7 @@ class Box extends ActiveRecord
                             return $data;
                         },
             'created_by',
-            'img'=>function(){
-                        $data = (empty($this->img))?null:$this->img;
-                        return $data;
-                    },
+            'img',
         ];
     }
 
