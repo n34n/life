@@ -65,6 +65,10 @@ class JoinController extends \yii\web\Controller
         }
 
 
+        print_r($token);
+        print_r($member);
+
+
         //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
         if(!empty($user)){
