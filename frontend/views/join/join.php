@@ -29,7 +29,7 @@ $this->title = '物语千寻';
             }
         ?>
     </p>
-    <p class="project"><?=$project_name?></p>
+    <p class="project"><?=isset($_GET['is_manager'])?'':$project_name?></p>
 </div>
 
 <div class="shape">
