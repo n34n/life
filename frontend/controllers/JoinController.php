@@ -94,7 +94,7 @@ class JoinController extends \yii\web\Controller
         $session->set('member', $member);
         $session->set('proj', $proj);
 
-        return $this->render('index2');
+        //return $this->render('index2');
 
         return $this->render('index', [
             'owner'    => $owner,
@@ -166,6 +166,6 @@ class JoinController extends \yii\web\Controller
     {
         return $this->redirect("https://itunes.apple.com/cn/app/tao-bao-sui-shi-sui-xiang/id387682726?mt=8&v0=WWW-GCCN-ITSTOP100-FREEAPPS&l=&ign-mpt=uo%3D4");
     }
-    
+
 
 }
