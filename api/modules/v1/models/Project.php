@@ -101,7 +101,7 @@ class Project extends ActiveRecord //implements Linkable
 
         $query->where(['user_id' => $user_id]);
 
-        $query->orderBy("project_id ASC");
+        $query->orderBy("join_at ASC");
 
         return $dataProvider;
     }
