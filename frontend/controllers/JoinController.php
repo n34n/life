@@ -36,10 +36,6 @@ class JoinController extends \yii\web\Controller
         //判断是否合法访问
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
 
-        print_r($rel);
-        return;
-        die();
-
         if(empty($rel)){
             return $this->redirect("/site/error?code=50001");
         }
@@ -52,6 +48,9 @@ class JoinController extends \yii\web\Controller
         $url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$secret."&code=".$_GET['code']."&grant_type=authorization_code";
         $token_json = file($url);
         $token = json_decode($token_json[0]);
+
+        print_r($token);
+        return;
 
         //重复刷新页面
         if(isset($token->errcode)){
