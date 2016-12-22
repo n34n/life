@@ -96,7 +96,7 @@ class JoinController extends \yii\web\Controller
 
         //return $this->render('index2');
 
-        return $this->render('join', [
+        return $this->render('/join/index', [
             'owner'    => $owner,
             'proj'     => $proj,
             'member' => $member,
