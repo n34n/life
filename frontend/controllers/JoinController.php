@@ -94,6 +94,9 @@ class JoinController extends \yii\web\Controller
         $session->set('member', $member);
         $session->set('proj', $proj);
 
+        print_r($proj);
+        return;
+
         return $this->render('index', [
             'owner'    => $owner,
             'proj'     => $proj,
