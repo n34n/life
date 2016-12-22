@@ -245,7 +245,7 @@ class Images extends ActiveRecord
             $data['code'] = 400;
             return $data;
         }else{
-            empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
+            $params = !empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
         }
 
         //检查参数是否正确

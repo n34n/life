@@ -217,8 +217,12 @@ class Box extends ActiveRecord
             $data['code'] = 400;
             return $data;
         }else{
-            $params = empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
+            $params = !empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
         }
+
+//        print_r($_GET);
+//        print_r(Yii::$app->request->bodyParams);
+//        print_r($params);
 
         //检查参数
         if(!isset($user_id,$id,$params['project_id'],$nickname)){
@@ -245,7 +249,7 @@ class Box extends ActiveRecord
         if(!empty($items)){
             foreach ($items as $item){
                 $obj = new Item();
-                $obj->remove($user_id,$item->item_id);
+                $obj->remove($user_id,$nickname,$item->item_id);
             }
         }
 
