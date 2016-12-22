@@ -7,7 +7,10 @@ $this->title = '物语千寻';
 
 <div class="ownner">
     <p class="nickname">
-       
+        <img src="<?php
+         if(isset($owner->img->s_path) && $owner->img->s_path!=""){
+             echo Yii::$app->params['imgServer'].$owner->img->s_path;
+        } ?>" class="avatar">
         <label><?=$owner->nickname?></label>
     </p>
     <p class="headline">邀请您加入收纳项目</p>
