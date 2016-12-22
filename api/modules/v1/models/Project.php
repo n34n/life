@@ -398,7 +398,7 @@ class Project extends ActiveRecord //implements Linkable
             $data['code'] = 400;
             return $data;
         }else{
-            $params = Yii::$app->request->bodyParams;
+            $params = empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
         }
 
         //检查参数
