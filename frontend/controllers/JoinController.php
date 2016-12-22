@@ -49,9 +49,6 @@ class JoinController extends \yii\web\Controller
         $token_json = file($url);
         $token = json_decode($token_json[0]);
 
-        print_r($token);
-        return;
-
         //重复刷新页面
         if(isset($token->errcode)){
             //40029 页面已失效
@@ -67,6 +64,9 @@ class JoinController extends \yii\web\Controller
             $member = json_decode($member_json[0]);
             //print_r($userinfo);
         }
+
+        print_r($member);
+        return;
 
 
         /*
