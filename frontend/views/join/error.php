@@ -14,6 +14,7 @@ $this->title = '物语千寻';
         <h2>Oops!</h2>
         <p>抱歉，页面不存在或已过期</p>
         <p><?=$code?></p>
+        <p><?=$_GET['code']?></p>
     </div>
 </div>
 
