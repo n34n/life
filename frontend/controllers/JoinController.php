@@ -35,6 +35,11 @@ class JoinController extends \yii\web\Controller
 
         //判断是否合法访问
         $rel = RelUserProject::findOne(['user_id'=>$owner_id,'project_id'=>$project_id,'is_manager'=>1]);
+
+        print_r($rel);
+        return;
+        die();
+
         if(empty($rel)){
             return $this->redirect("/site/error?code=50001");
         }
