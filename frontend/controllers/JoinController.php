@@ -65,9 +65,6 @@ class JoinController extends \yii\web\Controller
             //print_r($userinfo);
         }
 
-        print_r($member);
-        return;
-
 
         /*
          * 待测试
@@ -79,6 +76,10 @@ class JoinController extends \yii\web\Controller
 
         //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
+
+        print_r($user);
+        return;
+
         if(!empty($user)){
             $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
             if(!empty($rel)){
