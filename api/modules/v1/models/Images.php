@@ -25,6 +25,7 @@ class Images extends ActiveRecord
 
     public $file;
 
+
     /**
      * @inheritdoc
      */
@@ -42,7 +43,7 @@ class Images extends ActiveRecord
             [['model'], 'required'],
             [['rel_id', 'project_id'], 'integer'],
             [['model'], 'string', 'max' => 20],
-            [['o_path', 'l_path', 'm_path', 's_path'], 'string', 'max' => 100],
+            [['o_path', 'l_path', 'm_path', 's_path'], 'string', 'max' => 200],
         ];
     }
 
