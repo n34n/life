@@ -130,7 +130,7 @@ class Project extends ActiveRecord //implements Linkable
             $rel->is_default = $is_default;
             if($rel->save()){
                 $data['code'] = 10000;
-
+                $data['data']['project_id'] = $rel->project_id;
                 $data['data']['name']       = $this->name;
                 $data['data']['type']       = $type;
                 $data['data']['created_at'] = $this->created_at;
