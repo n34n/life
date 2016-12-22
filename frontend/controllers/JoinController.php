@@ -71,7 +71,7 @@ class JoinController extends \yii\web\Controller
          * 微信登录和App登录后的openid不一致
          */
 //        print_r($token);
-//        print_r($member);
+        print_r($member);
 
 
         //判断用户是否已经加入项目
@@ -93,6 +93,8 @@ class JoinController extends \yii\web\Controller
 
         $session->set('member', $member);
         $session->set('proj', $proj);
+
+        return $this->render('index2');
 
         return $this->render('index', [
             'owner'    => $owner,
