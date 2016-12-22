@@ -19,7 +19,11 @@ $this->title = '物语千寻';
     <p class="headline">
         <?php
             if(isset($_GET['succ']) && $_GET['succ']==1){
-                echo '已成功加入';
+                if(isset($_GET['is_manager']) && $_GET['is_manager']==1){
+                    echo '您是该项目的创建人';
+                }else{
+                    echo '已成功加入';
+                }
             }else{
                 echo '成功加入';
             }

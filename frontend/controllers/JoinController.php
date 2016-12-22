@@ -78,7 +78,7 @@ class JoinController extends \yii\web\Controller
         if(!empty($user)){
             $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
             if(!empty($rel)){
-                return $this->redirect("/join/join?succ=1&user_id=$user->user_id&project_id=$project_id");
+                return $this->redirect("/join/join?succ=1&user_id=$user->user_id&project_id=$project_id&is_manager=$rel->is_manager");
             }
         }
 
@@ -121,6 +121,13 @@ class JoinController extends \yii\web\Controller
             $nickname     = $member->nickname;
 
             $project_name = $proj->name;
+
+            return $this->render('join', [
+                'avatar' => $avatar,
+                'nickname'   => $nickname,
+                'project_name'   => $project_name,
+                'is_manager' => $_GET['is_manager'],
+            ]);
         }
 
 
