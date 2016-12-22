@@ -65,6 +65,10 @@ class JoinController extends \yii\web\Controller
         }
 
 
+        /*
+         * 待测试
+         * 微信登录和App登录后的openid不一致
+         */
         print_r($token);
         print_r($member);
 

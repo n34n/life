@@ -162,7 +162,13 @@ class Images extends ActiveRecord
     //上传头像
     public function uploadAvatar($user_id,$nickname)
     {
-        $avatar_updated = 1;
+        /*
+         * 判断用户通过哪种方式提交的头像
+         * 0 登录时获取微信头像
+         * 1 用户主动在账户页面修改头像
+         */
+        $avatar_updated = (isset($_POST['avatar_url']) && $_POST['avatar_url']!='')?0:1;
+        //$avatar_updated = 1;
 
         //验证参数
         if(!isset($user_id,$nickname)){
@@ -181,12 +187,11 @@ class Images extends ActiveRecord
         $img = self::findOne(['rel_id'=>$user_id,'model'=>'avatar']);
         if(!empty($img)){
             //如果用户微信头像没有更新,则不修改头像
-            if(isset($_POST['avatar_url']) && $_POST['avatar_url']!=''){
+            if($avatar_updated == 0){
                 if($img->l_path == $_POST['avatar_url']){
                     $data['code'] = 50100;
                     return $data;
                 }
-                $avatar_updated = 0;
             }
             $this->removeImg($img->img_id);
         }
