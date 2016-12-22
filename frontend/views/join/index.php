@@ -7,7 +7,7 @@ $this->title = '物语千寻';
 
 <div class="ownner">
     <p class="nickname">
-        <img src="<?php echo Yii::$app->params['imgServer'].$owner->img->s_path; ?>" class="avatar">
+       
         <label><?=$owner->nickname?></label>
     </p>
     <p class="headline">邀请您加入收纳项目</p>
@@ -21,3 +21,12 @@ $this->title = '物语千寻';
     <h1><?=$proj->name?></h1>
 </div>
 
+<div class="dataform">
+    <?php $form = ActiveForm::begin(['action' => ['join/join'],'method'=>'post', 'id'=>'joinForm']); ?>
+        <input type="hidden" name="manager_id" value="<?=$owner->user_id?>">
+        <input type="hidden" name="project_id" value="<?=$proj->project_id?>">
+        <input type="hidden" name="openid" value="<?=$member->openid?>">
+        <input type="hidden" name="nickname" value="<?=$member->nickname?>">
+        <input type="submit" name="submit-button" class="button" value="确定加入">
+    <?php ActiveForm::end(); ?>
+</div>
