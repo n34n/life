@@ -59,23 +59,16 @@ class JoinController extends \yii\web\Controller
         if(isset($token) && !empty($token->access_token)){
             $access_token   = $token->access_token;
             $openid         = $token->openid;
+            $unionid         = $token->unionid;
             $url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
             $member_json = file($url);
             $member = json_decode($member_json[0]);
             //print_r($userinfo);
         }
-
-
-        /*
-         * 待测试
-         * 微信登录和App登录后的openid不一致
-         */
-        print_r($token);
-        print_r($member);
-
+        
 
         //判断用户是否已经加入项目
-        $user = UserAccount::findOne(['account'=>$openid]);
+        $user = UserAccount::findOne(['account'=>$unionid]);
 
         if(!empty($user)){
             $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);

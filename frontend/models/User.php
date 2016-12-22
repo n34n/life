@@ -52,14 +52,14 @@ class User extends \yii\db\ActiveRecord
     public static function join()
     {
         //检查参数
-        if(!isset($_POST['manager_id'],$_POST['project_id'],$_POST['openid'],$_POST['nickname'])){
+        if(!isset($_POST['manager_id'],$_POST['project_id'],$_POST['unionid'],$_POST['nickname'])){
             return 20000;
         }
 
         //整理参数
         $manager_id = $_POST['manager_id'];
         $project_id = $_POST['project_id'];
-        $openid     = $_POST['openid'];
+        $unionid     = $_POST['unionid'];
         $device     = 'browser';
         $type       = 'weixin';
         $nickname   = $_POST['nickname'];
@@ -74,13 +74,13 @@ class User extends \yii\db\ActiveRecord
         }
 
         //判断是否是新用户
-        $ua = UserAccount::findOne(['account'=>$openid]);
+        $ua = UserAccount::findOne(['account'=>$unionid]);
         if(empty($ua)){
             //制作签名
-            $sign = self::makeSign($openid,$device,$type,$nickname,$timestamp);
+            $sign = self::makeSign($unionid,$device,$type,$nickname,$timestamp);
 
             //创建用户
-            $user = self::curlCreateUser($domain,$openid,$device,$type,$nickname,$timestamp,$sign);
+            $user = self::curlCreateUser($domain,$unionid,$device,$type,$nickname,$timestamp,$sign);
 
             if(!isset($user->data->user->access_token)){
                 return 400;
@@ -99,9 +99,9 @@ class User extends \yii\db\ActiveRecord
 
 
     //制作签名
-    private static function makeSign($openid,$device,$type,$nickname,$timestamp)
+    private static function makeSign($unionid,$device,$type,$nickname,$timestamp)
     {
-        $data['account']    = $openid;
+        $data['account']    = $unionid;
         $data['device']     = $device;
         $data['type']       = $type;
         $data['created_by'] = $nickname;

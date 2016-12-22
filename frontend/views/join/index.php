@@ -28,7 +28,7 @@ $this->title = '物语千寻';
     <?php $form = ActiveForm::begin(['action' => ['join/join'],'method'=>'post', 'id'=>'joinForm']); ?>
         <input type="hidden" name="manager_id" value="<?=$owner->user_id?>">
         <input type="hidden" name="project_id" value="<?=$proj->project_id?>">
-        <input type="hidden" name="openid" value="<?=$member->openid?>">
+        <input type="hidden" name="unionid" value="<?=$member->unionid?>">
         <input type="hidden" name="nickname" value="<?=$member->nickname?>">
         <input type="submit" name="submit-button" class="button" value="确定加入">
     <?php ActiveForm::end(); ?>
