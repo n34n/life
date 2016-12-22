@@ -77,13 +77,10 @@ class JoinController extends \yii\web\Controller
         //判断用户是否已经加入项目
         $user = UserAccount::findOne(['account'=>$openid]);
 
-        print_r($user);
-        return;
-
         if(!empty($user)){
             $rel  = RelUserProject::findOne(['user_id'=>$user->user_id,'project_id'=>$project_id]);
             if(!empty($rel)){
-                return $this->redirect("/join/join?succ=1&user_id=$user->user_id&project_id=$project_id&is_manager=$rel->is_manager");
+                return $this->redirect("/join/join?succ=1&user_id=".$user->user_id."&project_id=".$project_id."&is_manager=".$rel->is_manager);
             }
         }
 
