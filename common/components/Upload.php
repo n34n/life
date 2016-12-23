@@ -151,4 +151,30 @@ class Upload extends UploadedFile
             ->save(Yii::getAlias($save_file), ['quality' => $quality]);
         return $dbpath;
     }
+
+
+    /*
+     * 获取远程图片,保存到本地
+     */
+    public function getFileAndSave($url)
+    {
+        $img = file_get_contents($url);
+        if($img){
+            $path = $this->generateDir();
+            if($path == 60001){
+                return $path;
+            }
+
+            $f['name']      = md5($path.time());
+            $f['ext']		= 'jpg';
+            $f['path']		= $path;
+            $f['savepath']	= $this->UploadPath.$path;
+            $f['file']		= $f['name'].'.'.$f['ext'];
+
+            file_put_contents($f['savepath'].$f['file'], $img);
+            return $f;
+        }
+        return 60003;
+    }
+
 }

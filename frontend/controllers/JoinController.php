@@ -7,6 +7,7 @@ use frontend\models\Project;
 use frontend\models\RelUserProject;
 use frontend\models\User;
 use frontend\models\UserAccount;
+use frontend\models\Images;
 use yii\web\Session;
 
 class JoinController extends \yii\web\Controller
@@ -130,19 +131,18 @@ class JoinController extends \yii\web\Controller
 
         if(Yii::$app->request->isPost){
             $session = Yii::$app->session;
-
-            $info = User::join();
-
-            if(is_int($info)){
-                return $this->redirect("/site/error?code=".$info);
-            }
-
             $member = $session->get('member');
             $proj = $session->get('proj');
 
             $avatar       = $member->headimgurl;
             $nickname     = $member->nickname;
             $project_name = $proj->name;
+
+            $info = User::join($avatar);
+
+            if(is_int($info)){
+                return $this->redirect("/site/error?code=".$info);
+            }
         }
 
 
@@ -159,6 +159,7 @@ class JoinController extends \yii\web\Controller
     {
         return $this->redirect("https://itunes.apple.com/cn/app/tao-bao-sui-shi-sui-xiang/id387682726?mt=8&v0=WWW-GCCN-ITSTOP100-FREEAPPS&l=&ign-mpt=uo%3D4");
     }
+
 
 
 }

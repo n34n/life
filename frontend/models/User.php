@@ -5,7 +5,7 @@ namespace frontend\models;
 use Yii;
 use frontend\models\UserAccount;
 use frontend\models\RelUserProject;
-use frontend\models\Image;
+use frontend\models\Images;
 
 /**
  * This is the model class for table "user".
@@ -49,7 +49,7 @@ class User extends \yii\db\ActiveRecord
         return $fields;
     }
 
-    public static function join()
+    public static function join($avatar_url)
     {
         //检查参数
         if(!isset($_POST['manager_id'],$_POST['project_id'],$_POST['unionid'],$_POST['nickname'])){
@@ -81,6 +81,8 @@ class User extends \yii\db\ActiveRecord
 
             //创建用户
             $user = self::curlCreateUser($domain,$unionid,$device,$type,$nickname,$timestamp,$sign);
+
+            self::genAvatar($user->data->user->user_id,$nickname,$avatar_url);
 
             if(!isset($user->data->user->access_token)){
                 return 400;
@@ -146,9 +148,18 @@ class User extends \yii\db\ActiveRecord
         return $data;
     }
 
+
+    //保存头像
+    private static function genAvatar($user_id,$nickname,$avatar_url)
+    {
+        $img = new Images;
+        $data = $img->setAvatar($user_id,$nickname,$avatar_url);
+        return $data;
+    }
+
     //获取头像
     public function getImg()
     {
-        return $this->hasOne(Image::className(), ['rel_id' => 'user_id'])->where(['model'=>'avatar'])->select('s_path');
+        return $this->hasOne(Images::className(), ['rel_id' => 'user_id'])->where(['model'=>'avatar'])->select('s_path');
     }
 }

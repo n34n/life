@@ -187,8 +187,8 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        //UserAccount::find(['access_token' => $token])->createCommand()
-        //$ua = new UserAccount();
+
+        //缓存
         $cache = yii::$app->cache;
 
         $data = $cache->get($token);
