@@ -105,7 +105,7 @@ class Item extends ActiveRecord
 
 
         //按tag_id筛选
-        if(isset($_GET['tags']) && $_GET['tags']!="" && ($_GET['tags']!="{tags}")){
+        if(isset($_GET['tags']) && $_GET['tags']!="" && ($_GET['tags']!="{tag_ids}")){
             $keywords = trim($_GET['tags']);
             $keyword_list = explode(',',$keywords);
             $query->andFilterWhere(['tag_id'=>$keyword_list]);
