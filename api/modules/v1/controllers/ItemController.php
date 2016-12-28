@@ -55,7 +55,7 @@ class ItemController extends ActiveController
     /**
      *
      *	@SWG\Get(
-     * 		path="/item?access-token={access_token}&project_id={project_id}&keyword={keyword}&tags={tag_ids}&page={page}",
+     * 		path="/item?access-token={access_token}&project_id={project_id}&box_id={box_id}&keyword={keyword}&tags={tag_ids}&page={page}",
      * 		tags={"Item"},
      * 		operationId="listItem",
      * 		summary="物品列表|搜索",
@@ -72,6 +72,13 @@ class ItemController extends ActiveController
      * 			required=true,
      * 			type="integer",
      * 			description="项目ID",
+     * 		),
+     *     @SWG\Parameter(
+     * 			name="box_id",
+     * 			in="path",
+     * 			required=false,
+     * 			type="integer",
+     * 			description="盒子ID",
      * 		),
      * 		@SWG\Parameter(
      * 			name="keyword",

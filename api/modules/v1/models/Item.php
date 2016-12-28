@@ -84,8 +84,17 @@ class Item extends ActiveRecord
             ],
         ]);
 
-        //按关键字搜索
+        //关联project_id
         $query->where(['project_id' => $_GET['project_id']]);
+
+
+        //关联box_id
+        if(isset($_GET['box_id']) && $_GET['box_id']!="" && ($_GET['box_id']!="{box_id}")){
+            $box_id = trim($_GET['box_id']);
+            $query->andWhere(['box_id'=>$box_id]);
+        }
+
+        //按关键字搜索
         if(isset($_GET['keyword']) && $_GET['keyword']!="" && ($_GET['keyword']!="{keyword}")){
             $keywords = trim($_GET['keyword']);
             $keyword_list = explode(' ',$keywords);
@@ -93,6 +102,7 @@ class Item extends ActiveRecord
             $query->orFilterWhere(['or like', 'tag', $keyword_list]);
 
         }
+
 
         //按tag_id筛选
         if(isset($_GET['tags']) && $_GET['tags']!="" && ($_GET['tags']!="{tags}")){
