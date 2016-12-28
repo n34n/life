@@ -51,7 +51,7 @@ class Upload extends UploadedFile
 
             //文件信息数据重组
             $f['name']      = md5($path.time());
-            $f['ext']		= (empty($this->file->extension) || $this->file->extension=="")?'jps':$this->file->extension;
+            $f['ext']		= (empty($this->file->extension) || $this->file->extension=="")?'jpg':$this->file->extension;
             $f['path']		= $path;
             $f['savepath']	= $this->UploadPath.$path;
             $f['file']		= $f['name'].'.'.$f['ext'];
