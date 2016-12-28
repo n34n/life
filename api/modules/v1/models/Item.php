@@ -138,7 +138,7 @@ class Item extends ActiveRecord
     public function create($user_id,$nickname)
     {
         //检查参数
-        if(!isset($user_id,$_POST['img_id'],$_POST['project_id'],$_POST['box_id'],$_POST['name'],$nickname)){
+        if(!isset($user_id,$_POST['img_ids'],$_POST['project_id'],$_POST['box_id'],$_POST['name'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
@@ -162,7 +162,10 @@ class Item extends ActiveRecord
         //根据上传图片数量,批量生成物品
         $post = Yii::$app->request->post();
         $succ_total = 0;
-        foreach ($post['img_id'] as $img_id){
+
+        $imgs = explode(',',$_POST['img_ids']);
+
+        foreach ($imgs as $img_id){
             $succ_total += $this->createData($post,$img_id,$tags,$user_id,$nickname);
         }
 

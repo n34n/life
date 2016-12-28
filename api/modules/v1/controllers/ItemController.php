@@ -219,12 +219,11 @@ class ItemController extends ActiveController
      * 			description="标签数据:以json形式提交,例子中为更好阅读加了回车,实际使用时请不要有空格和回车:<br>[<br>{&quot;tag_id&quot;:1,&quot;tag&quot;:&quot;服装&quot;},<br>{&quot;tag_id&quot;:2,&quot;tag&quot;:&quot;鞋靴&quot;}<br>]",
      * 		),
      * 		@SWG\Parameter(
-     * 			name="img_id[]",
+     * 			name="img_ids",
      * 			in="formData",
      * 			required=true,
-     * 			type="array",
-     *          @SWG\Items(type="integer"),
-     * 			description="图片ID:保存添加的物品时,说明物品图片已经上传并生成ID,关联时每行一个图片ID",
+     * 			type="string",
+     * 			description="图片ID:保存添加的物品时,说明物品图片已经上传并生成ID,关联时每行一个图片ID,多张图片1,2,3,4",
      * 		),
      * 	)
      */
