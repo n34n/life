@@ -143,7 +143,7 @@ class Images extends ActiveRecord
         $this->l_path    = $img_l;
         $this->m_path    = $img_m;
         $this->s_path    = $img_s;
-        //$this->rel_id    = (isset($_POST['rel_id']))?$_POST['rel_id']:0;
+        $this->rel_id    = (isset($_POST['rel_id']) && $_POST['rel_id']!="")?$_POST['rel_id']:0;
         $this->save();
 
         //日志
