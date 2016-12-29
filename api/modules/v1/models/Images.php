@@ -137,7 +137,7 @@ class Images extends ActiveRecord
 
         //图片库关联
         $this->model     = $model_name;
-        $this->project_id= $_POST['project_id'];
+        $this->project_id= (int)$_POST['project_id'];
         $this->created_by= $nickname;
         $this->o_path    = $file['path'].$file['file'];
         $this->l_path    = $img_l;
