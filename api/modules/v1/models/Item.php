@@ -123,11 +123,16 @@ class Item extends ActiveRecord
     //标签列表
     public function filterTags(){
         $connection  = Yii::$app->db;
+        if(isset($_GET['box_id'])){
+            $box_sql = " And `box_id`=".$_GET['box_id'];
+        }
+
         $sql = "SELECT `tag`.`tag_id`, `tag`.`tag` FROM `tag` 
                 LEFT JOIN `item` ON `item`.`item_id` = `tag`.`item_id` 
-                WHERE `project_id`='".$_GET['project_id']."' GROUP BY `tag_id`";
+                WHERE `project_id`=".$_GET['project_id'].$box_sql." GROUP BY `tag_id`";
 
         $command = $connection->createCommand($sql);
+        //echo $command->rawSql;
         $query   = $command->queryAll();
 
         return $query;
