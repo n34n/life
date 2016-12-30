@@ -123,8 +123,10 @@ class Item extends ActiveRecord
     //标签列表
     public function filterTags(){
         $connection  = Yii::$app->db;
-        if(isset($_GET['box_id']) && is_numberic($_GET['box_id'])){
+        if(isset($_GET['box_id']) && $_GET['box_id']!="" && $_GET['box_id']!="{box_id}"){
             $box_sql = " And `box_id`=".$_GET['box_id'];
+        }else{
+            $box_sql = "";
         }
 
         $sql = "SELECT `tag`.`tag_id`, `tag`.`tag` FROM `tag` 
