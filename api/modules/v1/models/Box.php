@@ -226,7 +226,8 @@ class Box extends ActiveRecord
 
         //检查参数
         if(!isset($user_id,$id,$params['project_id'],$nickname)){
-            $data['code']  = 20000;
+            $data['code']   = 20000;
+            $data['params'] = $params;
             return $data;
         }
 
