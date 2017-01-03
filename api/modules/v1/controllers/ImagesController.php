@@ -152,7 +152,7 @@ class ImagesController extends ActiveController
      * 			in="path",
      * 			required=true,
      * 			type="integer",
-     * 			description="盒子ID",
+     * 			description="图片ID",
      * 		),
      *      @SWG\Parameter(
      * 			name="access_token",
@@ -180,7 +180,7 @@ class ImagesController extends ActiveController
      * 			in="formData",
      * 			required=true,
      * 			type="integer",
-     * 			description="关联模型的ID,比如上传盒子图片,则关联这个盒子的ID,一般在编辑状态下才会使用",
+     * 			description="关联模型的ID,比如上传盒子图片,则关联这个盒子的ID,一般在编辑状态下才会使用,若关联模型的ID还没生成,填0",
      * 		),
      * 	)
      */
