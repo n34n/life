@@ -187,7 +187,7 @@ class ImagesController extends ActiveController
     public function actionDelete($id)
     {
         $model = new Images();
-        $params = Yii::$app->request->bodyParams;
+        $params = !empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
         $model_name = (isset($params['model_name']))?$params['model_name']:'item';
         $data = $model->remove($model_name,$id,$this->userinfo->user_id,$this->userinfo->nickname);
         return $data;

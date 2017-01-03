@@ -268,23 +268,25 @@ class Images extends ActiveRecord
         $query->delete();
 
         //更新关联记录
-        if($model_name == 'item'){
-            $model = Item::findOne(['item_id'=>$this->rel_id]);
-            $model->updated_by = $nickname;
-            $model->save();
-            $parent_id = $model->box_id;
-            $rel_id = $model->item_id;
-        }else{
-            $model = Box::findOne(['box_id'=>$this->rel_id]);
-            $model->updated_by = $nickname;
-            $model->save();
-            $parent_id = $model->project_id;
-            $rel_id = $model->box_id;
-        }
+        if($this->rel_id!=0){
+            if($model_name == 'item'){
+                $model = Item::findOne(['item_id'=>$this->rel_id]);
+                $model->updated_by = $nickname;
+                $model->save();
+                $parent_id = $model->box_id;
+                $rel_id = $model->item_id;
+            }else{
+                $model = Box::findOne(['box_id'=>$this->rel_id]);
+                $model->updated_by = $nickname;
+                $model->save();
+                $parent_id = $model->project_id;
+                $rel_id = $model->box_id;
+            }
 
-        //日志
-        $log = new Log();
-        $log->addLog($parent_id,$rel_id,$user_id,$model_name,'img-delete','删除图片',$nickname);
+            //日志
+            $log = new Log();
+            $log->addLog($parent_id,$rel_id,$user_id,$model_name,'img-delete','删除图片',$nickname);
+        }
 
         $data['code'] = 10000;
         return $data;
