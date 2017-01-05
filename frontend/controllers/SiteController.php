@@ -2,8 +2,12 @@
 
 namespace frontend\controllers;
 
+use Yii;
+
 class SiteController extends \yii\web\Controller
 {
+    public $layout = "web";
+
     public function actionIndex()
     {
         return $this->render('index');

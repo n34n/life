@@ -1,0 +1,744 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0 }
+body{
+    background: #FFFFFF;
+    font-family: "PingFangSC-Regular",".SFNSDisplay-Light","sans-serif";
+    font-weight: 200;
+}
+
+p{
+    font-size: 19px;
+    line-height: 35px;
+}
+
+/* main */
+.main{
+    height: 670px;
+    background: url("../images/bg.png") repeat-x;
+}
+
+.main>.left{
+    float: left;
+    height: 670px;
+    width: 48%;
+    background: url("../images/mobile.png") bottom right no-repeat;
+}
+
+.main .title{
+    height: 70px;
+    background: url("../images/app.png") bottom left no-repeat;
+}
+
+.main .slogon{
+    height: 32px;
+    background: url("../images/slogon.png") 6px 20px no-repeat;
+}
+
+.main>.right{
+    float: right;
+    height: 670px;
+    width: 52%;
+    box-sizing: border-box;
+}
+
+.main>.right>.title{
+    padding-top: 135px;
+}
+
+.main>.right>.slogon{
+    padding-top: 20px;
+}
+
+.main>.right>.description,.main>.right>.download{
+    width: 440px;
+}
+
+.main>.right>.description {
+    padding-top: 55px;
+    color: #FFFFFF;
+}
+
+.main>.right>.download>p {
+    padding-top: 70px;
+    margin-bottom: 30px;
+    font-size: 23px;
+    color: #3B7EA8;
+}
+
+.button{
+    width: 160px;
+    height: 44px;
+    display: inline-block;
+    margin-right: 40px;
+    box-sizing: border-box;
+}
+
+.download_ios{
+    background: url("../images/buttons.png") -50px -50px no-repeat;
+}
+
+.download_ios:hover{
+    background: url("../images/buttons.png") -50px -124px no-repeat;
+}
+
+.download_android{
+    background: url("../images/buttons.png") -50px -198px no-repeat;
+}
+
+
+/* middle */
+.middle{
+    overflow: hidden;
+    height: 280px;
+}
+
+.triangle{
+    text-align: center;
+    margin-bottom: 37px;
+}
+
+.middle>.logo{
+    height: 140px;
+    background:url("../images/logo.png") center 5px no-repeat;
+}
+
+.weixin,.weibo{
+    display: inline-block;
+    text-align: center;
+}
+
+
+.qrcode p{
+    font-size: 13px;
+    color: #666666;
+    line-height: 20px;
+}
+
+.qrcode img{
+    height: 110px;
+    width: 110px;
+}
+
+.weixin{
+    padding-right: 45px;
+}
+
+
+.footer{
+    text-align: center;
+    margin: 0px 0 70px 0;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.footer span{
+    font-size: 14px;
+    color: #5AB1FE;
+    padding: 0 15px;
+}
+
+
+@media only screen and (min-width: 900px) {
+
+    .qrcode{
+        width: 50%;
+        float: right;
+        box-sizing: border-box;
+        padding-left: 170px;
+        position: relative;
+        top:-136px;
+    }
+}
+
+
+@media only screen and (min-width: 768px) and (max-width:900px) {
+
+
+    .main>.right>.description,.main>.right>.download{
+        width: 380px;
+    }
+
+    .main>.right>.description {
+        padding-top:70px;
+    }
+
+    .main>.right>.description>p {
+        font-size: 17px;
+    }
+
+    .main>.right>.download>p {
+        padding-top: 50px;
+        margin-bottom: 30px;
+        font-size: 21px;
+    }
+
+    .middle{
+        height: 430px;
+    }
+
+    .download_android{
+        margin-right: 0px;
+    }
+
+    .logo{
+        clear: both;
+    }
+
+    .qrcode{
+        padding: 30px;
+        text-align: center;
+    }
+
+}
+
+@media only screen and (min-width: 580px) and (max-width:768px) {
+    .main{
+        height: 1080px;
+        background: #5BAFFF url("../images_2x/bg.png") repeat-x;
+        /*background: gold;*/
+    }
+
+    .main .title{
+        height: 54px;
+        background: url("../images_2x/app.png") bottom center no-repeat;
+    }
+
+    .main .slogon{
+        height: 27px;
+        background: url("../images_2x/slogon.png") center center no-repeat;
+    }
+
+    .main>.left{
+        background: none;
+        float: none;
+        height: 0px;
+        width: 0px;
+    }
+
+    .main>.right{
+        float: none;
+        width: 100%;
+        text-align: center;
+        height: 1024px;
+        box-sizing: border-box;
+
+    }
+
+    .main>.right>.title{
+        padding-top: 110px;
+    }
+
+    .main>.right>.slogon{
+        padding-top: 30px;
+    }
+
+
+    .main>.right>.description,.main>.right>.download{
+        width: 100%;
+    }
+
+    .main>.right>.description {
+        float: left;
+        position: relative;
+        top: 1130px;
+        color: #979797;
+        padding: 0 10%;
+        box-sizing: border-box;
+        /*display: none;*/
+        /*padding-top:70px;*/
+    }
+
+    .main>.right>.description>p {
+        font-size: 26px;
+        line-height: 46px;
+        text-align: left;
+    }
+
+    .main>.right>.download {
+        padding-top: 610px;
+        margin-bottom: 35px;
+        font-size: 21px;
+        background: url("../images_2x/mobile.png") 0px 40px no-repeat;
+
+    }
+
+    .main>.right>.download>p {
+        padding-top: 30px;
+        margin-bottom: 45px;
+        font-size: 36px;
+        background: #5BAFFF;
+    }
+
+    .button{
+        width: 240px;
+        height: 66px;
+        display: inline-block;
+        margin-right: 40px;
+        box-sizing: border-box;
+    }
+
+    .download_ios{
+        background: url("../images_2x/buttons2.png") -50px -50px no-repeat;
+    }
+
+    .download_ios:hover{
+        background: url("../images_2x/buttons2.png") -50px -50px no-repeat;
+    }
+
+    .download_android{
+        background: url("../images_2x/buttons2.png") -50px -124px no-repeat;
+    }
+
+    .main>.right:after{
+        clear: both;
+    }
+
+    .middle{
+        height: 900px;
+    }
+
+    .triangle {
+        margin-bottom: 10px;
+    }
+
+    .download_android{
+        margin-right: 0px;
+    }
+
+    .middle>.logo{
+        height: 250px;
+        background:url("../images_2x/logo.png") center 5px no-repeat;
+        margin-bottom: 150px;
+    }
+
+    .qrcode{
+        padding: 50px 0;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .qrcode img{
+        height: 220px;
+        width: 220px;
+    }
+
+    .footer span{
+        display: block;
+        font-size: 22px;
+        color: #5AB1FE;
+        padding: 7px;
+    }
+}
+
+
+@media only screen and (min-width: 414px) and (max-width:580px) {
+    .main {
+        height: 930px;
+        background: #5BAFFF url("../images_2x/bg.png") repeat-x;
+        /*background: gold;*/
+    }
+
+    .main .title{
+        height: 54px;
+        background: url("../images/app.png") bottom center no-repeat;
+    }
+
+    .main .slogon{
+        height: 27px;
+        background: url("../images/slogon.png") center center no-repeat;
+    }
+
+    .main > .left {
+        background: none;
+        float: none;
+        height: 0px;
+        width: 0px;
+    }
+
+    .main > .right {
+        float: none;
+        width: 100%;
+        text-align: center;
+        height: 900px;
+        box-sizing: border-box;
+
+    }
+
+    .main > .right > .title {
+        padding-top: 90px;
+    }
+
+    .main > .right > .slogon {
+        padding-top: 30px;
+    }
+
+    .main > .right > .description, .main > .right > .download {
+        width: 100%;
+    }
+
+    .main > .right > .description {
+        float: left;
+        position: relative;
+        top: 920px;
+        color: #979797;
+        padding: 0 12%;
+        box-sizing: border-box;
+        /*display: none;*/
+        /*padding-top:70px;*/
+    }
+
+    .main > .right > .description > p {
+        font-size: 19px;
+        line-height: 46px;
+        text-align: left;
+    }
+
+    .main > .right > .download {
+        padding-top: 500px;
+        margin-bottom: 30px;
+        font-size: 21px;
+        background: url("../images_2x/mobile.png") 0px 40px no-repeat;
+        background-size: 475px 444px;
+
+    }
+
+    .main > .right > .download > p {
+        padding-top: 30px;
+        margin-bottom: 40px;
+        font-size: 30px;
+        background: #5BAFFF;
+    }
+
+    .download_ios:hover {
+        background: url("../images/buttons.png") -50px -50px no-repeat;
+    }
+
+    .main > .right:after {
+        clear: both;
+    }
+
+    .middle {
+        height: 700px;
+    }
+
+    .triangle {
+        margin-bottom: 10px;
+    }
+
+    .download_android {
+        margin-right: 0px;
+    }
+
+    .qrcode {
+        padding: 220px 0 30px 0;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .qrcode img {
+        height: 150px;
+        width: 150px;
+    }
+
+    .footer span {
+        display: block;
+        font-size: 16px;
+        color: #5AB1FE;
+        padding: 7px;
+    }
+}
+
+
+@media only screen and (min-width: 360px) and (max-width:414px) {
+    .main{
+        height: 670px;
+        background: #5BAFFF url("../images_2x/bg.png") repeat-x;
+        /*background: gold;*/
+    }
+
+    .main .title{
+        height: 54px;
+        background: url("../images_2x/app@1x.png") bottom center no-repeat;
+    }
+
+    .main .slogon{
+        height: 27px;
+        background: url("../images_2x/slogon@1x.png") center center no-repeat;
+    }
+
+    .main>.left{
+        background: none;
+        float: none;
+        height: 0px;
+        width: 0px;
+    }
+
+    .main>.right{
+        float: none;
+        width: 100%;
+        text-align: center;
+        height: 670px;
+        box-sizing: border-box;
+
+    }
+
+    .main>.right>.title{
+        padding-top: 90px;
+    }
+
+    .main>.right>.slogon{
+        padding-top: 30px;
+    }
+
+
+    .main>.right>.description,.main>.right>.download{
+        width: 100%;
+    }
+
+    .main>.right>.description {
+        float: left;
+        position: relative;
+        top: 650px;
+        color: #979797;
+        padding: 0 10%;
+        box-sizing: border-box;
+        /*display: none;*/
+        /*padding-top:70px;*/
+    }
+
+    .main>.right>.description>p {
+        font-size: 17px;
+        line-height: 32px;
+        text-align: left;
+    }
+
+    .main>.right>.download {
+        padding-top: 300px;
+        margin-bottom: 20px;
+        font-size: 21px;
+        background: url("../images_2x/mobile@1x.png") 0px 40px no-repeat;
+        /*background-size: 475px 444px;*/
+
+    }
+
+    .main>.right>.download>p {
+        padding-top: 30px;
+        margin-bottom: 20px;
+        font-size: 24px;
+        background: #5BAFFF;
+    }
+
+    .button{
+        width: 120px;
+        height: 33px;
+        display: inline-block;
+        margin-right: 40px;
+        box-sizing: border-box;
+    }
+
+    .download_ios{
+        background: url("../images_2x/buttons@1x.png") -50px -50px no-repeat;
+    }
+
+    .download_ios:hover{
+        background: url("../images_2x/buttons@1x.png") -50px -50px no-repeat;
+    }
+
+    .download_android{
+        background: url("../images_2x/buttons@1x.png") -50px -124px no-repeat;
+    }
+
+
+    .main>.right:after{
+        clear: both;
+    }
+
+    .middle{
+        height: 500px;
+    }
+
+    .triangle{
+        margin-bottom: 5px;
+
+    }
+
+    .middle>.logo{
+        height: 250px;
+        background:url("../images_2x/logo@1x.png") center 5px no-repeat;
+        margin-bottom: 30px;
+    }
+
+    .download_android{
+        margin-right: 0px;
+    }
+
+    .qrcode{
+        padding: 0 0 30px 0;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .qrcode img{
+        height: 110px;
+        width: 110px;
+    }
+
+    .footer{
+        margin-bottom: 50px;
+    }
+
+    .footer span{
+        display: block;
+        font-size: 14px;
+        color: #5AB1FE;
+        padding: 7px;
+    }
+}
+
+
+@media only screen and (max-width:360px) {
+    .main{
+        height: 660px;
+        background: #5BAFFF url("../images_2x/bg.png") repeat-x;
+        /*background: gold;*/
+    }
+
+    .main .title{
+        height: 54px;
+        background: url("../images_2x/app@1x.png") bottom center no-repeat;
+    }
+
+    .main .slogon{
+        height: 27px;
+        background: url("../images_2x/slogon@1x.png") center center no-repeat;
+    }
+
+    .main>.left{
+        background: none;
+        float: none;
+        height: 0px;
+        width: 0px;
+    }
+
+    .main>.right{
+        float: none;
+        width: 100%;
+        text-align: center;
+        height: 660px;
+        box-sizing: border-box;
+
+    }
+
+    .main>.right>.title{
+        padding-top: 90px;
+    }
+
+    .main>.right>.slogon{
+        padding-top: 30px;
+    }
+
+
+    .main>.right>.description,.main>.right>.download{
+        width: 100%;
+    }
+
+    .main>.right>.description {
+        float: left;
+        position: relative;
+        top: 620px;
+        color: #979797;
+        padding: 0 8%;
+        box-sizing: border-box;
+        /*display: none;*/
+        /*padding-top:70px;*/
+    }
+
+    .main>.right>.description>p {
+        font-size: 16px;
+        line-height: 32px;
+        text-align: left;
+    }
+
+    .main>.right>.download {
+        padding-top: 300px;
+        margin-bottom: 20px;
+        font-size: 21px;
+        background: url("../images_2x/mobile@1x.png") 0px 40px no-repeat;
+        /*background-size: 475px 444px;*/
+
+    }
+
+    .main>.right>.download>p {
+        padding-top: 30px;
+        margin-bottom: 20px;
+        font-size: 24px;
+        background: #5BAFFF;
+    }
+
+    .button{
+        width: 120px;
+        height: 33px;
+        display: inline-block;
+        margin-right: 40px;
+        box-sizing: border-box;
+    }
+
+    .download_ios{
+        background: url("../images_2x/buttons@1x.png") -50px -50px no-repeat;
+    }
+
+    .download_ios:hover{
+        background: url("../images_2x/buttons@1x.png") -50px -50px no-repeat;
+    }
+
+    .download_android{
+        background: url("../images_2x/buttons@1x.png") -50px -124px no-repeat;
+    }
+
+
+    .main>.right:after{
+        clear: both;
+    }
+
+    .middle{
+        height: 500px;
+    }
+
+    .triangle{
+        margin-bottom: 10px;
+
+    }
+
+    .middle>.logo{
+        height: 250px;
+        background:url("../images_2x/logo@1x.png") center 5px no-repeat;
+        margin-bottom: 30px;
+    }
+
+    .download_android{
+        margin-right: 0px;
+    }
+
+    .qrcode{
+        padding: 0 0 30px 0;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .qrcode img{
+        height: 110px;
+        width: 110px;
+    }
+
+    .footer{
+        margin-bottom: 50px;
+    }
+
+    .footer span{
+        display: block;
+        font-size: 12px;
+        color: #5AB1FE;
+        padding: 7px;
+    }
+}
+
+
