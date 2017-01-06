@@ -6,7 +6,7 @@ return [
     'supportEmail' => 'support@example.com',
     'defaultProject' => '日常',
     'pageSize'       =>  8,
-    'defaultTags'    => '[{"id": 1,"name":"服装"},{"id": 2,"name":"鞋靴"},{"id": 3,"name":"配饰"},{"id": 4,"name":"美妆"},{"id": 5,"name":"数码"},{"id": 6,"name":"证件"},{"id": 7,"name":"书籍"},{"id": 8,"name":"玩具"},{"id": 9,"name":"文具"},{"id": 10,"name":"工具"},{"id": 11,"name":"卫浴"},{"id": 12,"name":"厨房"},{"id": 13,"name":"医药"},{"id": 14,"name":"饮食"},{"id": 15,"name":"家饰"},{"id": 16,"name":"家纺"}]',
+    'defaultTags'    => '[{"tag_id": 1,"tag":"服装"},{"tag_id": 2,"tag":"鞋靴"},{"tag_id": 3,"tag":"配饰"},{"tag_id": 4,"tag":"美妆"},{"tag_id": 5,"tag":"数码"},{"tag_id": 6,"tag":"证件"},{"tag_id": 7,"tag":"书籍"},{"tag_id": 8,"tag":"玩具"},{"tag_id": 9,"tag":"文具"},{"tag_id": 10,"tag":"工具"},{"tag_id": 11,"tag":"卫浴"},{"tag_id": 12,"tag":"厨房"},{"tag_id": 13,"tag":"医药"},{"tag_id": 14,"tag":"饮食"},{"tag_id": 15,"tag":"家饰"},{"tag_id": 16,"tag":"家纺"}]',
     'user.passwordResetTokenExpire' => 3600,
     'UploadPath'  => dirname(dirname(__DIR__)).'/uploads/',
     'UperChar'    => array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'),
