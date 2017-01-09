@@ -155,6 +155,12 @@ class TokenController extends ActiveController
                 //获取用户默认项目
                 $proj = new Project();
                 $p = $proj->getDefault($user['user']->user_id);//默认项目数据封装
+
+                if($p ==''){
+                    $p = $proj->getOwnProject($user['user']->user_id);
+                    $proj->setDefault($user['user']->user_id, $p->project_id);
+                }
+                
                 $data['project'] = $p;
                 return $data;
 

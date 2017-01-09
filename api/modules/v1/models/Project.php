@@ -341,8 +341,21 @@ class Project extends ActiveRecord //implements Linkable
             }
         }else{
             $data['code'] = 20000;
+            return $data;
         }
         return $data['data'];
+    }
+
+
+    //获取自己的项目
+    public function getOwnProject($user_id)
+    {
+        $query = $this->find()->from(['p'=>'project'])
+            ->leftJoin(['r'=>'rel_user_project'],'p.project_id = r.project_id')
+            ->where(['r.user_id'=>$user_id,'r.is_manager'=>1])
+            ->orderBy('project_id')
+            ->one();
+        return $query;
     }
 
 
