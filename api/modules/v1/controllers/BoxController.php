@@ -130,6 +130,21 @@ class BoxController extends ActiveController
      *		),
      * 	)
      */
+    public function actionView($id)
+    {
+
+        //检查参数
+        if(!isset($id)){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        $model         = new Box();
+        $data['code']  = 10000;
+        $data['data']  = $model->findOne($id);
+
+        return $data;
+    }
 
 
     /**
