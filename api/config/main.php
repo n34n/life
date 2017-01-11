@@ -123,6 +123,8 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'PUT move'  => 'move',
+                        'PUT multi-name' => 'multi-name',
+                        'PUT multi-tag'  => 'multi-tag',
                     ],
                 ],
 

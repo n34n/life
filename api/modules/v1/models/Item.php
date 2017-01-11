@@ -105,8 +105,8 @@ class Item extends ActiveRecord
 
 
         //按tag_id筛选
-        if(isset($_GET['tags']) && $_GET['tags']!="" && ($_GET['tags']!="{tag_ids}")){
-            $keywords = trim($_GET['tags']);
+        if(isset($_GET['tag_ids']) && $_GET['tag_ids']!="" && ($_GET['tag_ids']!="{tag_ids}")){
+            $keywords = trim($_GET['tag_ids']);
             $keyword_list = explode(',',$keywords);
             $query->andFilterWhere(['tag_id'=>$keyword_list]);
         }
@@ -261,10 +261,143 @@ class Item extends ActiveRecord
 
         //日志
         $log = new Log();
-        $log->addLog($params['project_id'],$id,$user_id,'box','update',$data['message'],$nickname);
+        $log->addLog($params['project_id'],$id,$user_id,'item','update',$data['message'],$nickname);
 
         $data['code'] = 10000;
         return $data;
+    }
+
+
+    //批量更新物品名称
+    public function multiUpdateName($user_id,$nickname)
+    {
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$nickname,$params['ids'],$params['name'],$params['project_id'],$params['box_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //批量更新
+        $updateName = array('name' => $params['name']);
+        $ids = $params['ids'];
+
+        $count = self::updateAll($updateName,
+            'project_id=:project_id and box_id=:box_id and  item_id in ('.$ids.')',
+            array(
+                'project_id'=>$params['project_id'],
+                'box_id'=>$params['box_id']
+            ));
+
+
+        //日志
+        $message = '批量修改了'.$count.'个物品的名称';
+        $log = new Log();
+        $log->addLog($params['project_id'],$params['box_id'],$user_id,'box','multi-items',$message,$nickname);
+
+        $data['code']  = 10000;
+        $data['data']  = $count;
+        return $data;
+    }
+
+
+    //批量更新物品标签
+    public function multiUpdateTag($user_id,$nickname)
+    {
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$nickname,$params['ids'],$params['tags'],$params['project_id'],$params['box_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //标签处理
+        if(isset($params['tags'])){
+            $tags= json_decode($params['tags'],true);
+            unset($params['tags']);
+        }
+
+        //批量删除
+        $ids = $params['ids'];
+        Tag::deleteAll('item_id in ('.$ids.')');
+
+        $ids = explode(',',$ids);
+
+        foreach($ids as $item_id)
+        {
+            //echo $item_id;
+            foreach ($tags as $tag){
+              //  print_r($tag);
+                $ins_data[] = [
+                    'item_id' => $item_id,
+                    'tag_id' => $tag['tag_id'],
+                    'tag' => $tag['tag']
+                ];
+            }
+        }
+
+        $count = 0;
+        if (isset($ins_data))
+        {
+            $count = Yii::$app->db->createCommand()
+                ->batchInsert(Tag::tableName(),['item_id','tag_id','tag'],
+                    $ins_data)
+                ->execute();
+        }
+
+
+        $itemNum = count($ids);
+        //日志
+        $message = '批量修改了'.$itemNum.'个物品的标签';
+        $log = new Log();
+        $log->addLog($params['project_id'],$params['box_id'],$user_id,'box','multi-items',$message,$nickname);
+
+        $data['code']  = 10000;
+        $data['data']  = $itemNum;
+        return $data;
+    }
+
+
+    //批量更新物品标签
+    public function actionMultiUpdateTag($user_id,$nickname)
+    {
+        //验证方法
+        if(!Yii::$app->request->isPut)
+        {
+            $data['code'] = 400;
+            return $data;
+        }else{
+            $params = Yii::$app->request->bodyParams;
+        }
+
+        //检查参数
+        if(!isset($user_id,$nickname,$params['ids'],$params['project_id'],$params['box_id'])){
+            $data['code']  = 20000;
+            return $data;
+        }
+
+        //批量更新
+        //$updateName = array('name' => $params['name']);
+        $ids        = $params['ids'];
+        $tags       = $params['tags'];
+        //self::updateAll($updateName,'id in (:ids)',array(':ids'=>$ids));
+
     }
 
 

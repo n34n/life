@@ -39,6 +39,8 @@ class ItemController extends ActiveController
             'create' => ['POST'],
             'update' => ['PUT'],
             'move' =>   ['PUT'],
+            'multi-name' => ['PUT'],
+            'multi-tag'  => ['PUT'],
             'delete' => ['DELETE'],
         ];
     }
@@ -55,7 +57,7 @@ class ItemController extends ActiveController
     /**
      *
      *	@SWG\Get(
-     * 		path="/item?access-token={access_token}&project_id={project_id}&box_id={box_id}&keyword={keyword}&tags={tag_ids}&page={page}",
+     * 		path="/item?access-token={access_token}&project_id={project_id}&box_id={box_id}&keyword={keyword}&tag_ids={tag_ids}&page={page}",
      * 		tags={"Item"},
      * 		operationId="listItem",
      * 		summary="物品列表|搜索",
@@ -284,6 +286,112 @@ class ItemController extends ActiveController
         $data  = $model->updateInfo($this->userinfo->user_id,$this->userinfo->nickname,$id);
         return $data;
     }
+
+
+    /**
+     *
+     *	@SWG\Put(
+     * 		path="/item/multi-name?access-token={access_token}",
+     * 		tags={"Item"},
+     * 		operationId="multiUpdateItemName",
+     * 		summary="批量编辑物品名称",
+     * 		@SWG\Parameter(
+     * 			name="ids",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="物品ID按逗号分开,如1,2,3,4",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="box_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="name",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="物品名称",
+     * 		),
+     * 	)
+     */
+    public function actionMultiName()
+    {
+        $model = new Item();
+        $data  = $model->multiUpdateName($this->userinfo->user_id,$this->userinfo->nickname);
+        return $data;
+    }
+
+
+    /**
+     *
+     *	@SWG\Put(
+     * 		path="/item/multi-tag?access-token={access_token}",
+     * 		tags={"Item"},
+     * 		operationId="multiUpdateItemTag",
+     * 		summary="批量编辑物品标签",
+     * 		@SWG\Parameter(
+     * 			name="ids",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="物品ID按逗号分开,如1,2,3,4",
+     * 		),
+     *      @SWG\Parameter(
+     * 			name="access_token",
+     * 			in="path",
+     * 			required=true,
+     *          type="string",
+     * 			description="访问令牌",
+     *		),
+     * 		@SWG\Parameter(
+     * 			name="project_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="项目ID",
+     * 		),
+     * 		@SWG\Parameter(
+     * 			name="box_id",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="integer",
+     * 			description="盒子ID",
+     * 		),
+     *       @SWG\Parameter(
+     * 			name="tags",
+     * 			in="formData",
+     * 			required=true,
+     * 			type="string",
+     * 			description="标签数据:以json形式提交,例子中为更好阅读加了回车,实际使用时请不要有空格和回车:<br>[<br>{&quot;tag_id&quot;:1,&quot;tag&quot;:&quot;服装&quot;},<br>{&quot;tag_id&quot;:2,&quot;tag&quot;:&quot;鞋靴&quot;}<br>]",
+     * 		),
+     * 	)
+     */
+    public function actionMultiTag()
+    {
+        $model = new Item();
+        $data  = $model->multiUpdateTag($this->userinfo->user_id,$this->userinfo->nickname);
+        return $data;
+    }
+
+
 
     /**
      *
