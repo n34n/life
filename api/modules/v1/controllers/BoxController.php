@@ -2,7 +2,6 @@
 
 namespace api\modules\v1\controllers;
 
-use api\modules\v1\models\Box;
 use yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
@@ -12,6 +11,7 @@ use yii\data\ActiveDataProvider;
 use api\models\User;
 use api\modules\v1\models\Project;
 use api\modules\v1\models\RelUserProject;
+use api\modules\v1\models\Box;
 use api\components\Pages;
 
 class BoxController extends ActiveController
@@ -45,7 +45,7 @@ class BoxController extends ActiveController
     {
         $actions = parent::actions();
         // 注销系统自带的实现方法
-        unset($actions['index'], $actions['create'], $actions['update'], $actions['delete']);
+        unset($actions['index'],$actions['view'], $actions['create'], $actions['update'], $actions['delete']);
         return $actions;
     }
 
@@ -139,9 +139,11 @@ class BoxController extends ActiveController
             return $data;
         }
 
+
         $model         = new Box();
         $data['code']  = 10000;
         $data['data']  = $model->findOne($id);
+
 
         return $data;
     }
