@@ -423,7 +423,7 @@ class Item extends ActiveRecord
 
 
     //删除物品
-    public function remove($user_id,$nickname,$id)
+    public function remove($user_id,$nickname,$id,$box_id='')
     {
         //验证方法
         if(!Yii::$app->request->isDelete)
@@ -434,11 +434,17 @@ class Item extends ActiveRecord
             $params = !empty(Yii::$app->request->bodyParams)?Yii::$app->request->bodyParams:$_GET;
         }
 
+        //从盒子删除
+        if($box_id!=''){
+            $params['box_id'] = $box_id;
+        }
+
         //检查参数
         if(!isset($user_id,$id,$params['project_id'],$params['box_id'],$nickname)){
             $data['code']  = 20000;
             return $data;
         }
+
 
         //验证资源是否存在
         $query = self::findOne(['item_id'=>$id,'box_id'=>$params['box_id'],'project_id'=>$params['project_id']]);

@@ -144,7 +144,6 @@ class BoxController extends ActiveController
         $data['code']  = 10000;
         $data['data']  = $model->findOne($id);
 
-
         return $data;
     }
 
@@ -271,6 +270,7 @@ class BoxController extends ActiveController
      */
     public function actionDelete($id)
     {
+        //echo 'hello';
         $model = new Box();
         $data  = $model->remove($this->userinfo->user_id,$this->userinfo->nickname,$id);
         return $data;

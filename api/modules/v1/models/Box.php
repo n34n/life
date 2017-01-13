@@ -7,7 +7,7 @@ use yii\base\Object;
 use yii\db\ActiveRecord;
 use yii\data\ActiveDataProvider;
 use api\modules\v1\models\RelUserProject;
-
+use api\modules\v1\models\Item;
 use api\modules\v1\models\Images;
 use api\modules\v1\models\Log;
 
@@ -247,10 +247,15 @@ class Box extends ActiveRecord
 
         //删除物品及相关
         $items = Item::findAll(['box_id'=>$id]);
+
+//        print_r($items);
+//        $data['code'] = 20001;
+//        return $data;
+
         if(!empty($items)){
             foreach ($items as $item){
                 $obj = new Item();
-                $obj->remove($user_id,$nickname,$item->item_id);
+                $obj->remove($user_id,$nickname,$item->item_id,$id);
             }
         }
 
